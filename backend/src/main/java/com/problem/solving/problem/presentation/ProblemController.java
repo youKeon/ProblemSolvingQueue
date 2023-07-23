@@ -9,9 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +17,6 @@ import java.util.Queue;
 public class ProblemController {
 
     private final ProblemService problemService;
-    Queue<Integer> q = new LinkedList<>();
-
 
     @GetMapping("/{id}")
     public ResponseEntity<ProblemResponse> getProblem(@PathVariable Long id) {
@@ -34,8 +30,8 @@ public class ProblemController {
         return ResponseEntity.ok(response);
     }
     @GetMapping()
-    public ResponseEntity<List<ProblemsResponse>> getProblems() {
-        List<ProblemsResponse> response = problemService.getProblems();
+    public ResponseEntity<List<ProblemsResponse>> getProblemList() {
+        List<ProblemsResponse> response = problemService.getProblemList();
         return ResponseEntity.ok(response);
     }
 

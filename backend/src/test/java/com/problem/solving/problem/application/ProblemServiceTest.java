@@ -84,7 +84,7 @@ public class ProblemServiceTest {
 
         //when
         when(problemRepository.findAllByOrderByCreatedAtAsc()).thenReturn(problems);
-        List<ProblemsResponse> result = problemService.getProblems();
+        List<ProblemsResponse> result = problemService.getProblemList();
 
         //then
         assertAll(
@@ -107,7 +107,7 @@ public class ProblemServiceTest {
     public void getProblemsEmptyException() throws Exception {
         //when, then
         assertThatThrownBy(
-                () -> problemService.getProblems())
+                () -> problemService.getProblemList())
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("문제가 없습니다.");
     }

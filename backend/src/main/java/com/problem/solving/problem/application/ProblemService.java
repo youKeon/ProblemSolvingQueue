@@ -24,7 +24,7 @@ public class ProblemService {
         problemRepository.save(problem);
     }
 
-    public List<ProblemsResponse> getProblems() {
+    public List<ProblemsResponse> getProblemList() {
         List<Problem> problems = problemRepository.findAllByOrderByCreatedAtAsc();
 
         if (problems.size() == 0) throw new NoSuchProblemException("문제가 없습니다.");
