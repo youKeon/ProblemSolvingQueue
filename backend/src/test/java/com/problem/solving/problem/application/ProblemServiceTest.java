@@ -1,7 +1,7 @@
 package com.problem.solving.problem.application;
 
 import com.problem.solving.problem.domain.Problem;
-import com.problem.solving.problem.domain.Type;
+import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
@@ -36,7 +36,7 @@ public class ProblemServiceTest {
     @DisplayName("문제를 저장한다")
     public void registerProblem() throws Exception {
         //given
-        ProblemSaveRequest request = new ProblemSaveRequest("TEST", Type.DFS, 3);
+        ProblemSaveRequest request = new ProblemSaveRequest("TEST", Category.DFS, 3);
 
         //when
         problemService.addProblem(request);
@@ -76,9 +76,9 @@ public class ProblemServiceTest {
     @DisplayName("문제 리스트를 조회한다")
     public void getProblems() throws Exception {
         //given
-        Problem test1 = Problem.builder().url("test1").type(Type.DFS).level(1).build();
-        Problem test2 = Problem.builder().url("test2").type(Type.BFS).level(2).build();
-        Problem test3 = Problem.builder().url("test3").type(Type.SORT).level(3).build();
+        Problem test1 = Problem.builder().url("test1").category(Category.DFS).level(1).build();
+        Problem test2 = Problem.builder().url("test2").category(Category.BFS).level(2).build();
+        Problem test3 = Problem.builder().url("test3").category(Category.SORT).level(3).build();
 
         List<Problem> problems = Arrays.asList(test1, test2, test3);
 
@@ -89,15 +89,15 @@ public class ProblemServiceTest {
         //then
         assertAll(
                 () -> assertThat(result.get(0).getUrl()).isEqualTo(test1.getUrl()),
-                () -> assertThat(result.get(0).getType()).isEqualTo(test1.getType()),
+                () -> assertThat(result.get(0).getCategory()).isEqualTo(test1.getCategory()),
                 () -> assertThat(result.get(0).getLevel()).isEqualTo(test1.getLevel()),
 
                 () -> assertThat(result.get(1).getUrl()).isEqualTo(test2.getUrl()),
-                () -> assertThat(result.get(1).getType()).isEqualTo(test2.getType()),
+                () -> assertThat(result.get(1).getCategory()).isEqualTo(test2.getCategory()),
                 () -> assertThat(result.get(1).getLevel()).isEqualTo(test2.getLevel()),
 
                 () -> assertThat(result.get(2).getUrl()).isEqualTo(test3.getUrl()),
-                () -> assertThat(result.get(2).getType()).isEqualTo(test3.getType()),
+                () -> assertThat(result.get(2).getCategory()).isEqualTo(test3.getCategory()),
                 () -> assertThat(result.get(2).getLevel()).isEqualTo(test3.getLevel())
         );
     }
@@ -120,7 +120,7 @@ public class ProblemServiceTest {
                 .id(1L)
                 .url("test")
                 .level(2)
-                .type(Type.DFS)
+                .category(Category.DFS)
                 .build();
 
         //when
@@ -131,7 +131,7 @@ public class ProblemServiceTest {
         assertAll(
                 () -> assertThat(result.getUrl()).isEqualTo(problem.getUrl()),
                 () -> assertThat(result.getLevel()).isEqualTo(problem.getLevel()),
-                () -> assertThat(result.getType()).isEqualTo(problem.getType())
+                () -> assertThat(result.getCategory()).isEqualTo(problem.getCategory())
         );
     }
 
@@ -152,7 +152,7 @@ public class ProblemServiceTest {
         Problem problem = Problem.builder()
                 .id(1L)
                 .url("test")
-                .type(Type.DFS)
+                .category(Category.DFS)
                 .level(3)
                 .build();
 
@@ -163,7 +163,7 @@ public class ProblemServiceTest {
         //then
         assertAll(
                 () -> assertThat(result.getUrl()).isEqualTo(problem.getUrl()),
-                () -> assertThat(result.getType()).isEqualTo(problem.getType()),
+                () -> assertThat(result.getCategory()).isEqualTo(problem.getCategory()),
                 () -> assertThat(result.getLevel()).isEqualTo(problem.getLevel())
         );
     }

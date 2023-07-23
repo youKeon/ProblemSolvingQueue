@@ -1,9 +1,8 @@
 package com.problem.solving.problem.dto.response;
 
 import com.problem.solving.problem.domain.Problem;
-import com.problem.solving.problem.domain.Type;
+import com.problem.solving.problem.domain.Category;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 @AllArgsConstructor
@@ -11,13 +10,13 @@ import lombok.Getter;
 public class ProblemResponse {
     private String url;
     private int level;
-    private Type type;
+    private Category category;
     private boolean isSolved;
 
     public static ProblemResponse from(Problem problem) {
         return new ProblemResponse(problem.getUrl(),
                 problem.getLevel(),
-                problem.getType(),
+                problem.getCategory(),
                 problem.isSolved()
         );
     }

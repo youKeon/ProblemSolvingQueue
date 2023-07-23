@@ -18,20 +18,20 @@ public class Problem extends BaseEntity {
     private String url;
     private int level;
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private Category category;
     private boolean isSolved = false;
 
-    private boolean isDeleted = true;
+    private boolean isDeleted = false;
 
     @Builder
     public Problem(Long id,
                    String url,
                    int level,
-                   Type type) {
+                   Category category) {
         this.id = id;
         this.url = url;
         this.level = level;
-        this.type = type;
+        this.category = category;
     }
 
     public void softDelete() {

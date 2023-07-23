@@ -1,7 +1,7 @@
 package com.problem.solving.common.annotation;
 
 import com.problem.solving.problem.domain.Problem;
-import com.problem.solving.problem.domain.Type;
+import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.persistence.ProblemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public abstract class ServiceTest {
                 .id(1L)
                 .url("test")
                 .level(1)
-                .type(Type.DFS)
+                .type(Category.DFS)
                 .build());
     }
 }
