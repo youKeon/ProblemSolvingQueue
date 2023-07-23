@@ -29,7 +29,6 @@ public class BatchConfiguration {
 
     private final ProblemRepository problemRepository;
 
-
     @Bean
     public RepositoryItemReader<Problem> problemsDeleteReader() {
         Map<String, Sort.Direction> sorts = new HashMap<>();
@@ -45,7 +44,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemWriter<Problem> problemsDeletionWriter() {
-        return items -> problemRepository.deleteAll(items);
+        return items -> items.forEach(problemRepository::delete);
     }
 
     @Bean

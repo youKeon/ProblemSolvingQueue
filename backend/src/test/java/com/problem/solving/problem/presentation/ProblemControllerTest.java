@@ -26,7 +26,7 @@ public class ProblemControllerTest extends ControllerTest {
         ProblemSaveRequest request = new ProblemSaveRequest("test", Type.DFS, 3);
         willDoNothing()
                 .given(problemService)
-                .register(any());
+                .addProblem(any());
 
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
@@ -43,7 +43,7 @@ public class ProblemControllerTest extends ControllerTest {
         ProblemSaveRequest request = new ProblemSaveRequest(null, Type.DFS, 3);
         willThrow(new InvalidProblemException("공백일 수 없습니다."))
                 .given(problemService)
-                .register(any());
+                .addProblem(any());
 
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
@@ -59,7 +59,7 @@ public class ProblemControllerTest extends ControllerTest {
         ProblemSaveRequest request = new ProblemSaveRequest("ps", Type.DFS, 0);
         willThrow(new InvalidProblemException("0이상 5이하입니다."))
                 .given(problemService)
-                .register(any());
+                .addProblem(any());
 
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
@@ -75,7 +75,7 @@ public class ProblemControllerTest extends ControllerTest {
         ProblemSaveRequest request = new ProblemSaveRequest("ps", Type.DFS, 8);
         willThrow(new InvalidProblemException("0이상 5이하입니다."))
                 .given(problemService)
-                .register(any());
+                .addProblem(any());
 
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
