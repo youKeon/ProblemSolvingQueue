@@ -2,6 +2,7 @@ package com.problem.solving.problem.presentation;
 
 import com.problem.solving.problem.application.ProblemService;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
+import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.dto.response.ProblemsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,14 @@ public class ProblemController {
 
     private final ProblemService problemService;
 
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProblemResponse> getProblem(@PathVariable Long id) {
+        ProblemResponse response = problemService.getProblem(id);
+        return ResponseEntity.ok(response);
+    }
     @GetMapping()
-    public ResponseEntity<List<ProblemsResponse>> getProblem() {
+    public ResponseEntity<List<ProblemsResponse>> getProblems() {
         List<ProblemsResponse> response = problemService.getProblems();
         return ResponseEntity.ok(response);
     }

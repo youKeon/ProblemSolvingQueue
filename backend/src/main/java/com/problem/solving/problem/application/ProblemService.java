@@ -2,6 +2,7 @@ package com.problem.solving.problem.application;
 
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
+import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.dto.response.ProblemsResponse;
 import com.problem.solving.problem.exception.NoSuchProblemException;
 import com.problem.solving.problem.persistence.ProblemRepository;
@@ -35,5 +36,12 @@ public class ProblemService {
                 () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
         );
         problem.softDelete();
+    }
+
+    public ProblemResponse getProblem(Long id) {
+        Problem problem = problemRepository.findById(id).orElseThrow(
+                () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
+        );
+        return ProblemResponse.from(problem);
     }
 }
