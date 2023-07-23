@@ -19,13 +19,16 @@ import java.util.stream.Collectors;
 public class ProblemService {
     private final ProblemRepository problemRepository;
 
-    public void register(ProblemSaveRequest request) {
+    public void addProblem(ProblemSaveRequest request) {
         Problem problem = request.toEntity();
         problemRepository.save(problem);
     }
 
     public List<ProblemsResponse> getProblems() {
-        List<Problem> problems = problemRepository.findAllProblems();
+        List<Problem> problems = problemRepository.findAllByOrderByCreatedAtAsc();
+
+        if (problems.size() == 0) throw new NoSuchProblemException("문제가 없습니다.");
+
         return problems.stream()
                 .map(ProblemsResponse::from)
                 .collect(Collectors.toList());
@@ -40,6 +43,13 @@ public class ProblemService {
 
     public ProblemResponse getProblem(Long id) {
         Problem problem = problemRepository.findById(id).orElseThrow(
+                () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
+        );
+        return ProblemResponse.from(problem);
+    }
+
+    public ProblemResponse pollProblem() {
+        Problem problem = problemRepository.findFirstByOrderByCreatedAtAsc().orElseThrow(
                 () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
         );
         return ProblemResponse.from(problem);

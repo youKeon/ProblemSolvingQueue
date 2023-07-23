@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,11 +19,18 @@ import java.util.List;
 public class ProblemController {
 
     private final ProblemService problemService;
+    Queue<Integer> q = new LinkedList<>();
 
 
     @GetMapping("/{id}")
     public ResponseEntity<ProblemResponse> getProblem(@PathVariable Long id) {
         ProblemResponse response = problemService.getProblem(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/poll")
+    public ResponseEntity<ProblemResponse> pollProblem() {
+        ProblemResponse response = problemService.pollProblem();
         return ResponseEntity.ok(response);
     }
     @GetMapping()
@@ -31,8 +40,8 @@ public class ProblemController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> register(@RequestBody @Valid ProblemSaveRequest request) {
-        problemService.register(request);
+    public ResponseEntity<Void> addProblem(@RequestBody @Valid ProblemSaveRequest request) {
+        problemService.addProblem(request);
         return ResponseEntity.noContent().build();
     }
 
