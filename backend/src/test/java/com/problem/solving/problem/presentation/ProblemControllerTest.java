@@ -4,7 +4,7 @@ import com.problem.solving.common.annotation.ControllerTest;
 import com.problem.solving.problem.domain.Type;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
-import com.problem.solving.problem.dto.response.ProblemsResponse;
+import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.InvalidProblemException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -89,10 +89,10 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("문제 리스트를 조회된다")
     public void getProblems() throws Exception {
         //given
-        ProblemsResponse test1 = ProblemsResponse.builder().url("test1").level(1).type(Type.DFS).build();
-        ProblemsResponse test2 = ProblemsResponse.builder().url("test2").level(2).type(Type.BFS).build();
-        ProblemsResponse test3 = ProblemsResponse.builder().url("test3").level(3).type(Type.SORT).build();
-        List<ProblemsResponse> responses = Arrays.asList(test1, test2, test3);
+        ProblemListResponse test1 = new ProblemListResponse("test1", 1, Type.DFS, false);
+        ProblemListResponse test2 = new ProblemListResponse("test2", 2, Type.DFS, false);
+        ProblemListResponse test3 = new ProblemListResponse("test3", 3, Type.DFS, false);
+        List<ProblemListResponse> responses = Arrays.asList(test1, test2, test3);
 
         given(problemService.getProblemList()).willReturn(responses);
 
@@ -105,7 +105,7 @@ public class ProblemControllerTest extends ControllerTest {
     public void getProblemById() throws Exception {
         //given
         Long id = 1L;
-        ProblemResponse response = ProblemResponse.builder().url("test").level(1).type(Type.DFS).build();
+        ProblemResponse response = new ProblemResponse("test1", 1, Type.DFS, false);
         given(problemService.getProblem(id)).willReturn(response);
 
         // then
@@ -117,7 +117,7 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("가장 먼저 저장한 문제를 조회한다")
     public void pollProblem() throws Exception {
         //given
-        ProblemResponse response = ProblemResponse.builder().url("test").level(1).type(Type.DFS).build();
+        ProblemResponse response = new ProblemResponse("test1", 1, Type.DFS, false);
         given(problemService.pollProblem()).willReturn(response);
 
         // then

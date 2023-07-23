@@ -4,7 +4,7 @@ import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.domain.Type;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
-import com.problem.solving.problem.dto.response.ProblemsResponse;
+import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.NoSuchProblemException;
 import com.problem.solving.problem.persistence.ProblemRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -84,7 +84,7 @@ public class ProblemServiceTest {
 
         //when
         when(problemRepository.findAllByOrderByCreatedAtAsc()).thenReturn(problems);
-        List<ProblemsResponse> result = problemService.getProblemList();
+        List<ProblemListResponse> result = problemService.getProblemList();
 
         //then
         assertAll(

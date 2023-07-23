@@ -3,7 +3,7 @@ package com.problem.solving.problem.application;
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
-import com.problem.solving.problem.dto.response.ProblemsResponse;
+import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.NoSuchProblemException;
 import com.problem.solving.problem.persistence.ProblemRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +24,13 @@ public class ProblemService {
         problemRepository.save(problem);
     }
 
-    public List<ProblemsResponse> getProblemList() {
+    public List<ProblemListResponse> getProblemList() {
         List<Problem> problems = problemRepository.findAllByOrderByCreatedAtAsc();
 
         if (problems.size() == 0) throw new NoSuchProblemException("문제가 없습니다.");
 
         return problems.stream()
-                .map(ProblemsResponse::from)
+                .map(ProblemListResponse::from)
                 .collect(Collectors.toList());
     }
 

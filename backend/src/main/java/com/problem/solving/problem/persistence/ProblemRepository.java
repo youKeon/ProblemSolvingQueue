@@ -14,6 +14,11 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
 
     Optional<Problem> findFirstByOrderByCreatedAtAsc();
 
-    @Query(value = "SELECT * FROM Problem WHERE is_deleted = true AND DATE(updated_at) < DATE_SUB(NOW(), INTERVAL 3 DAY)", nativeQuery = true)
+    @Query(value = "SELECT * " +
+                    "FROM Problem " +
+                    "WHERE is_deleted = true " +
+                    "AND " +
+                    "DATE(updated_at) < DATE_SUB(NOW(), INTERVAL 3 DAY)"
+            , nativeQuery = true)
     Page<Problem> findDeletedProblems(Pageable pageable);
 }

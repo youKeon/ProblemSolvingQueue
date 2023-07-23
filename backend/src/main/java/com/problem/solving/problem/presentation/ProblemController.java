@@ -3,7 +3,7 @@ package com.problem.solving.problem.presentation;
 import com.problem.solving.problem.application.ProblemService;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
-import com.problem.solving.problem.dto.response.ProblemsResponse;
+import com.problem.solving.problem.dto.response.ProblemListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +30,8 @@ public class ProblemController {
         return ResponseEntity.ok(response);
     }
     @GetMapping()
-    public ResponseEntity<List<ProblemsResponse>> getProblemList() {
-        List<ProblemsResponse> response = problemService.getProblemList();
+    public ResponseEntity<List<ProblemListResponse>> getProblemList() {
+        List<ProblemListResponse> response = problemService.getProblemList();
         return ResponseEntity.ok(response);
     }
 
