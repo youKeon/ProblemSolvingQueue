@@ -5,6 +5,7 @@ import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +31,8 @@ public class ProblemController {
         return ResponseEntity.ok(response);
     }
     @GetMapping()
-    public ResponseEntity<List<ProblemListResponse>> getProblemList() {
-        List<ProblemListResponse> response = problemService.getProblemList();
+    public ResponseEntity<List<ProblemListResponse>> getProblemList(Pageable pageable) {
+        List<ProblemListResponse> response = problemService.getProblemList(pageable);
         return ResponseEntity.ok(response);
     }
 

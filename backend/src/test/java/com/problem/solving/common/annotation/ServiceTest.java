@@ -22,7 +22,7 @@ public abstract class ServiceTest {
                 .id(1L)
                 .url("test")
                 .level(1)
-                .type(Category.DFS)
+                .category(Category.DFS)
                 .build());
     }
 }

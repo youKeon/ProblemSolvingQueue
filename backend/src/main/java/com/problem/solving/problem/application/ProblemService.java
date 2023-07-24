@@ -7,6 +7,8 @@ import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.NoSuchProblemException;
 import com.problem.solving.problem.persistence.ProblemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +26,11 @@ public class ProblemService {
         problemRepository.save(problem);
     }
 
-    public List<ProblemListResponse> getProblemList() {
-        List<Problem> problems = problemRepository.findAllByOrderByCreatedAtAsc();
+    public List<ProblemListResponse> getProblemList(Pageable pageable) {
+        Page<Problem> problemList = problemRepository.findAllProblem(pageable);
+        if (problemList.getNumberOfElements() == 0) throw new NoSuchProblemException("문제가 없습니다.");
 
-        if (problems.size() == 0) throw new NoSuchProblemException("문제가 없습니다.");
-
-        return problems.stream()
+        return problemList.stream()
                 .map(ProblemListResponse::from)
                 .collect(Collectors.toList());
     }

@@ -8,6 +8,8 @@ import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.InvalidProblemException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
@@ -20,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ProblemControllerTest extends ControllerTest {
     private static String baseURL = "/api/v1/problems";
+    private static Pageable pageable = PageRequest.of(0, 3);
     @Test
     @DisplayName("문제가 저장된다")
     public void registerProblem() throws Exception {
@@ -94,7 +97,7 @@ public class ProblemControllerTest extends ControllerTest {
         ProblemListResponse test3 = new ProblemListResponse("test3", 3, Category.DFS, false);
         List<ProblemListResponse> responses = Arrays.asList(test1, test2, test3);
 
-        given(problemService.getProblemList()).willReturn(responses);
+        given(problemService.getProblemList(pageable)).willReturn(responses);
 
         mockMvc.perform(get(baseURL))
                 .andExpect(status().isOk());

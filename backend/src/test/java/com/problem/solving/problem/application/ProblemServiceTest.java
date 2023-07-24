@@ -6,13 +6,20 @@ import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.NoSuchProblemException;
+import com.problem.solving.problem.persistence.ProblemCustomRepository;
+import com.problem.solving.problem.persistence.ProblemCustomRepositoryImpl;
 import com.problem.solving.problem.persistence.ProblemRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -21,6 +28,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,9 +36,10 @@ import static org.mockito.Mockito.*;
 public class ProblemServiceTest {
     @InjectMocks
     private ProblemService problemService;
-
     @Mock
     private ProblemRepository problemRepository;
+
+    private static Pageable pageable = PageRequest.of(0, 3);
 
     @Test
     @DisplayName("문제를 저장한다")
@@ -82,13 +91,15 @@ public class ProblemServiceTest {
 
         List<Problem> problems = Arrays.asList(test1, test2, test3);
 
+        Page<Problem> problemPage = new PageImpl<>(problems, pageable, problems.size());
+
         //when
-        when(problemRepository.findAllByOrderByCreatedAtAsc()).thenReturn(problems);
-        List<ProblemListResponse> result = problemService.getProblemList();
+        when(problemRepository.findAllProblem(pageable)).thenReturn(problemPage);
+        List<ProblemListResponse> result = problemService.getProblemList(pageable);
 
         //then
         assertAll(
-                () -> assertThat(result.get(0).getUrl()).isEqualTo(test1.getUrl()),
+                () -> assertThat(result.size()).isEqualTo(3),
                 () -> assertThat(result.get(0).getCategory()).isEqualTo(test1.getCategory()),
                 () -> assertThat(result.get(0).getLevel()).isEqualTo(test1.getLevel()),
 
@@ -106,10 +117,11 @@ public class ProblemServiceTest {
     @DisplayName("문제 리스트가 없는 경우 예외가 발생한다")
     public void getProblemsEmptyException() throws Exception {
         //when, then
-        assertThatThrownBy(
-                () -> problemService.getProblemList())
-                .isInstanceOf(NoSuchProblemException.class)
-                .hasMessageContaining("문제가 없습니다.");
+        Page<Problem> page = Page.empty();
+
+        when(problemRepository.findAllProblem(pageable)).thenReturn(page);
+
+        assertThrows(NoSuchProblemException.class, () -> problemService.getProblemList(pageable));
     }
 
     @Test
