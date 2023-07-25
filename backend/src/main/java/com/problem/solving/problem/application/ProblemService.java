@@ -2,6 +2,7 @@ package com.problem.solving.problem.application;
 
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
+import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.NoSuchProblemException;
@@ -54,5 +55,13 @@ public class ProblemService {
                 () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
         );
         return ProblemResponse.from(problem);
+    }
+
+    public void update(Long id,
+                       ProblemUpdateRequest request) {
+        Problem problem = problemRepository.findById(id).orElseThrow(
+                () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
+        );
+        problem.update(request);
     }
 }

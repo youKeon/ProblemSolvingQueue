@@ -2,6 +2,7 @@ package com.problem.solving.problem.presentation;
 
 import com.problem.solving.problem.application.ProblemService;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
+import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,13 @@ public class ProblemController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         problemService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable Long id,
+                                       @RequestBody @Valid ProblemUpdateRequest request) {
+        problemService.update(id, request);
         return ResponseEntity.noContent().build();
     }
 }

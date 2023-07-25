@@ -4,6 +4,7 @@ import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.domain.QProblem;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -18,7 +19,6 @@ public class ProblemCustomRepositoryImpl implements ProblemCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
     @Override
     public Page<Problem> findAllProblem(Pageable pageable) {
-        System.out.println("ok");
         List<Problem> result = jpaQueryFactory
                 .selectFrom(problem)
                 .orderBy(problem.createdAt.asc())
