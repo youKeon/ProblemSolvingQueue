@@ -18,11 +18,6 @@ public abstract class ServiceTest {
 
     @BeforeEach
     void setup() {
-        problemRepository.save(Problem.builder()
-                .id(1L)
-                .url("test")
-                .level(1)
-                .category(Category.DFS)
-                .build());
+        problemRepository.save(new Problem("test", 1, Category.DFS, false));
     }
 }

@@ -3,6 +3,7 @@ package com.problem.solving.problem.application;
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
+import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.NoSuchProblemException;
@@ -27,8 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,14 +58,12 @@ public class ProblemServiceTest {
     @DisplayName("문제를 soft delete한다")
     public void deleteProblem() throws Exception {
         //given
-        Problem problem = Problem.builder()
-                .id(1L)
-                .url("test")
-                .build();
+        Long id = 1L;
+        Problem problem = new Problem("test", 3, Category.DFS, false);
 
         //when
-        when(problemRepository.findById(1L)).thenReturn(Optional.ofNullable(problem));
-        problemService.delete(problem.getId());
+        when(problemRepository.findById(id)).thenReturn(Optional.ofNullable(problem));
+        problemService.delete(id);
 
         //then
         assertThat(problem.isDeleted()).isTrue();
@@ -85,9 +83,9 @@ public class ProblemServiceTest {
     @DisplayName("문제 리스트를 조회한다")
     public void getProblems() throws Exception {
         //given
-        Problem test1 = Problem.builder().url("test1").category(Category.DFS).level(1).build();
-        Problem test2 = Problem.builder().url("test2").category(Category.BFS).level(2).build();
-        Problem test3 = Problem.builder().url("test3").category(Category.SORT).level(3).build();
+        Problem test1 = new Problem("test1", 1, Category.DFS, false);
+        Problem test2 = new Problem("test2", 2, Category.BFS, false);
+        Problem test3 = new Problem("test3", 3, Category.SORT, false);
 
         List<Problem> problems = Arrays.asList(test1, test2, test3);
 
@@ -128,12 +126,7 @@ public class ProblemServiceTest {
     @DisplayName("가장 먼저 저장한 문제를 조회한다")
     public void pollProblemTest() throws Exception {
         //given
-        Problem problem = Problem.builder()
-                .id(1L)
-                .url("test")
-                .level(2)
-                .category(Category.DFS)
-                .build();
+        Problem problem = new Problem("test", 3, Category.DFS, false);
 
         //when
         when(problemRepository.findFirstByOrderByCreatedAtAsc()).thenReturn(Optional.ofNullable(problem));
@@ -161,12 +154,7 @@ public class ProblemServiceTest {
     @DisplayName("Id로 문제를 단건 조회한다")
     public void getProblemById() throws Exception {
         //given
-        Problem problem = Problem.builder()
-                .id(1L)
-                .url("test")
-                .category(Category.DFS)
-                .level(3)
-                .build();
+        Problem problem = new Problem("test", 3, Category.DFS, false);
 
         //when
         when(problemRepository.findById(problem.getId())).thenReturn(Optional.ofNullable(problem));
@@ -181,11 +169,54 @@ public class ProblemServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 Id로 단건 조회하면 예외가 발생한다")
+    @DisplayName("존재하지 않는 문제를 단건 조회하면 예외가 발생한다")
     public void getProblemByIdEmptyException() throws Exception {
         //when, then
         assertThatThrownBy(
                 () -> problemService.getProblem(1L))
+                .isInstanceOf(NoSuchProblemException.class)
+                .hasMessageContaining("문제를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("문제를 수정한다")
+    public void updateProblem() throws Exception {
+        //given
+        Long id = 1L;
+        ProblemUpdateRequest request = new ProblemUpdateRequest(
+                "afterUpdate",
+                Category.DFS,
+                true,
+                3);
+
+        Problem problem = new Problem("test", 3, Category.DFS, false);
+
+        //when
+        when(problemRepository.findById(any(Long.class))).thenReturn(Optional.of(problem));
+        problemService.update(id, request);
+
+        //then
+        assertAll(
+                () -> assertEquals(problem.getUrl(), request.getUrl()),
+                () -> assertEquals(problem.getCategory(), request.getCategory()),
+                () -> assertEquals(problem.isSolved(), request.getIsSolved()),
+                () -> assertEquals(problem.getLevel(), request.getLevel())
+        );
+    }
+    @Test
+    @DisplayName("존재하지 않는 문제를 수정하면 예외가 발생한다")
+    public void updateEmptyProblemException() throws Exception {
+        //given
+        Long id = 1L;
+        ProblemUpdateRequest request = new ProblemUpdateRequest(
+                "afterUpdate",
+                Category.DFS,
+                true,
+                3);
+
+        //when, then
+        assertThatThrownBy(
+                () -> problemService.update(id, any(ProblemUpdateRequest.class)))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("문제를 찾을 수 없습니다.");
     }

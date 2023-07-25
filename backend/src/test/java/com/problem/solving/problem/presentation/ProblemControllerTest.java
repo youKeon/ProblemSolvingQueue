@@ -3,6 +3,7 @@ package com.problem.solving.problem.presentation;
 import com.problem.solving.common.annotation.ControllerTest;
 import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
+import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.InvalidProblemException;
@@ -21,8 +22,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class ProblemControllerTest extends ControllerTest {
-    private static String baseURL = "/api/v1/problems";
-    private static Pageable pageable = PageRequest.of(0, 3);
+    private static final String baseURL = "/api/v1/problems";
+    private static final Pageable pageable = PageRequest.of(0, 3);
+
     @Test
     @DisplayName("문제가 저장된다")
     public void registerProblem() throws Exception {
@@ -46,6 +48,22 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         ProblemSaveRequest request = new ProblemSaveRequest(null, Category.DFS, 3);
         willThrow(new InvalidProblemException("공백일 수 없습니다."))
+                .given(problemService)
+                .addProblem(any());
+
+        mockMvc.perform(post(baseURL)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("level이 없으면 예외가 발생한다")
+    public void getLevelEmptyException() throws Exception {
+        //given
+        ProblemSaveRequest request = new ProblemSaveRequest("ps", Category.DFS, null);
+        willThrow(new InvalidProblemException("0이상 5이하입니다."))
                 .given(problemService)
                 .addProblem(any());
 
@@ -138,5 +156,128 @@ public class ProblemControllerTest extends ControllerTest {
         // then
         mockMvc.perform(delete(baseURL + "/{id}", id))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("문제를 수정한다")
+    public void updateProblem() throws Exception {
+        //given
+        Long id = 1L;
+        ProblemUpdateRequest request = new ProblemUpdateRequest("url", Category.DFS, false, 3);
+        doNothing().when(problemService).update(id, request);
+
+        // then
+        mockMvc.perform(put(baseURL + "/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("문제 수정 시 url이 없으면 예외가 발생한다")
+    public void updateUrlEmptyException() throws Exception {
+        //given
+        Long id = 1L;
+        ProblemUpdateRequest request = new ProblemUpdateRequest(null, Category.DFS, false, 3);
+        willThrow(new InvalidProblemException("공백일 수 없습니다."))
+                .given(problemService)
+                        .update(id, request);
+
+        // then
+        mockMvc.perform(put(baseURL + "/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("문제 수정 시 category가 없으면 예외가 발생한다")
+    public void updateCategoryEmptyException() throws Exception {
+        //given
+        Long id = 1L;
+        ProblemUpdateRequest request = new ProblemUpdateRequest("test", null, false, 3);
+        willThrow(new InvalidProblemException("공백일 수 없습니다."))
+                .given(problemService)
+                .update(id, request);
+
+        // then
+        mockMvc.perform(put(baseURL + "/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("문제 수정 시 isSolved가 없으면 예외가 발생한다")
+    public void updateIsSolvedEmptyException() throws Exception {
+        //given
+        Long id = 1L;
+        ProblemUpdateRequest request = new ProblemUpdateRequest("test", Category.DFS, null, 3);
+        willThrow(new InvalidProblemException("공백일 수 없습니다."))
+                .given(problemService)
+                .update(id, request);
+
+        // then
+        mockMvc.perform(put(baseURL + "/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("문제 수정 시 level이 없으면 예외가 발생한다")
+    public void updateLevelEmptyException() throws Exception {
+        //given
+        Long id = 1L;
+        ProblemUpdateRequest request = new ProblemUpdateRequest("test", Category.DFS, true, null);
+        willThrow(new InvalidProblemException("공백일 수 없습니다."))
+                .given(problemService)
+                .update(id, request);
+
+        // then
+        mockMvc.perform(put(baseURL + "/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    @DisplayName("문제 수정 시 level이 1보다 작으면 예외가 발생한다")
+    public void updateLowLevelEmptyException() throws Exception {
+        //given
+        Long id = 1L;
+        ProblemUpdateRequest request = new ProblemUpdateRequest("test", Category.DFS, true, 0);
+        willThrow(new InvalidProblemException("공백일 수 없습니다."))
+                .given(problemService)
+                .update(id, request);
+
+        // then
+        mockMvc.perform(put(baseURL + "/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("문제 수정 시 level이 5보다 크면 예외가 발생한다")
+    public void updateHighLevelEmptyException() throws Exception {
+        //given
+        Long id = 1L;
+        ProblemUpdateRequest request = new ProblemUpdateRequest("test", Category.DFS, true, 6);
+        willThrow(new InvalidProblemException("공백일 수 없습니다."))
+                .given(problemService)
+                .update(id, request);
+
+        // then
+        mockMvc.perform(put(baseURL + "/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
     }
 }
