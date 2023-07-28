@@ -14,7 +14,8 @@ public class ProblemResponse {
     private boolean isSolved;
 
     public static ProblemResponse from(Problem problem) {
-        return new ProblemResponse(problem.getUrl(),
+        return new ProblemResponse(
+                problem.getUrl(),
                 problem.getLevel(),
                 problem.getCategory(),
                 problem.isSolved()

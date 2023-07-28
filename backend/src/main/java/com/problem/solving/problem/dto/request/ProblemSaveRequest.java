@@ -1,5 +1,6 @@
 package com.problem.solving.problem.dto.request;
 
+import com.problem.solving.member.domain.Member;
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.domain.Category;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Getter
 public class ProblemSaveRequest {
+    @NotNull(message = "공백일 수 없습니다.")
+    private Long memberId;
 
     @NotBlank(message = "공백일 수 없습니다.")
     private String url;
@@ -22,7 +25,7 @@ public class ProblemSaveRequest {
     @NotNull(message = "공백일 수 없습니다.")
     private Integer level;
 
-    public Problem toEntity() {
-        return new Problem(url, level, category, false);
+    public Problem toEntity(Member member) {
+        return new Problem(member, url, level, category, false);
     }
 }

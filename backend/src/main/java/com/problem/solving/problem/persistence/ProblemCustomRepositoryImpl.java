@@ -18,9 +18,10 @@ import static com.problem.solving.problem.domain.QProblem.*;
 public class ProblemCustomRepositoryImpl implements ProblemCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
     @Override
-    public Page<Problem> findAllProblem(Pageable pageable) {
+    public Page<Problem> findAllProblem(Long memberId, Pageable pageable) {
         List<Problem> result = jpaQueryFactory
                 .selectFrom(problem)
+                .where(problem.member.id.eq(memberId))
                 .orderBy(problem.createdAt.asc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
@@ -30,5 +31,10 @@ public class ProblemCustomRepositoryImpl implements ProblemCustomRepository {
                 .collect(Collectors.toList());
 
         return PageableExecutionUtils.getPage(problemList, pageable, result::size);
+    }
+
+    @Override
+    public Page<Problem> filterProblems(Pageable pageable) {
+        return null;
     }
 }

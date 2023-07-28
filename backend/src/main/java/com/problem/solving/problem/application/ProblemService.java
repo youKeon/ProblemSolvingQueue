@@ -1,5 +1,9 @@
 package com.problem.solving.problem.application;
 
+import com.problem.solving.member.domain.Member;
+import com.problem.solving.member.exception.NoSuchMemberException;
+import com.problem.solving.member.persistence.MemberRepository;
+import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,19 +26,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProblemService {
     private final ProblemRepository problemRepository;
+    private final MemberRepository memberRepository;
 
     public void addProblem(ProblemSaveRequest request) {
-        Problem problem = request.toEntity();
+        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(
+                () -> new NoSuchMemberException()
+        );
+        Problem problem = request.toEntity(member);
+
         problemRepository.save(problem);
-    }
-
-    public List<ProblemListResponse> getProblemList(Pageable pageable) {
-        Page<Problem> problemList = problemRepository.findAllProblem(pageable);
-        if (problemList.getNumberOfElements() == 0) throw new NoSuchProblemException("문제가 없습니다.");
-
-        return problemList.stream()
-                .map(ProblemListResponse::from)
-                .collect(Collectors.toList());
     }
 
     public void delete(Long id) {
@@ -64,4 +65,15 @@ public class ProblemService {
         );
         problem.update(request);
     }
+
+    public void test() {
+        Member member = new Member("yukeon", "123");
+        memberRepository.save(member);
+        Category[] categories = {Category.DFS, Category.BFS, Category.SORT, Category.STACK, Category.QUEUE};
+        int[] level = {1, 2, 3, 4, 5};
+        for (int i = 0; i < 10000; i++) {
+            problemRepository.save(new Problem(member, "url" + i, level[i % 5], categories[i % 5], false));
+        }
+    }
+
 }

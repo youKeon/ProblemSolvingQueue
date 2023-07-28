@@ -31,11 +31,6 @@ public class ProblemController {
         ProblemResponse response = problemService.pollProblem();
         return ResponseEntity.ok(response);
     }
-    @GetMapping()
-    public ResponseEntity<List<ProblemListResponse>> getProblemList(Pageable pageable) {
-        List<ProblemListResponse> response = problemService.getProblemList(pageable);
-        return ResponseEntity.ok(response);
-    }
 
     @PostMapping
     public ResponseEntity<Void> addProblem(@RequestBody @Valid ProblemSaveRequest request) {
@@ -53,6 +48,12 @@ public class ProblemController {
     public ResponseEntity<Void> update(@PathVariable Long id,
                                        @RequestBody @Valid ProblemUpdateRequest request) {
         problemService.update(id, request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/test")
+    public ResponseEntity<Void> test() {
+        problemService.test();
         return ResponseEntity.noContent().build();
     }
 }

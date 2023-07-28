@@ -1,6 +1,7 @@
 package com.problem.solving.problem.domain;
 
 import com.problem.solving.common.BaseEntity;
+import com.problem.solving.member.domain.Member;
 import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.exception.InvalidProblemException;
 import lombok.Builder;
@@ -31,7 +32,12 @@ public class Problem extends BaseEntity {
 
     private boolean isDeleted = false;
 
-    public Problem(String url,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    public Problem(Member member,
+                   String url,
                    Integer level,
                    Category category,
                    boolean isSolved) {
@@ -39,6 +45,7 @@ public class Problem extends BaseEntity {
         validateProblemUrl(url);
         validateProblemCategory(category.toString());
         validateProblemLevel(level);
+        this.member = member;
         this.url = url;
         this.level = level;
         this.category = category;

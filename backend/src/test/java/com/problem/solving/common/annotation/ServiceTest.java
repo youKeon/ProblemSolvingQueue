@@ -16,8 +16,4 @@ public abstract class ServiceTest {
 
     @Autowired protected ProblemRepository problemRepository;
 
-    @BeforeEach
-    void setup() {
-        problemRepository.save(new Problem("test", 1, Category.DFS, false));
-    }
 }

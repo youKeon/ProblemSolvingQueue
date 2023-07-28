@@ -1,6 +1,6 @@
 package com.problem.solving.problem.exception;
 
-public class InvalidProblemException extends RuntimeException{
+public class InvalidProblemException extends RuntimeException {
     public InvalidProblemException(final String message) {
         super(message);
     }
