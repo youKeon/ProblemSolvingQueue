@@ -50,10 +50,4 @@ public class ProblemController {
         problemService.update(id, request);
         return ResponseEntity.noContent().build();
     }
-
-    @PostMapping("/test")
-    public ResponseEntity<Void> test() {
-        problemService.test();
-        return ResponseEntity.noContent().build();
-    }
 }

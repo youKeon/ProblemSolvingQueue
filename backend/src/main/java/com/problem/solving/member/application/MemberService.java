@@ -1,7 +1,6 @@
 package com.problem.solving.member.application;
 
-import com.problem.solving.member.domain.Member;
-import com.problem.solving.member.dto.request.MemberJoinRequest;
+import com.problem.solving.member.dto.request.MemberSignUpRequest;
 import com.problem.solving.member.exception.DuplicatedEmailException;
 import com.problem.solving.member.persistence.MemberRepository;
 import com.problem.solving.problem.domain.Problem;
@@ -24,18 +23,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ProblemRepository problemRepository;
 
-    public void join(MemberJoinRequest request) {
-        emailDuplicateCheck(request.getEmail());
-        memberRepository.save(request.toEntity());
-    }
-
-    private void emailDuplicateCheck(String email) {
-        if (memberRepository.findByEmail(email) != null) throw new DuplicatedEmailException();
-    }
-
-    public void delete(Long id) {
-        Member member = memberRepository.findById(id).get();
-        System.out.println(member.getEmail());
+    public void signup(MemberSignUpRequest request) {
+        if (!memberRepository.existsMemberByEmail(request.getEmail())) memberRepository.save(request.toEntity());
+        else throw new DuplicatedEmailException();
     }
 
     public List<ProblemListResponse> getProblemList(Long id, Pageable pageable) {

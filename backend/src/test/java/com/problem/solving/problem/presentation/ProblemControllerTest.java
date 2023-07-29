@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ProblemControllerTest extends ControllerTest {
     private static final String baseURL = "/api/v1/problems";
-    private static final Pageable pageable = PageRequest.of(0, 3);
     private Member member;
     @BeforeEach
     void setup() {

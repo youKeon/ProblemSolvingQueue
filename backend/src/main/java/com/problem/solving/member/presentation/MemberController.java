@@ -1,7 +1,7 @@
 package com.problem.solving.member.presentation;
 
 import com.problem.solving.member.application.MemberService;
-import com.problem.solving.member.dto.request.MemberJoinRequest;
+import com.problem.solving.member.dto.request.MemberSignUpRequest;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +17,9 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("/join")
-    public ResponseEntity<Void> join(@RequestBody MemberJoinRequest request) {
-        memberService.join(request);
+    @PostMapping("/signup")
+    public ResponseEntity<Void> signup(@RequestBody @Valid MemberSignUpRequest request) {
+        memberService.signup(request);
         return ResponseEntity.noContent().build();
     }
 
@@ -29,6 +29,4 @@ public class MemberController {
         List<ProblemListResponse> response = memberService.getProblemList(id, pageable);
         return ResponseEntity.ok(response);
     }
-
-
 }

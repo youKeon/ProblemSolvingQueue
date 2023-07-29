@@ -1,8 +1,7 @@
 package com.problem.solving.member.domain;
 
 import com.problem.solving.common.BaseEntity;
-import com.problem.solving.member.exception.InvalidEmailException;
-import com.problem.solving.problem.exception.InvalidProblemException;
+import com.problem.solving.member.exception.InvalidMemberException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,19 +22,21 @@ public class Member extends BaseEntity {
     private String password;
 
     public Member(String email, String password) {
+        validateEmail(email);
+        validatePassword(password);
         this.email = email;
         this.password = password;
     }
 
     private void validateEmail(String email) {
         if (email.length() == 0) {
-            throw new InvalidEmailException("Email은 공백일 수 없습니다.");
+            throw new InvalidMemberException("Email은 공백일 수 없습니다.");
         }
     }
 
     private void validatePassword(String password) {
         if (password.length() == 0) {
-            throw new InvalidEmailException("Password는 공백일 수 없습니다.");
+            throw new InvalidMemberException("Password는 공백일 수 없습니다.");
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.problem.solving.error;
+package com.problem.solving.global.error;
 
 import javax.servlet.http.HttpServletRequest;
 

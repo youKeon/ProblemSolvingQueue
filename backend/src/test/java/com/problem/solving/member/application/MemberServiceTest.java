@@ -1,8 +1,9 @@
 package com.problem.solving.member.application;
 
 import com.problem.solving.member.domain.Member;
+import com.problem.solving.member.dto.request.MemberSignUpRequest;
+import com.problem.solving.member.exception.DuplicatedEmailException;
 import com.problem.solving.member.persistence.MemberRepository;
-import com.problem.solving.problem.application.ProblemService;
 import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
@@ -25,8 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -92,5 +93,32 @@ public class MemberServiceTest {
 
         assertThrows(NoSuchProblemException.class, () -> memberService.getProblemList(memberId, pageable));
     }
+    @Test
+    @DisplayName("이메일과 비밀번호를 받아 회원가입을 한다")
+    void signUpTest() {
+        // given
+        MemberSignUpRequest request = new MemberSignUpRequest("yukeon@gmail.com", "1234");
 
+        // when
+        when(memberRepository.existsMemberByEmail(request.getEmail())).thenReturn(false);
+
+        // then
+        assertDoesNotThrow(() -> memberService.signup(request));
+    }
+
+    @Test
+    @DisplayName("회원가입 시 이메일이 중복되면 예외가 발생한다")
+    void signUpEmailDuplicatedExceptionTest() {
+        // given
+        MemberSignUpRequest request = new MemberSignUpRequest("yukeon@gmail.com", "1234");
+
+        // when
+        when(memberRepository.existsMemberByEmail(request.getEmail())).thenReturn(true);
+
+        // then
+        assertThatThrownBy(
+                () -> memberService.signup(request))
+                .isInstanceOf(DuplicatedEmailException.class)
+                .hasMessageContaining("이미 등록된 이메일입니다.");
+    }
 }

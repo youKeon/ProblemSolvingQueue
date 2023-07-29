@@ -1,4 +1,4 @@
-package com.problem.solving.config;
+package com.problem.solving.global.config;
 
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.persistence.ProblemRepository;

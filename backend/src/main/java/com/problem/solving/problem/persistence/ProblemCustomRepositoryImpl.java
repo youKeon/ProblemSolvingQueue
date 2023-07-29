@@ -32,9 +32,4 @@ public class ProblemCustomRepositoryImpl implements ProblemCustomRepository {
 
         return PageableExecutionUtils.getPage(problemList, pageable, result::size);
     }
-
-    @Override
-    public Page<Problem> filterProblems(Pageable pageable) {
-        return null;
-    }
 }

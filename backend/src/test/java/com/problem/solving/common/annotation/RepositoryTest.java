@@ -1,10 +1,6 @@
 package com.problem.solving.common.annotation;
-import com.problem.solving.config.JpaConfig;
-import com.problem.solving.config.QueryDslConfig;
-import com.problem.solving.problem.domain.Category;
-import com.problem.solving.problem.domain.Problem;
-import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.problem.solving.global.config.JpaConfig;
+import com.problem.solving.global.config.QueryDslConfig;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;

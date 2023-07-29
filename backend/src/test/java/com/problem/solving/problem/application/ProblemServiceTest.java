@@ -1,13 +1,13 @@
 package com.problem.solving.problem.application;
 
 import com.problem.solving.member.domain.Member;
+import com.problem.solving.member.exception.NoSuchMemberException;
 import com.problem.solving.member.persistence.MemberRepository;
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
-import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.NoSuchProblemException;
 import com.problem.solving.problem.persistence.ProblemRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,14 +17,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -72,6 +68,23 @@ public class ProblemServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 유저 정보로 문제를 저장하면 예외가 발생한다")
+    public void registerProblemEmptyMemberException() throws Exception {
+        //given
+        Long memberId = 0L;
+
+        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "problem", Category.DFS, 3);
+
+        //when
+        when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
+
+        //then
+        assertThrows(NoSuchMemberException.class, () -> {
+            problemService.addProblem(request);
+        });
+    }
+
+    @Test
     @DisplayName("문제를 soft delete한다")
     public void deleteProblem() throws Exception {
         //given
@@ -97,7 +110,7 @@ public class ProblemServiceTest {
 
     @Test
     @DisplayName("가장 먼저 저장한 문제를 조회한다")
-    public void pollProblemproblem() throws Exception {
+    public void pollProblem() throws Exception {
         //given
 
         //when

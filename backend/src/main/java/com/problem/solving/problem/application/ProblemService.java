@@ -65,15 +65,4 @@ public class ProblemService {
         );
         problem.update(request);
     }
-
-    public void test() {
-        Member member = new Member("yukeon", "123");
-        memberRepository.save(member);
-        Category[] categories = {Category.DFS, Category.BFS, Category.SORT, Category.STACK, Category.QUEUE};
-        int[] level = {1, 2, 3, 4, 5};
-        for (int i = 0; i < 10000; i++) {
-            problemRepository.save(new Problem(member, "url" + i, level[i % 5], categories[i % 5], false));
-        }
-    }
-
 }

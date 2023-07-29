@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	id 'jacoco'
 	id 'org.springframework.boot' version '2.7.8'
 	id 'io.spring.dependency-management' version '1.1.2'
 
@@ -74,3 +75,66 @@ sourceSets {
 compileQuerydsl{
 	options.annotationProcessorPath = configurations.querydsl
 }
+
+// ==================== Jacoco ==================== //
+
+jacoco {
+	toolVersion = "0.8.7"
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = true
+		csv.required = true
+		html.required = true
+	}
+	finalizedBy 'jacocoTestCoverageVerification'
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"**/Q*",
+					'**/dto/**',
+					'**/exception/**',
+					'**/batch/**',
+					"**/*Application*",
+					"**/global/**"
+			])
+		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = 'CLASS'
+
+			limit {
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				minimum = 0.80
+			}
+
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.70
+			}
+
+			limit {
+				counter = 'METHOD'
+				value = 'COVEREDRATIO'
+				minimum = 0.60
+			}
+			excludes = [
+					'*.*Application',
+					'*.Q*',
+					'*.*Exception',
+					'*.dto.*',
+					'*.batch.*',
+					'*.global.*',
+					'*.BaseEntity',
+			]
+		}
+	}
+}
+

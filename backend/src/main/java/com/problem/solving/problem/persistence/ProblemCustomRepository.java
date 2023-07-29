@@ -7,5 +7,4 @@ import org.springframework.data.domain.Pageable;
 public interface ProblemCustomRepository {
     Page<Problem> findAllProblem(Long memberId, Pageable pageable);
 
-    Page<Problem> filterProblems(Pageable pageable);
 }
