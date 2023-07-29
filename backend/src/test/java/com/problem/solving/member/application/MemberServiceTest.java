@@ -63,8 +63,8 @@ public class MemberServiceTest {
         Page<Problem> problemPage = new PageImpl<>(problems, pageable, problems.size());
 
         //when
-        when(problemRepository.findAllProblem(memberId, pageable)).thenReturn(problemPage);
-        List<ProblemListResponse> result = memberService.getProblemList(memberId, pageable);
+        when(problemRepository.findAllProblem(memberId, 3, Category.DFS, false, pageable)).thenReturn(problemPage);
+        List<ProblemListResponse> result = memberService.getProblemList(memberId, 3, Category.DFS, false, pageable);
 
         //then
         assertAll(
@@ -89,9 +89,9 @@ public class MemberServiceTest {
         Long memberId = 1L;
         Page<Problem> page = Page.empty();
 
-        when(problemRepository.findAllProblem(memberId, pageable)).thenReturn(page);
+        when(problemRepository.findAllProblem(memberId, 3, Category.DFS, false, pageable)).thenReturn(page);
 
-        assertThrows(NoSuchProblemException.class, () -> memberService.getProblemList(memberId, pageable));
+        assertThrows(NoSuchProblemException.class, () -> memberService.getProblemList(memberId, 3, Category.DFS, false, pageable));
     }
     @Test
     @DisplayName("이메일과 비밀번호를 받아 회원가입을 한다")

@@ -40,7 +40,7 @@ public class MemberControllerTest extends ControllerTest {
         ProblemListResponse test3 = new ProblemListResponse("test3", 3, Category.DFS, false);
         List<ProblemListResponse> responses = Arrays.asList(test1, test2, test3);
 
-        given(memberService.getProblemList(memberId, pageable)).willReturn(responses);
+        given(memberService.getProblemList(memberId, 3, Category.DFS, false, pageable)).willReturn(responses);
 
         mockMvc.perform(get(baseURL + "/{id}/problems", memberId)
                         .param("page", String.valueOf(pageable.getPageNumber()))

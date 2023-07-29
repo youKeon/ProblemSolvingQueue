@@ -76,7 +76,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
     @DisplayName("전체 질문을 조회한다(페이징 적용)")
     public void findAllProblem() throws Exception {
         // when
-        Page<Problem> result = problemRepository.findAllProblem(member.getId(), pageable);
+        Page<Problem> result = problemRepository.findAllProblem(member.getId(), 1, Category.DFS, false, pageable);
 
         // then
         List<Problem> problems = result.getContent();
@@ -92,7 +92,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
         clearProblem();
 
         // when
-        Page<Problem> result = problemRepository.findAllProblem(member.getId(), pageable);
+        Page<Problem> result = problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable);
 
         // then
         assertTrue(result.isEmpty());
