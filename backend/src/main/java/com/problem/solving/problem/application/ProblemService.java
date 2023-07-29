@@ -14,11 +14,14 @@ import com.problem.solving.problem.persistence.ProblemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +30,8 @@ import java.util.stream.Collectors;
 public class ProblemService {
     private final ProblemRepository problemRepository;
     private final MemberRepository memberRepository;
+
+
 
     public void addProblem(ProblemSaveRequest request) {
         Member member = memberRepository.findById(request.getMemberId()).orElseThrow(

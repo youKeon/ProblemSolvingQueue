@@ -3,6 +3,7 @@ package com.problem.solving.member.application;
 import com.problem.solving.member.dto.request.MemberSignUpRequest;
 import com.problem.solving.member.exception.DuplicatedEmailException;
 import com.problem.solving.member.persistence.MemberRepository;
+import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.NoSuchProblemException;
@@ -28,8 +29,13 @@ public class MemberService {
         else throw new DuplicatedEmailException();
     }
 
-    public List<ProblemListResponse> getProblemList(Long id, Pageable pageable) {
-        Page<Problem> problemList = problemRepository.findAllProblem(id, pageable);
+    public List<ProblemListResponse> getProblemList(Long id,
+                                                    Integer level,
+                                                    Category category,
+                                                    Boolean isSolved,
+                                                    Pageable pageable) {
+
+        Page<Problem> problemList = problemRepository.findAllProblem(id, level, category, isSolved, pageable);
         if (problemList.getNumberOfElements() == 0) throw new NoSuchProblemException("문제가 없습니다.");
 
         return problemList.stream()

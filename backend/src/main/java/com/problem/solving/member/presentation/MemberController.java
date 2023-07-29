@@ -2,6 +2,7 @@ package com.problem.solving.member.presentation;
 
 import com.problem.solving.member.application.MemberService;
 import com.problem.solving.member.dto.request.MemberSignUpRequest;
+import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +26,11 @@ public class MemberController {
 
     @GetMapping("/{id}/problems")
     public ResponseEntity<List<ProblemListResponse>> getProblemList(@PathVariable Long id,
+                                                                    @RequestParam(required = false) Integer level,
+                                                                    @RequestParam(required = false) Category category,
+                                                                    @RequestParam(required = false) Boolean isSolved,
                                                                     Pageable pageable) {
-        List<ProblemListResponse> response = memberService.getProblemList(id, pageable);
+        List<ProblemListResponse> response = memberService.getProblemList(id, level, category, isSolved, pageable);
         return ResponseEntity.ok(response);
     }
 }
