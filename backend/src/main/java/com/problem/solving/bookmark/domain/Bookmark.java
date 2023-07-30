@@ -23,4 +23,9 @@ public class Bookmark extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "problem_id")
     private Problem problem;
+
+    public Bookmark(Member member, Problem problem) {
+        this.member = member;
+        this.problem = problem;
+    }
 }

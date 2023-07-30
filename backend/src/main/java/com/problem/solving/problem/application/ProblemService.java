@@ -38,7 +38,6 @@ public class ProblemService {
                 () -> new NoSuchMemberException()
         );
         Problem problem = request.toEntity(member);
-
         problemRepository.save(problem);
     }
 

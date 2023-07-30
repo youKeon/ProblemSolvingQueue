@@ -93,6 +93,7 @@ public class MemberServiceTest {
 
         assertThrows(NoSuchProblemException.class, () -> memberService.getProblemList(memberId, 3, Category.DFS, false, pageable));
     }
+
     @Test
     @DisplayName("이메일과 비밀번호를 받아 회원가입을 한다")
     void signUpTest() {
