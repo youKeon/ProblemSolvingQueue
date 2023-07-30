@@ -6,17 +6,13 @@ import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
-import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.InvalidProblemException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
@@ -37,7 +33,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         Long memberId = 1L;
 
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "test", Category.DFS, 3);
+        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title", "test", Category.DFS, 3);
         willDoNothing()
                 .given(problemService)
                 .addProblem(any());
@@ -56,7 +52,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         Long memberId = 1L;
 
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, null, Category.DFS, 3);
+        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title", null, Category.DFS, 3);
         willThrow(new InvalidProblemException("공백일 수 없습니다."))
                 .given(problemService)
                 .addProblem(any());
@@ -74,7 +70,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         Long memberId = 1L;
 
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "ps", Category.DFS, null);
+        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title", "ps", Category.DFS, null);
         willThrow(new InvalidProblemException("0이상 5이하입니다."))
                 .given(problemService)
                 .addProblem(any());
@@ -92,7 +88,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         Long memberId = 1L;
 
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "ps", Category.DFS, 0);
+        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title", "ps", Category.DFS, 0);
         willThrow(new InvalidProblemException("0이상 5이하입니다."))
                 .given(problemService)
                 .addProblem(any());
@@ -109,7 +105,7 @@ public class ProblemControllerTest extends ControllerTest {
     public void getHighLevelException() throws Exception {
         //given
         Long memberId = 1L;
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "ps", Category.DFS, 8);
+        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title", "ps", Category.DFS, 8);
         willThrow(new InvalidProblemException("0이상 5이하입니다."))
                 .given(problemService)
                 .addProblem(any());

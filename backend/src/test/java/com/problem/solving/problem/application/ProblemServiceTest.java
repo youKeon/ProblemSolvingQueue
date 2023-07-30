@@ -44,9 +44,9 @@ public class ProblemServiceTest {
     @BeforeEach
     void setup() {
         member = new Member("yukeon97@gmail.com", "123");
-        problem1 = new Problem(member, "problem1", 3, Category.DFS, false);
-        problem2 = new Problem(member, "problem2", 3, Category.DFS, false);
-        problem3 = new Problem(member, "problem3", 3, Category.DFS, false);
+        problem1 = new Problem(member, "title", "problem1", 3, Category.DFS, false);
+        problem2 = new Problem(member, "title", "problem2", 3, Category.DFS, false);
+        problem3 = new Problem(member, "title", "problem3", 3, Category.DFS, false);
 
     }
 
@@ -57,7 +57,7 @@ public class ProblemServiceTest {
         //given
         Long memberId = 1L;
 
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "problem", Category.DFS, 3);
+        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title","problem", Category.DFS, 3);
 
         //when
         when(memberRepository.findById(memberId)).thenReturn(Optional.ofNullable(member));
@@ -73,7 +73,7 @@ public class ProblemServiceTest {
         //given
         Long memberId = 0L;
 
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "problem", Category.DFS, 3);
+        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title","problem", Category.DFS, 3);
 
         //when
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());

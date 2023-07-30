@@ -47,9 +47,9 @@ public class MemberServiceTest {
     @BeforeEach
     void setup() {
         member = new Member("yukeon97@gmail.com", "123");
-        problem1 = new Problem(member, "problem1", 3, Category.DFS, false);
-        problem2 = new Problem(member, "problem2", 3, Category.DFS, false);
-        problem3 = new Problem(member, "problem3", 3, Category.DFS, false);
+        problem1 = new Problem(member, "title", "problem1", 3, Category.DFS, false);
+        problem2 = new Problem(member, "title", "problem2", 3, Category.DFS, false);
+        problem3 = new Problem(member, "title", "problem3", 3, Category.DFS, false);
 
     }
 

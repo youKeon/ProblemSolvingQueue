@@ -22,6 +22,9 @@ public class Problem extends BaseEntity {
 
     @Column(nullable = false)
     private String url;
+
+    @Column(nullable = false)
+    private String title;
     @Column(nullable = false)
     private Integer level;
     @Enumerated(EnumType.STRING)
@@ -37,6 +40,7 @@ public class Problem extends BaseEntity {
     private Member member;
 
     public Problem(Member member,
+                   String title,
                    String url,
                    Integer level,
                    Category category,
@@ -45,6 +49,7 @@ public class Problem extends BaseEntity {
         validateProblemUrl(url);
         validateProblemCategory(category.toString());
         validateProblemLevel(level);
+        this.title = title;
         this.member = member;
         this.url = url;
         this.level = level;

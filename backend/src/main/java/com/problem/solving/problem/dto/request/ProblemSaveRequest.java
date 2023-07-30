@@ -19,6 +19,8 @@ public class ProblemSaveRequest {
 
     @NotBlank(message = "공백일 수 없습니다.")
     private String url;
+    @NotBlank(message = "공백일 수 없습니다.")
+    private String title;
     @NotNull(message = "공백일 수 없습니다.")
     private Category category;
     @Min(1) @Max(5)
@@ -26,6 +28,6 @@ public class ProblemSaveRequest {
     private Integer level;
 
     public Problem toEntity(Member member) {
-        return new Problem(member, url, level, category, false);
+        return new Problem(member, title, url, level, category, false);
     }
 }

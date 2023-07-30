@@ -24,6 +24,7 @@ public class MemberTest {
                 .isInstanceOf(InvalidMemberException.class);
     }
 
+
     @Test
     @DisplayName("유저 생성 시 password가 공백이면 예외가 발생한다")
     public void createMemberEmptyPasswordException() throws Exception {

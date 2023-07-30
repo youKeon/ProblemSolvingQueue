@@ -35,6 +35,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
         problem1 = problemRepository.save(
                 new Problem(
                         this.member,
+                        "title",
                         "test",
                         1,
                         Category.DFS,
@@ -43,6 +44,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
         problem2 = problemRepository.save(
                 new Problem(
                         this.member,
+                        "title",
                         "test",
                         1,
                         Category.DFS,
