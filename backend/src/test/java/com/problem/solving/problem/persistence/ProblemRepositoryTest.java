@@ -21,8 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProblemRepositoryTest extends RepositoryTest {
-    @Autowired ProblemRepository problemRepository;
-    @Autowired MemberRepository memberRepository;
+
     private static final Pageable pageable = PageRequest.of(0, 2);
     
     private Problem problem1;
