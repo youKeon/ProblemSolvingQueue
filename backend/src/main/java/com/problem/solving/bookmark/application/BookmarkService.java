@@ -2,6 +2,7 @@ package com.problem.solving.bookmark.application;
 
 import com.problem.solving.bookmark.domain.Bookmark;
 import com.problem.solving.bookmark.dto.request.BookmarkSaveRequest;
+import com.problem.solving.bookmark.exception.DuplicatedBookmarkException;
 import com.problem.solving.bookmark.exception.NoSuchBookmarkException;
 import com.problem.solving.bookmark.persistence.BookmarkRepository;
 import com.problem.solving.member.domain.Member;
@@ -34,6 +35,10 @@ public class BookmarkService {
         Problem problem = problemRepository.findById(request.getProblemId()).orElseThrow(
                 () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
         );
+
+        if (bookmarkRepository.existsBookmarkByMember_IdAndProblem_Id(member.getId(), problem.getId()))
+            throw new DuplicatedBookmarkException("이미 존재하는 북마크입니다.");
+
         bookmarkRepository.save(request.toEntity(member, problem));
     }
 

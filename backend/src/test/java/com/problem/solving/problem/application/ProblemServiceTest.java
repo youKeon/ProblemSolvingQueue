@@ -10,6 +10,7 @@ import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.exception.InvalidProblemException;
 import com.problem.solving.problem.exception.NoSuchProblemException;
+import com.problem.solving.problem.exception.NotDeletedProblemException;
 import com.problem.solving.problem.persistence.ProblemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -234,7 +235,7 @@ public class ProblemServiceTest {
 
         assertThatThrownBy(
                 () -> problemService.recovery(problem1.getId()))
-                .isInstanceOf(InvalidProblemException.class)
+                .isInstanceOf(NotDeletedProblemException.class)
                 .hasMessageContaining("삭제되지 않은 문제입니다.");
     }
 }

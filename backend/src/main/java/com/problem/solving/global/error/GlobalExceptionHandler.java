@@ -2,8 +2,13 @@ package com.problem.solving.global.error;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.problem.solving.bookmark.exception.DuplicatedBookmarkException;
+import com.problem.solving.bookmark.exception.NoSuchBookmarkException;
+import com.problem.solving.member.exception.InvalidMemberException;
+import com.problem.solving.member.exception.NoSuchMemberException;
 import com.problem.solving.problem.exception.InvalidProblemException;
 import com.problem.solving.problem.exception.NoSuchProblemException;
+import com.problem.solving.problem.exception.NotDeletedProblemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -23,11 +28,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private static final String INVALID_DTO_FIELD_ERROR_MESSAGE_FORMAT = "%s 필드는 %s (전달된 값: %s)";
 
-    @ExceptionHandler(InvalidProblemException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidData(final RuntimeException e) {
-        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
-        return ResponseEntity.badRequest().body(errorResponse);
-    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -45,12 +45,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse("잘못된 데이터 타입입니다.");
         return ResponseEntity.badRequest().body(errorResponse);
     }
+
     @ExceptionHandler({
-            NoSuchProblemException.class
+            NoSuchProblemException.class,
+            NoSuchBookmarkException.class,
+            NoSuchMemberException.class
     })
     public ResponseEntity<ErrorResponse> handleNoSuchData(final RuntimeException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler({
+            InvalidProblemException.class,
+            InvalidMemberException.class,
+            DuplicatedBookmarkException.class,
+            NotDeletedProblemException.class,
+    })
+    public ResponseEntity<ErrorResponse> handleInvalidData(final RuntimeException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)

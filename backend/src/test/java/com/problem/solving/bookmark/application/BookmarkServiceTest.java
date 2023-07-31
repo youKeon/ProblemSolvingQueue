@@ -2,6 +2,7 @@ package com.problem.solving.bookmark.application;
 
 import com.problem.solving.bookmark.domain.Bookmark;
 import com.problem.solving.bookmark.dto.request.BookmarkSaveRequest;
+import com.problem.solving.bookmark.exception.DuplicatedBookmarkException;
 import com.problem.solving.bookmark.exception.NoSuchBookmarkException;
 import com.problem.solving.bookmark.persistence.BookmarkRepository;
 import com.problem.solving.member.domain.Member;
@@ -66,6 +67,23 @@ public class BookmarkServiceTest {
 
         // then
         assertDoesNotThrow(() -> bookmarkService.register(request));
+    }
+
+    @Test
+    @DisplayName("동일한 문제로 북마크를 등록하면 예외가 발생한다")
+    void registerDuplicatedBookmarkTest() {
+        // given
+        BookmarkSaveRequest request = new BookmarkSaveRequest(member.getId(), problem1.getId());
+
+        // when
+        when(problemRepository.findById(request.getProblemId())).thenReturn(Optional.ofNullable(problem1));
+        when(memberRepository.findById(request.getMemberId())).thenReturn(Optional.ofNullable(member));
+        when(bookmarkRepository.existsBookmarkByMember_IdAndProblem_Id(request.getMemberId(), problem1.getId()))
+                .thenReturn(true);
+
+
+        // then
+        assertThrows(DuplicatedBookmarkException.class, () -> bookmarkService.register(request));
     }
 
     @Test
