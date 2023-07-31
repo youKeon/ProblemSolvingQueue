@@ -42,6 +42,3 @@ jobs:
         if: always()
         with:
           name: PSQ Tests
-          path: "**/test-results.trx"
-          reporter: PSQ-trx
-          fail-on-error: true
