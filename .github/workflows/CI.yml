@@ -8,6 +8,10 @@ on:
 
 jobs:
   backend-test:
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
     runs-on: ubuntu-latest
 
     steps:
