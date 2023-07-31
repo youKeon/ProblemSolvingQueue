@@ -37,8 +37,10 @@ jobs:
           GPT_TOKEN: ${{ secrets.GPT_TOKEN }}
           JOB_KEY: ${{ secrets.JOB_KEY }}
 
-      - name: Backend Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: ${{ always() }}
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
         with:
-          files: backend/build/test-results/**/*.xml
+          name: PSQ Tests Result
+          path: backend/build/test-result/**/*.xml
+          reporter: jest-junit
