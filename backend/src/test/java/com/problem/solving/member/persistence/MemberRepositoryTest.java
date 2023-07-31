@@ -37,6 +37,7 @@ public class MemberRepositoryTest extends RepositoryTest {
                         Category.DFS,
                         false));
     }
+
     @Test
     @DisplayName("이메일로 사용자를 찾는다")
     public void findByEmailTest() {

@@ -8,6 +8,7 @@ import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
+import com.problem.solving.problem.exception.InvalidProblemException;
 import com.problem.solving.problem.exception.NoSuchProblemException;
 import com.problem.solving.problem.persistence.ProblemRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -196,5 +197,44 @@ public class ProblemServiceTest {
                 () -> problemService.update(id, any(ProblemUpdateRequest.class)))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("문제를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("(논리적)삭제된 문제를 되돌린다")
+    public void recoveryProblem() throws Exception {
+        //given
+        problem1.softDelete();
+
+        //when
+        when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
+        problemService.recovery(problem1.getId());
+
+        //then
+        assertThat(problem1.isDeleted()).isFalse();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 문제를 되돌리면 예외가 발생한다")
+    public void recoveryNotExistProblemException() throws Exception {
+        //given
+        Long problemId = 0L;
+
+        //when, then
+        assertThatThrownBy(
+                () -> problemService.recovery(problemId))
+                .isInstanceOf(NoSuchProblemException.class)
+                .hasMessageContaining("문제를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("isDeleted가 false(삭제X)인 문제를 되돌리면 예외가 발생한다")
+    public void recoveryNotDeletedProblemException() throws Exception {
+        //when, then
+        when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
+
+        assertThatThrownBy(
+                () -> problemService.recovery(problem1.getId()))
+                .isInstanceOf(InvalidProblemException.class)
+                .hasMessageContaining("삭제되지 않은 문제입니다.");
     }
 }

@@ -232,4 +232,15 @@ public class ProblemControllerTest extends ControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @DisplayName("(논리적)삭제된 문제를 되돌린다")
+    public void recoveryProblem() throws Exception {
+        //given
+        doNothing().when(problemService).recovery(problemId);
+
+        // then
+        mockMvc.perform(put(baseURL + "/{id}/recovery", problemId))
+                .andExpect(status().isNoContent());
+    }
 }

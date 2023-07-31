@@ -9,6 +9,7 @@ import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
+import com.problem.solving.problem.exception.InvalidProblemException;
 import com.problem.solving.problem.exception.NoSuchProblemException;
 import com.problem.solving.problem.persistence.ProblemRepository;
 import lombok.RequiredArgsConstructor;
@@ -68,5 +69,13 @@ public class ProblemService {
                 () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
         );
         problem.update(request);
+    }
+
+    public void recovery(Long id) {
+        Problem problem = problemRepository.findById(id).orElseThrow(
+                () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
+        );
+        if (!problem.isDeleted()) throw new InvalidProblemException("삭제되지 않은 문제입니다.");
+        problem.recovery();
     }
 }

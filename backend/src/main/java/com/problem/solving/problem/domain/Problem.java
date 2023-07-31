@@ -91,4 +91,8 @@ public class Problem extends BaseEntity {
             throw new InvalidProblemException("존재하지 않는 문제 유형입니다.");
         }
     }
+
+    public void recovery() {
+        isDeleted = false;
+    }
 }

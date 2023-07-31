@@ -44,6 +44,12 @@ public class ProblemController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/recovery")
+    public ResponseEntity<Void> recovery(@PathVariable Long id) {
+        problemService.recovery(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id,
                                        @RequestBody @Valid ProblemUpdateRequest request) {
