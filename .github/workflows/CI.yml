@@ -42,5 +42,5 @@ jobs:
         if: success() || failure()
         with:
           name: PSQ Tests Result
-          path: backend/build/test-result/**/*.xml
+          path: reports/PSQ-*.xml
           reporter: jest-junit
