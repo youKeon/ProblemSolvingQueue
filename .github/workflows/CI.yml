@@ -40,4 +40,4 @@ jobs:
           name: PSQ Tests
           path: "backend/build/test-results/**/*.xml"
           reporter: java-junit
-          github_token: ${{ secrets.TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
