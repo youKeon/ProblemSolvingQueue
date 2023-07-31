@@ -39,3 +39,4 @@ jobs:
         with:
           name: PSQ Tests
           path: "backend/build/test-results/**/*.xml"
+          reporter: junit
