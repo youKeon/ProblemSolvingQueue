@@ -3,6 +3,8 @@ name: CI
 on:
   push:
     branches: ["dev"]
+  pull_request:
+    branches: ["dev"]
 
 jobs:
   backend-test:
@@ -37,5 +39,4 @@ jobs:
         uses: mikepenz/action-junit-report@v3
         if: success() || failure()
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           report_paths: 'backend/build/test-results/test/TEST-*.xml'
