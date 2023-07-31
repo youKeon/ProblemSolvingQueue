@@ -35,7 +35,7 @@ jobs:
 
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: always()
+        if: github.event_name == 'push'
         with:
           name: PSQ Tests
           path: "backend/build/test-results/**/*.xml"
