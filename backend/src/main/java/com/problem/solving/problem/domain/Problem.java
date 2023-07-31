@@ -4,13 +4,10 @@ import com.problem.solving.common.BaseEntity;
 import com.problem.solving.member.domain.Member;
 import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.exception.InvalidProblemException;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.relational.core.sql.In;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @NoArgsConstructor

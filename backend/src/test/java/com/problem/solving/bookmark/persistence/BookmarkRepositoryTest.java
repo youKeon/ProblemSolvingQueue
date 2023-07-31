@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BookmarkRepositoryTest extends RepositoryTest {
@@ -62,5 +63,35 @@ public class BookmarkRepositoryTest extends RepositoryTest {
                 () -> assertThat(bookmarkList.get(1).getMember()).isEqualTo(member)
 
         );
+    }
+
+    @Test
+    @DisplayName("사용자가 북마크로 등록한 문제가 없으면 빈 리스트를 반환한다")
+    public void getEmptyBookmarkedProblemList() throws Exception {
+        // given
+        Long newMemberId = 0L;
+        List<Bookmark> bookmarkList = bookmarkRepository.findBookmarkByFetchJoin(newMemberId);
+
+        // when, then
+        assertThat(bookmarkList.size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 북마크를 조회하면 true를 반환한다")
+    public void getExistBookmark() throws Exception {
+        // when, then
+        boolean actual = bookmarkRepository.existsBookmarkByMember_IdAndProblem_Id(member.getId(), problem1.getId());
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 북마크를 조회하면 false를 반환한다")
+    public void getNotExistBookmark() throws Exception {
+        // when, then
+        Long newMemberId = 0L;
+        Long newProblemId = 0L;
+
+        boolean actual = bookmarkRepository.existsBookmarkByMember_IdAndProblem_Id(newMemberId, newProblemId);
+        assertThat(actual).isFalse();
     }
 }
