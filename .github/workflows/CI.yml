@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches: ["dev"]
-  
+
   pull_request:
     branches: ["dev"]
 
@@ -43,3 +43,4 @@ jobs:
           name: PSQ Tests
           path: "backend/build/test-results/**/*.xml"
           reporter: java-junit
+          token: ${{ secrets.GITHUB_TOKEN }}
