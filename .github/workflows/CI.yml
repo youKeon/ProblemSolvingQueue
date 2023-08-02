@@ -43,6 +43,6 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: PSQ Tests
+          name: Tests Result
           path: "backend/build/test-results/**/*.xml"
           reporter: java-junit
