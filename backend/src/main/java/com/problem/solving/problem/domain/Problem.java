@@ -44,7 +44,6 @@ public class Problem extends BaseEntity {
                    boolean isSolved) {
 
         validateProblemUrl(url);
-        validateProblemCategory(category.toString());
         validateProblemLevel(level);
         this.title = title;
         this.member = member;
@@ -60,7 +59,6 @@ public class Problem extends BaseEntity {
 
     public void update(ProblemUpdateRequest request) {
         validateProblemUrl(request.getUrl());
-        validateProblemCategory(request.getCategory().toString());
         validateProblemLevel(request.getLevel());
 
         this.url = request.getUrl();
@@ -78,14 +76,6 @@ public class Problem extends BaseEntity {
     private void validateProblemLevel(Integer level) {
         if (level == null || level <= 0 || level >= 6) {
             throw new InvalidProblemException("난이도는 1 이상 5 이하입니다.");
-        }
-    }
-
-    private void validateProblemCategory(String category) {
-        try {
-            Category.valueOf(category.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidProblemException("존재하지 않는 문제 유형입니다.");
         }
     }
 

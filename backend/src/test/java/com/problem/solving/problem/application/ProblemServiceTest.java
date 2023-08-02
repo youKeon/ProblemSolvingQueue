@@ -8,7 +8,6 @@ import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemResponse;
-import com.problem.solving.problem.exception.InvalidProblemException;
 import com.problem.solving.problem.exception.NoSuchProblemException;
 import com.problem.solving.problem.exception.NotDeletedProblemException;
 import com.problem.solving.problem.persistence.ProblemRepository;
