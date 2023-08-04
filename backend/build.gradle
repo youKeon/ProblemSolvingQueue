@@ -50,6 +50,11 @@ dependencies {
 	implementation "com.querydsl:querydsl-jpa:5.0.0"
 	implementation "com.querydsl:querydsl-apt:5.0.0"
 
+	// Slack
+	implementation("com.slack.api:bolt:1.18.0")
+	implementation("com.slack.api:bolt-servlet:1.18.0")
+	implementation("com.slack.api:bolt-jetty:1.18.0")
+
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.batch:spring-batch-test'
