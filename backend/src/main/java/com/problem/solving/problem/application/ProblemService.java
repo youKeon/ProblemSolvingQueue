@@ -45,21 +45,21 @@ public class ProblemService {
 
     public void delete(Long id) {
         Problem problem = problemRepository.findById(id).orElseThrow(
-                () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
+                () -> new NoSuchProblemException()
         );
         problem.softDelete();
     }
 
     public ProblemResponse getProblem(Long id) {
         Problem problem = problemRepository.findById(id).orElseThrow(
-                () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
+                () -> new NoSuchProblemException()
         );
         return ProblemResponse.from(problem);
     }
 
     public ProblemResponse pollProblem() {
         Problem problem = problemRepository.findFirstByOrderByCreatedAtAsc().orElseThrow(
-                () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
+                () -> new NoSuchProblemException()
         );
         return ProblemResponse.from(problem);
     }
@@ -67,16 +67,16 @@ public class ProblemService {
     public void update(Long id,
                        ProblemUpdateRequest request) {
         Problem problem = problemRepository.findById(id).orElseThrow(
-                () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
+                () -> new NoSuchProblemException()
         );
         problem.update(request);
     }
 
     public void recovery(Long id) {
         Problem problem = problemRepository.findById(id).orElseThrow(
-                () -> new NoSuchProblemException("문제를 찾을 수 없습니다.")
+                () -> new NoSuchProblemException()
         );
-        if (!problem.isDeleted()) throw new NotDeletedProblemException("삭제되지 않은 문제입니다.");
+        if (!problem.isDeleted()) throw new NotDeletedProblemException();
         problem.recovery();
     }
 }

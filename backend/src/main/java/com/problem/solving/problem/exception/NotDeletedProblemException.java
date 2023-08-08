@@ -6,6 +6,6 @@ public class NotDeletedProblemException extends RuntimeException{
     }
 
     public NotDeletedProblemException() {
-        this("삭재되지 않은 문제입니다.");
+        this("삭제되지 않은 문제입니다.");
     }
 }
