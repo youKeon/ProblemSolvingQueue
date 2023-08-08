@@ -36,7 +36,7 @@ public class MemberService {
                                                     Pageable pageable) {
 
         Page<Problem> problemList = problemRepository.findAllProblem(id, level, category, isSolved, pageable);
-        if (problemList.getNumberOfElements() == 0) throw new NoSuchProblemException("문제가 없습니다.");
+        if (problemList.getNumberOfElements() == 0) throw new NoSuchProblemException();
 
         return problemList.stream()
                 .map(ProblemListResponse::from)

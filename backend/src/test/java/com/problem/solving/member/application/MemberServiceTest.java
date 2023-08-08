@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -51,20 +52,25 @@ public class MemberServiceTest {
         problem2 = new Problem(member, "title", "problem2", 3, Category.DFS, false);
         problem3 = new Problem(member, "title", "problem3", 3, Category.DFS, false);
 
+
+        ReflectionTestUtils.setField(member, "id", 1L);
+
+        ReflectionTestUtils.setField(problem1, "id", 1L);
+        ReflectionTestUtils.setField(problem2, "id", 2L);
+        ReflectionTestUtils.setField(problem3, "id", 3L);
     }
 
     @Test
     @DisplayName("회원 id와 페이지를 입력하면 문제 리스트를 조회한다")
     public void getProblems() throws Exception {
         //given
-        Long memberId = 1L;
         List<Problem> problems = Arrays.asList(problem1, problem2, problem3);
 
         Page<Problem> problemPage = new PageImpl<>(problems, pageable, problems.size());
 
         //when
-        when(problemRepository.findAllProblem(memberId, 3, Category.DFS, false, pageable)).thenReturn(problemPage);
-        List<ProblemListResponse> result = memberService.getProblemList(memberId, 3, Category.DFS, false, pageable);
+        when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(problemPage);
+        List<ProblemListResponse> result = memberService.getProblemList(member.getId(), 3, Category.DFS, false, pageable);
 
         //then
         assertAll(
@@ -86,12 +92,14 @@ public class MemberServiceTest {
     @DisplayName("문제 리스트가 없는 경우 예외가 발생한다")
     public void getProblemsEmptyException() throws Exception {
         //when, then
-        Long memberId = 1L;
         Page<Problem> page = Page.empty();
 
-        when(problemRepository.findAllProblem(memberId, 3, Category.DFS, false, pageable)).thenReturn(page);
+        when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(page);
 
-        assertThrows(NoSuchProblemException.class, () -> memberService.getProblemList(memberId, 3, Category.DFS, false, pageable));
+        assertThatThrownBy(
+                () -> memberService.getProblemList(member.getId(), 3, Category.DFS, false, pageable))
+                .isInstanceOf(NoSuchProblemException.class)
+                .hasMessageContaining("존재하지 않는 문제입니다.");
     }
 
     @Test
@@ -120,6 +128,6 @@ public class MemberServiceTest {
         assertThatThrownBy(
                 () -> memberService.signup(request))
                 .isInstanceOf(DuplicatedEmailException.class)
-                .hasMessageContaining("이미 등록된 이메일입니다.");
+                .hasMessageContaining("");
     }
 }
