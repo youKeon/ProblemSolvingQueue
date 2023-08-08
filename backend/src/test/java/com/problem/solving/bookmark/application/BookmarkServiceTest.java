@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -47,11 +48,20 @@ public class BookmarkServiceTest {
     @BeforeEach
     void setup() {
         bookmark = new Bookmark(member, problem1);
+
         member = new Member("yukeon97@gmail.com", "123");
+
         problem1 = new Problem(member, "title", "problem1", 3, Category.DFS, false);
         problem2 = new Problem(member, "title", "problem2", 3, Category.BFS, false);
         problem3 = new Problem(member, "title", "problem3", 3, Category.SORT, false);
 
+        ReflectionTestUtils.setField(bookmark, "id", 1L);
+
+        ReflectionTestUtils.setField(member, "id", 1L);
+
+        ReflectionTestUtils.setField(problem1, "id", 1L);
+        ReflectionTestUtils.setField(problem2, "id", 2L);
+        ReflectionTestUtils.setField(problem3, "id", 3L);
     }
 
     @Test
@@ -83,7 +93,10 @@ public class BookmarkServiceTest {
 
 
         // then
-        assertThrows(DuplicatedBookmarkException.class, () -> bookmarkService.register(request));
+        assertThatThrownBy(
+                () -> bookmarkService.register(request))
+                .isInstanceOf(DuplicatedBookmarkException.class)
+                .hasMessageContaining("이미 존재하는 북마크입니다.");
     }
 
     @Test
@@ -100,35 +113,44 @@ public class BookmarkServiceTest {
     @DisplayName("존재하지 않는 북마크 id를 받아 북마크를 삭제하면 예외가 발생한다")
     void deleteBookmarkInvalidIdTest() {
         // given
-        Long bookmarkId = 0L;
+        Long 존재하지_않는_북마크_ID = 0L;
 
         // then
-        assertThrows(NoSuchBookmarkException.class, () -> bookmarkService.delete(bookmarkId));
+        assertThatThrownBy(
+                () -> bookmarkService.delete(존재하지_않는_북마크_ID))
+                .isInstanceOf(NoSuchBookmarkException.class)
+                .hasMessageContaining("존재하지 않는 북마크입니다.");
     }
 
     @Test
     @DisplayName("존재하지 않는 사용자 id로 북마크를 등록하면 예외가 발생한다")
     void registerBookmarkInvalidMemberIdExceptionTest() {
         // given
-        Long memberId = 0L;
-        BookmarkSaveRequest request = new BookmarkSaveRequest(memberId, problem1.getId());
+        Long 존재하지_않는_사용자_ID = 0L;
+        BookmarkSaveRequest request = new BookmarkSaveRequest(존재하지_않는_사용자_ID, problem1.getId());
 
         // then
-        assertThrows(NoSuchMemberException.class, () -> bookmarkService.register(request));
+        assertThatThrownBy(
+                () -> bookmarkService.register(request))
+                .isInstanceOf(NoSuchMemberException.class)
+                .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
 
     @Test
     @DisplayName("존재하지 않는 문제 id로 북마크를 등록하면 예외가 발생한다")
     void registerBookmarkInvalidProblemIdExceptionTest() {
         // given
-        Long problemId = 0L;
-        BookmarkSaveRequest request = new BookmarkSaveRequest(member.getId(), problemId);
+        Long 존재하지_않는_문제_ID = 0L;
+        BookmarkSaveRequest request = new BookmarkSaveRequest(member.getId(), 존재하지_않는_문제_ID);
 
         // when
         when(memberRepository.findById(request.getMemberId())).thenReturn(Optional.ofNullable(member));
 
         // then
-        assertThrows(NoSuchProblemException.class, () -> bookmarkService.register(request));
+        assertThatThrownBy(
+                () -> bookmarkService.register(request))
+                .isInstanceOf(NoSuchProblemException.class)
+                .hasMessageContaining("존재하지 않는 문제입니다.");
     }
 
     @Test
@@ -174,6 +196,6 @@ public class BookmarkServiceTest {
         assertThatThrownBy(
                 () -> bookmarkService.getBookmarkList(memberId))
                 .isInstanceOf(NoSuchBookmarkException.class)
-                .hasMessageContaining("북마크를 찾을 수 없습니다.");
+                .hasMessageContaining("존재하지 않는 북마크입니다.");
     }
 }
