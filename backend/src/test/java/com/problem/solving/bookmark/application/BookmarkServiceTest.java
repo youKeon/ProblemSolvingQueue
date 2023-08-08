@@ -156,18 +156,18 @@ public class BookmarkServiceTest {
     @Test
     @DisplayName("사용자 id를 입력받아 북마크로 등록된 문제를 조회한다")
     public void getBookmarkedProblemList() throws Exception {
-        //given
+        // given
         List<Bookmark> bookmarkList = new ArrayList<>(Arrays.asList(
                 new Bookmark(member, problem1),
                 new Bookmark(member, problem2),
                 new Bookmark(member, problem3)
         ));
 
-        //when
+        // when
         when(bookmarkRepository.findBookmarkByFetchJoin(member.getId())).thenReturn(bookmarkList);
         List<ProblemListResponse> actual = bookmarkService.getBookmarkList(member.getId());
 
-        //then
+        // then
         assertAll(
                 () -> assertThat(actual.get(0).getLevel()).isEqualTo(problem1.getLevel()),
                 () -> assertThat(actual.get(0).getUrl()).isEqualTo(problem1.getUrl()),

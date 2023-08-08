@@ -34,13 +34,15 @@ public class BookmarkControllerTest extends ControllerTest {
     @Test
     @DisplayName("사용자 id와 문제 id를 받아 북마크에 등록한다")
     public void registerBookmark() throws Exception {
-        //given
+        // given
         BookmarkSaveRequest request = new BookmarkSaveRequest(memberId, problemId);
 
+        // when
         willDoNothing()
                 .given(bookmarkService)
                         .register(request);
 
+        // then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -51,9 +53,10 @@ public class BookmarkControllerTest extends ControllerTest {
     @Test
     @DisplayName("북마크에 등록 시 사용자 id가 null인 경우 예외가 발생한다")
     public void registerBookmarkMemberIdNullExceptionTest() throws Exception {
-        //given
+        // given
         BookmarkSaveRequest request = new BookmarkSaveRequest(null, problemId);
 
+        // when, then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -64,9 +67,10 @@ public class BookmarkControllerTest extends ControllerTest {
     @Test
     @DisplayName("북마크에 등록 시 문제 id가 null인 경우 예외가 발생한다")
     public void registerBookmarkProblemIdNullExceptionTest() throws Exception {
-        //given
+        // given
         BookmarkSaveRequest request = new BookmarkSaveRequest(memberId, null);
 
+        // when, then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,7 +81,7 @@ public class BookmarkControllerTest extends ControllerTest {
     @Test
     @DisplayName("북마크 id를 받아 북마크를 삭제한다")
     public void deleteBookmark() throws Exception {
-        //given
+        // given
         willDoNothing()
                 .given(bookmarkService)
                 .delete(bookmarkId);
@@ -90,7 +94,7 @@ public class BookmarkControllerTest extends ControllerTest {
     @Test
     @DisplayName("사용자 id를 받아 북마크로 등록한 문제를 조회한다")
     public void getBookmarkedProblemListTest() throws Exception {
-        //given
+        // given
         List<ProblemListResponse> responses = new ArrayList<>(Arrays.asList(
                 new ProblemListResponse("url1", 1, DFS, false),
                 new ProblemListResponse("url2", 2, BFS, false)

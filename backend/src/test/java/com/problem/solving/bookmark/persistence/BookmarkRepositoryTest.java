@@ -85,11 +85,14 @@ public class BookmarkRepositoryTest extends RepositoryTest {
     @Test
     @DisplayName("존재하지 않는 북마크를 조회하면 false를 반환한다")
     public void getNotExistBookmark() throws Exception {
-        // when, then
+        // given
         Long newMemberId = 0L;
         Long newProblemId = 0L;
 
+        // when
         boolean actual = bookmarkRepository.existsBookmarkByMember_IdAndProblem_Id(newMemberId, newProblemId);
+
+        // then
         assertThat(actual).isFalse();
     }
 }
