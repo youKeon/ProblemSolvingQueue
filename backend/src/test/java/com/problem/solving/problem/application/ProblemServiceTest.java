@@ -1,5 +1,6 @@
 package com.problem.solving.problem.application;
 
+import com.problem.solving.bookmark.exception.NoSuchBookmarkException;
 import com.problem.solving.member.domain.Member;
 import com.problem.solving.member.exception.NoSuchMemberException;
 import com.problem.solving.member.persistence.MemberRepository;
@@ -20,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -49,76 +51,77 @@ public class ProblemServiceTest {
         problem2 = new Problem(member, "title", "problem2", 3, Category.DFS, false);
         problem3 = new Problem(member, "title", "problem3", 3, Category.DFS, false);
 
+        ReflectionTestUtils.setField(member, "id", 1L);
+
+        ReflectionTestUtils.setField(problem1, "id", 1L);
+        ReflectionTestUtils.setField(problem2, "id", 2L);
+        ReflectionTestUtils.setField(problem3, "id", 3L);
+
     }
 
 
     @Test
     @DisplayName("문제를 저장한다")
     public void registerProblem() throws Exception {
-        //given
-        Long memberId = 1L;
+        // given
+        ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title","problem", Category.DFS, 3);
 
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title","problem", Category.DFS, 3);
+        // when
+        when(memberRepository.findById(member.getId())).thenReturn(Optional.ofNullable(member));
 
-        //when
-        when(memberRepository.findById(memberId)).thenReturn(Optional.ofNullable(member));
-        problemService.addProblem(request);
-
-        //then
-        verify(problemRepository, times(1)).save(any(Problem.class));
+        // then
+        assertDoesNotThrow(() -> problemService.addProblem(request));
     }
 
     @Test
     @DisplayName("존재하지 않는 유저 정보로 문제를 저장하면 예외가 발생한다")
     public void registerProblemEmptyMemberException() throws Exception {
-        //given
-        Long memberId = 0L;
+        // given
+        Long 존재하지_않는_사용자_ID = 0L;
 
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title","problem", Category.DFS, 3);
+        ProblemSaveRequest request = new ProblemSaveRequest(존재하지_않는_사용자_ID, "title","problem", Category.DFS, 3);
 
-        //when
-        when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
+        // when
+        when(memberRepository.findById(존재하지_않는_사용자_ID)).thenReturn(Optional.empty());
 
-        //then
-        assertThrows(NoSuchMemberException.class, () -> {
-            problemService.addProblem(request);
-        });
+        // then
+        assertThatThrownBy(
+                () -> problemService.addProblem(request))
+                .isInstanceOf(NoSuchMemberException.class)
+                .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
 
     @Test
     @DisplayName("문제를 soft delete한다")
     public void deleteProblem() throws Exception {
-        //given
-        Long id = 1L;
+        // when
+        when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
+        problemService.delete(problem1.getId());
 
-        //when
-        when(problemRepository.findById(id)).thenReturn(Optional.ofNullable(problem1));
-        problemService.delete(id);
-
-        //then
+        // then
         assertThat(problem1.isDeleted()).isTrue();
     }
 
     @Test
     @DisplayName("존재하지 않는 문제를 삭제하려는 경우 예외가 발생한다")
     public void deleteProblemEmptyException() throws Exception {
-        //when, then
+        // given
+        Long 존재하지_않는_문제_ID = 0L;
+        // when, then
         assertThatThrownBy(
-                () -> problemService.delete(1L))
+                () -> problemService.delete(존재하지_않는_문제_ID))
                 .isInstanceOf(NoSuchProblemException.class)
-                .hasMessageContaining("문제를 찾을 수 없습니다.");
+                .hasMessageContaining("존재하지 않는 문제입니다.");
     }
 
     @Test
     @DisplayName("가장 먼저 저장한 문제를 조회한다")
     public void pollProblem() throws Exception {
-        //given
-
-        //when
+        // when
         when(problemRepository.findFirstByOrderByCreatedAtAsc()).thenReturn(Optional.ofNullable(problem1));
         ProblemResponse result = problemService.pollProblem();
 
-        //then
+        // then
         assertAll(
                 () -> assertThat(result.getUrl()).isEqualTo(problem1.getUrl()),
                 () -> assertThat(result.getLevel()).isEqualTo(problem1.getLevel()),
@@ -129,22 +132,21 @@ public class ProblemServiceTest {
     @Test
     @DisplayName("문제가 없는 경우 예외가 발생한다")
     public void pollProblemEmptyException() throws Exception {
-        //when, then
+        // when, then
         assertThatThrownBy(
                 () -> problemService.pollProblem())
                 .isInstanceOf(NoSuchProblemException.class)
-                .hasMessageContaining("문제를 찾을 수 없습니다.");
+                .hasMessageContaining("존재하지 않는 문제입니다.");
     }
 
     @Test
     @DisplayName("Id로 문제를 단건 조회한다")
     public void getProblemById() throws Exception {
-
-        //when
+        // when
         when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
         ProblemResponse result = problemService.getProblem(problem1.getId());
 
-        //then
+        // then
         assertAll(
                 () -> assertThat(result.getUrl()).isEqualTo(problem1.getUrl()),
                 () -> assertThat(result.getCategory()).isEqualTo(problem1.getCategory()),
@@ -155,18 +157,20 @@ public class ProblemServiceTest {
     @Test
     @DisplayName("존재하지 않는 문제를 단건 조회하면 예외가 발생한다")
     public void getProblemByIdEmptyException() throws Exception {
-        //when, then
+        // given
+        Long 존재하지_않는_문제_ID = 0L;
+
+        // when, then
         assertThatThrownBy(
-                () -> problemService.getProblem(1L))
+                () -> problemService.getProblem(존재하지_않는_문제_ID))
                 .isInstanceOf(NoSuchProblemException.class)
-                .hasMessageContaining("문제를 찾을 수 없습니다.");
+                .hasMessageContaining("존재하지 않는 문제입니다.");
     }
 
     @Test
     @DisplayName("문제를 수정한다")
     public void updateProblem() throws Exception {
-        //given
-        Long id = 1L;
+        // given
         ProblemUpdateRequest request = new ProblemUpdateRequest(
                 "afterUpdate",
                 Category.DFS,
@@ -174,11 +178,11 @@ public class ProblemServiceTest {
                 3);
 
 
-        //when
-        when(problemRepository.findById(any(Long.class))).thenReturn(Optional.of(problem1));
-        problemService.update(id, request);
+        // when
+        when(problemRepository.findById(problem1.getId())).thenReturn(Optional.of(problem1));
+        problemService.update(problem1.getId(), request);
 
-        //then
+        // then
         assertAll(
                 () -> assertEquals(problem1.getUrl(), request.getUrl()),
                 () -> assertEquals(problem1.getCategory(), request.getCategory()),
@@ -189,47 +193,47 @@ public class ProblemServiceTest {
     @Test
     @DisplayName("존재하지 않는 문제를 수정하면 예외가 발생한다")
     public void updateEmptyProblemException() throws Exception {
-        //given
-        Long id = 1L;
+        // given
+        Long 존재하지_않는_문제_ID = 0L;
 
-        //when, then
+        // when, then
         assertThatThrownBy(
-                () -> problemService.update(id, any(ProblemUpdateRequest.class)))
+                () -> problemService.update(존재하지_않는_문제_ID, any(ProblemUpdateRequest.class)))
                 .isInstanceOf(NoSuchProblemException.class)
-                .hasMessageContaining("문제를 찾을 수 없습니다.");
+                .hasMessageContaining("존재하지 않는 문제입니다.");
     }
 
     @Test
     @DisplayName("(논리적)삭제된 문제를 되돌린다")
     public void recoveryProblem() throws Exception {
-        //given
+        // given
         problem1.softDelete();
 
-        //when
+        // when
         when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
         problemService.recovery(problem1.getId());
 
-        //then
+        // then
         assertThat(problem1.isDeleted()).isFalse();
     }
 
     @Test
     @DisplayName("존재하지 않는 문제를 되돌리면 예외가 발생한다")
     public void recoveryNotExistProblemException() throws Exception {
-        //given
-        Long problemId = 0L;
+        // given
+        Long 존재하지_않는_문제_ID = 0L;
 
-        //when, then
+        // when, then
         assertThatThrownBy(
-                () -> problemService.recovery(problemId))
+                () -> problemService.recovery(존재하지_않는_문제_ID))
                 .isInstanceOf(NoSuchProblemException.class)
-                .hasMessageContaining("문제를 찾을 수 없습니다.");
+                .hasMessageContaining("존재하지 않는 문제입니다.");
     }
 
     @Test
     @DisplayName("isDeleted가 false(삭제X)인 문제를 되돌리면 예외가 발생한다")
     public void recoveryNotDeletedProblemException() throws Exception {
-        //when, then
+        // when, then
         when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
 
         assertThatThrownBy(

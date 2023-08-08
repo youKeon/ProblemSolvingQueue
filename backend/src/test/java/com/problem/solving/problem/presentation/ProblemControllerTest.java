@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 
 
 import static org.mockito.ArgumentMatchers.any;
@@ -21,19 +22,18 @@ public class ProblemControllerTest extends ControllerTest {
     private static final String baseURL = "/api/v1/problems";
     private Member member;
     private Long problemId;
-    private Long memberId;
     @BeforeEach
     void setup() {
         member = new Member("yukeon97@gmail.com", "123");
         problemId = 1L;
-        memberId = 1L;
+        ReflectionTestUtils.setField(member, "id", 1L);
     }
 
     @Test
     @DisplayName("문제가 저장된다")
     public void registerProblem() throws Exception {
         //given
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title", "test", Category.DFS, 3);
+        ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", "test", Category.DFS, 3);
         willDoNothing()
                 .given(problemService)
                 .addProblem(any());
@@ -50,7 +50,7 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("문제를 저장할 때 URL이 없으면 예외가 발생한다")
     public void registerProblemGetException() throws Exception {
         //given
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title", null, Category.DFS, 3);
+        ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", null, Category.DFS, 3);
 
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
@@ -63,7 +63,7 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("level이 없으면 예외가 발생한다")
     public void getLevelEmptyException() throws Exception {
         //given
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title", "ps", Category.DFS, null);
+        ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", "ps", Category.DFS, null);
 
 
         mockMvc.perform(post(baseURL)
@@ -77,7 +77,7 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("level이 1보다 작으면 예외가 발생한다")
     public void getLowLevelException() throws Exception {
         //given
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title", "ps", Category.DFS, 0);
+        ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", "ps", Category.DFS, 0);
 
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
@@ -90,7 +90,7 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("level이 5보다 높으면 예외가 발생한다")
     public void getHighLevelException() throws Exception {
         //given
-        ProblemSaveRequest request = new ProblemSaveRequest(memberId, "title", "ps", Category.DFS, 8);
+        ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", "ps", Category.DFS, 8);
 
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
