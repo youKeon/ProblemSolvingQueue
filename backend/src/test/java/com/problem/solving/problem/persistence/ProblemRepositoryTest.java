@@ -53,23 +53,23 @@ public class ProblemRepositoryTest extends RepositoryTest {
     @Test
     @DisplayName("가장 먼저 등록한 문제를 조회한다")
     public void pollProblemTest() throws Exception {
-        //when
+        // when
         Optional<Problem> actual = problemRepository.findFirstByOrderByCreatedAtAsc();
 
-        //then
+        // then
         Assertions.assertThat(problem1.getUrl()).isEqualTo(actual.get().getUrl());
     }
 
     @Test
     @DisplayName("질문이 없는 경우 빈 값이 반환된다")
     public void pollProblemEmptyTest() throws Exception {
-        //given
+        // given
         clearProblem();
 
-        //when
+        // when
         Optional<Problem> actual = problemRepository.findFirstByOrderByCreatedAtAsc();
 
-        //then
+        // then
         Assertions.assertThat(actual).isEmpty();
     }
     
@@ -89,7 +89,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
     @Test
     @DisplayName("질문이 없는 경우 빈 리스트를 반환한다")
     public void findEmptyProblem() throws Exception {
-        //given
+        // given
         clearProblem();
 
         // when

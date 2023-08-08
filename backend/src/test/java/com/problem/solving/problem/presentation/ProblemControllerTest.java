@@ -32,12 +32,15 @@ public class ProblemControllerTest extends ControllerTest {
     @Test
     @DisplayName("문제가 저장된다")
     public void registerProblem() throws Exception {
-        //given
+        // given
         ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", "test", Category.DFS, 3);
+
+        // when
         willDoNothing()
                 .given(problemService)
                 .addProblem(any());
 
+        // then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -49,9 +52,10 @@ public class ProblemControllerTest extends ControllerTest {
     @Test
     @DisplayName("문제를 저장할 때 URL이 없으면 예외가 발생한다")
     public void registerProblemGetException() throws Exception {
-        //given
+        // given
         ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", null, Category.DFS, 3);
 
+        // when, then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -65,7 +69,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", "ps", Category.DFS, null);
 
-
+        // when, then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -79,6 +83,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", "ps", Category.DFS, 0);
 
+        // when, then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -92,6 +97,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", "ps", Category.DFS, 8);
 
+        // when, then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -105,7 +111,9 @@ public class ProblemControllerTest extends ControllerTest {
     public void getProblemById() throws Exception {
         //given
         ProblemResponse response = new ProblemResponse("test1", 1, Category.DFS, false);
-        given(problemService.getProblem(problemId)).willReturn(response);
+
+        // when
+        when(problemService.getProblem(problemId)).thenReturn(response);
 
         // then
         mockMvc.perform(get(baseURL + "/{id}", problemId))
@@ -115,9 +123,11 @@ public class ProblemControllerTest extends ControllerTest {
     @Test
     @DisplayName("가장 먼저 저장한 문제를 조회한다")
     public void pollProblem() throws Exception {
-        //given
+        // given
         ProblemResponse response = new ProblemResponse("test1", 1, Category.DFS, false);
-        given(problemService.pollProblem()).willReturn(response);
+
+        // when
+        when(problemService.pollProblem()).thenReturn(response);
 
         // then
         mockMvc.perform(get(baseURL + "/poll"))
@@ -127,7 +137,7 @@ public class ProblemControllerTest extends ControllerTest {
     @Test
     @DisplayName("문제를 삭제한다")
     public void deleteProblem() throws Exception {
-        //given
+        // when
         doNothing().when(problemService).delete(problemId);
 
         // then
@@ -156,7 +166,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         ProblemUpdateRequest request = new ProblemUpdateRequest(null, Category.DFS, false, 3);
 
-        // then
+        // when, then
         mockMvc.perform(put(baseURL + "/{id}", problemId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -170,7 +180,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         ProblemUpdateRequest request = new ProblemUpdateRequest("test", null, false, 3);
 
-        // then
+        // when, then
         mockMvc.perform(put(baseURL + "/{id}", problemId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -184,7 +194,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         ProblemUpdateRequest request = new ProblemUpdateRequest("test", Category.DFS, null, 3);
 
-        // then
+        // when, then
         mockMvc.perform(put(baseURL + "/{id}", problemId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -195,10 +205,10 @@ public class ProblemControllerTest extends ControllerTest {
     @Test
     @DisplayName("문제 수정 시 level이 없으면 예외가 발생한다")
     public void updateLevelEmptyException() throws Exception {
-        //given
+        // given
         ProblemUpdateRequest request = new ProblemUpdateRequest("test", Category.DFS, true, null);
 
-        // then
+        // when, then
         mockMvc.perform(put(baseURL + "/{id}", problemId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -208,10 +218,10 @@ public class ProblemControllerTest extends ControllerTest {
     @Test
     @DisplayName("문제 수정 시 level이 1보다 작으면 예외가 발생한다")
     public void updateLowLevelEmptyException() throws Exception {
-        //given
+        // given
         ProblemUpdateRequest request = new ProblemUpdateRequest("test", Category.DFS, true, 0);
 
-        // then
+        // when, then
         mockMvc.perform(put(baseURL + "/{id}", problemId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -225,7 +235,7 @@ public class ProblemControllerTest extends ControllerTest {
         //given
         ProblemUpdateRequest request = new ProblemUpdateRequest("test", Category.DFS, true, 6);
 
-        // then
+        // when, then
         mockMvc.perform(put(baseURL + "/{id}", problemId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
