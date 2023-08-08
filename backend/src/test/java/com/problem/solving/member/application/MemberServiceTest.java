@@ -63,16 +63,16 @@ public class MemberServiceTest {
     @Test
     @DisplayName("회원 id와 페이지를 입력하면 문제 리스트를 조회한다")
     public void getProblems() throws Exception {
-        //given
+        // given
         List<Problem> problems = Arrays.asList(problem1, problem2, problem3);
 
         Page<Problem> problemPage = new PageImpl<>(problems, pageable, problems.size());
 
-        //when
+        // when
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(problemPage);
         List<ProblemListResponse> result = memberService.getProblemList(member.getId(), 3, Category.DFS, false, pageable);
 
-        //then
+        // then
         assertAll(
                 () -> assertThat(result.size()).isEqualTo(3),
                 () -> assertThat(result.get(0).getCategory()).isEqualTo(problem1.getCategory()),
@@ -91,11 +91,13 @@ public class MemberServiceTest {
     @Test
     @DisplayName("문제 리스트가 없는 경우 예외가 발생한다")
     public void getProblemsEmptyException() throws Exception {
-        //when, then
+        // given
         Page<Problem> page = Page.empty();
 
+        // when
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(page);
 
+        // then
         assertThatThrownBy(
                 () -> memberService.getProblemList(member.getId(), 3, Category.DFS, false, pageable))
                 .isInstanceOf(NoSuchProblemException.class)
