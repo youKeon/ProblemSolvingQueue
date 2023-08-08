@@ -1,10 +1,7 @@
 package com.problem.solving.bookmark.persentation;
 
-import com.problem.solving.bookmark.domain.Bookmark;
 import com.problem.solving.bookmark.dto.request.BookmarkSaveRequest;
 import com.problem.solving.common.annotation.ControllerTest;
-import com.problem.solving.member.domain.Member;
-import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,8 +14,8 @@ import java.util.List;
 
 import static com.problem.solving.problem.domain.Category.BFS;
 import static com.problem.solving.problem.domain.Category.DFS;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -100,7 +97,7 @@ public class BookmarkControllerTest extends ControllerTest {
         ));
 
         // when
-        given(bookmarkService.getBookmarkList(memberId)).willReturn(responses);
+        when(bookmarkService.getBookmarkList(memberId)).thenReturn(responses);
 
         // then
         mockMvc.perform(get(baseURL + "/{id}", memberId))
