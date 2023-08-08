@@ -21,7 +21,8 @@ public class MemberTest {
     public void createMemberEmptyEmailException() throws Exception {
         //given, when, then
         assertThatThrownBy(() -> new Member("", "123"))
-                .isInstanceOf(InvalidMemberException.class);
+                .isInstanceOf(InvalidMemberException.class)
+                .hasMessageContaining("Email은 공백일 수 없습니다.");
     }
 
 
@@ -30,6 +31,7 @@ public class MemberTest {
     public void createMemberEmptyPasswordException() throws Exception {
         //given, when, then
         assertThatThrownBy(() -> new Member("yukeon97@gmail.com", ""))
-                .isInstanceOf(InvalidMemberException.class);
+                .isInstanceOf(InvalidMemberException.class)
+                .hasMessageContaining("Password는 공백일 수 없습니다.");
     }
 }
