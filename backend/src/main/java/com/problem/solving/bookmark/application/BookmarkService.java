@@ -27,7 +27,7 @@ public class BookmarkService {
     private final MemberRepository memberRepository;
     private final ProblemRepository problemRepository;
 
-    public void register(BookmarkSaveRequest request) {
+    public void save(BookmarkSaveRequest request) {
         Member member = memberRepository.findById(request.getMemberId()).orElseThrow(
                 () -> new NoSuchMemberException()
         );

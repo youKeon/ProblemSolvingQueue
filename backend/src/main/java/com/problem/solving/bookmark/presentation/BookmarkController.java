@@ -3,8 +3,9 @@ package com.problem.solving.bookmark.presentation;
 import com.problem.solving.bookmark.application.BookmarkService;
 import com.problem.solving.bookmark.dto.request.BookmarkSaveRequest;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
-import com.problem.solving.problem.dto.response.ProblemResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,18 +18,19 @@ import java.util.List;
 public class BookmarkController {
     private final BookmarkService bookmarkService;
 
+    @Operation(summary = "save bookmark", description = "북마크 등록")
     @PostMapping
-    public ResponseEntity<Void> register(@RequestBody @Valid BookmarkSaveRequest request) {
-        bookmarkService.register(request);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> save(@RequestBody @Valid BookmarkSaveRequest request) {
+        bookmarkService.save(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
+    @Operation(summary = "delete bookmark", description = "북마크 삭제")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         bookmarkService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
-
+    @Operation(summary = "get bookmark list", description = "북마크 리스트 조회")
     @GetMapping("/{id}")
     public ResponseEntity<List<ProblemListResponse>> getBookmarkList(@PathVariable Long id) {
         List<ProblemListResponse> response = bookmarkService.getBookmarkList(id);
