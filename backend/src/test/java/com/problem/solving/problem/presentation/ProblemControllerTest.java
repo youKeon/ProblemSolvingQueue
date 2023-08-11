@@ -45,7 +45,7 @@ public class ProblemControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isCreated());
 
     }
 
@@ -142,7 +142,7 @@ public class ProblemControllerTest extends ControllerTest {
 
         // then
         mockMvc.perform(delete(baseURL + "/{id}", problemId))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -157,7 +157,7 @@ public class ProblemControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -251,6 +251,6 @@ public class ProblemControllerTest extends ControllerTest {
 
         // then
         mockMvc.perform(put(baseURL + "/{id}/recovery", problemId))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 }
