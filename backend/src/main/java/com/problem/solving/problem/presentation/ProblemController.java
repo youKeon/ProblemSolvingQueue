@@ -32,10 +32,10 @@ public class ProblemController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "add problem", description = "문제 등록")
+    @Operation(summary = "save problem", description = "문제 등록")
     @PostMapping
-    public ResponseEntity<Void> addProblem(@RequestBody @Valid ProblemSaveRequest request) {
-        problemService.addProblem(request);
+    public ResponseEntity<Void> save(@RequestBody @Valid ProblemSaveRequest request) {
+        problemService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
