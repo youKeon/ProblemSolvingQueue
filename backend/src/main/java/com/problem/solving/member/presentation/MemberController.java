@@ -7,6 +7,7 @@ import com.problem.solving.problem.dto.response.ProblemListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity<Void> signup(@RequestBody @Valid MemberSignUpRequest request) {
         memberService.signup(request);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "get problem list", description = "문제 조회")
