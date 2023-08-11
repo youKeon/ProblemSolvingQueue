@@ -5,6 +5,8 @@ import com.problem.solving.member.dto.request.MemberSignUpRequest;
 import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,21 +21,22 @@ import java.util.List;
 @RequestMapping("/api/v1/members")
 public class MemberController {
     private final MemberService memberService;
-    @Operation(summary = "sign up", description = "회원가입")
+
+    @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ResponseEntity<Void> signup(@RequestBody @Valid MemberSignUpRequest request) {
         memberService.signup(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @Operation(summary = "get problem list", description = "문제 조회")
-    @GetMapping("/{id}/problems")
-    public ResponseEntity<List<ProblemListResponse>> getProblemList(@PathVariable Long id,
+    @Operation(summary = "문제 조회")
+    @GetMapping("/{memberId}/problems")
+    public ResponseEntity<List<ProblemListResponse>> getProblemList(@PathVariable Long memberId,
                                                                     @RequestParam(required = false) Integer level,
                                                                     @RequestParam(required = false) Category category,
                                                                     @RequestParam(required = false) Boolean isSolved,
                                                                     Pageable pageable) {
-        List<ProblemListResponse> response = memberService.getProblemList(id, level, category, isSolved, pageable);
+        List<ProblemListResponse> response = memberService.getProblemList(memberId, level, category, isSolved, pageable);
         return ResponseEntity.ok(response);
     }
 }
