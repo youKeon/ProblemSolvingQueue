@@ -66,7 +66,7 @@ public class BookmarkServiceTest {
 
     @Test
     @DisplayName("사용자 id와 문제 id를 받아 북마크에 등록한다")
-    void registerBookmarkTest() {
+    void saveBookmarkTest() {
         // given
         BookmarkSaveRequest request = new BookmarkSaveRequest(member.getId(), problem1.getId());
 
@@ -81,7 +81,7 @@ public class BookmarkServiceTest {
 
     @Test
     @DisplayName("동일한 문제로 북마크를 등록하면 예외가 발생한다")
-    void registerDuplicatedBookmarkTest() {
+    void saveDuplicatedBookmarkTest() {
         // given
         BookmarkSaveRequest request = new BookmarkSaveRequest(member.getId(), problem1.getId());
 
@@ -111,7 +111,7 @@ public class BookmarkServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 북마크 id를 받아 북마크를 삭제하면 예외가 발생한다")
-    void deleteBookmarkInvalidIdTest() {
+    void deleteNoSuchBookmarkExceptionTest() {
         // given
         Long 존재하지_않는_북마크_ID = 0L;
 
@@ -124,7 +124,7 @@ public class BookmarkServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 사용자 id로 북마크를 등록하면 예외가 발생한다")
-    void registerBookmarkInvalidMemberIdExceptionTest() {
+    void saveNoSuchMemberIdBookmarkExceptionTest() {
         // given
         Long 존재하지_않는_사용자_ID = 0L;
         BookmarkSaveRequest request = new BookmarkSaveRequest(존재하지_않는_사용자_ID, problem1.getId());
@@ -138,7 +138,7 @@ public class BookmarkServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 문제 id로 북마크를 등록하면 예외가 발생한다")
-    void registerBookmarkInvalidProblemIdExceptionTest() {
+    void saveNoSuchProblemIdExceptionTest() {
         // given
         Long 존재하지_않는_문제_ID = 0L;
         BookmarkSaveRequest request = new BookmarkSaveRequest(member.getId(), 존재하지_않는_문제_ID);
