@@ -55,6 +55,9 @@ dependencies {
 	implementation("com.slack.api:bolt-servlet:1.18.0")
 	implementation("com.slack.api:bolt-jetty:1.18.0")
 
+	// Swagger
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
+
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.batch:spring-batch-test'
