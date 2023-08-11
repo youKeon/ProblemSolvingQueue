@@ -1,6 +1,5 @@
 package com.problem.solving.problem.application;
 
-import com.problem.solving.bookmark.exception.NoSuchBookmarkException;
 import com.problem.solving.member.domain.Member;
 import com.problem.solving.member.exception.NoSuchMemberException;
 import com.problem.solving.member.persistence.MemberRepository;
@@ -70,7 +69,7 @@ public class ProblemServiceTest {
         when(memberRepository.findById(member.getId())).thenReturn(Optional.ofNullable(member));
 
         // then
-        assertDoesNotThrow(() -> problemService.addProblem(request));
+        assertDoesNotThrow(() -> problemService.save(request));
     }
 
     @Test
@@ -86,7 +85,7 @@ public class ProblemServiceTest {
 
         // then
         assertThatThrownBy(
-                () -> problemService.addProblem(request))
+                () -> problemService.save(request))
                 .isInstanceOf(NoSuchMemberException.class)
                 .hasMessageContaining("존재하지 않는 사용자입니다.");
     }

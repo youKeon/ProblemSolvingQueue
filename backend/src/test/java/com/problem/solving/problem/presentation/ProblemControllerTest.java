@@ -38,7 +38,7 @@ public class ProblemControllerTest extends ControllerTest {
         // when
         willDoNothing()
                 .given(problemService)
-                .addProblem(any());
+                .save(any());
 
         // then
         mockMvc.perform(post(baseURL)
