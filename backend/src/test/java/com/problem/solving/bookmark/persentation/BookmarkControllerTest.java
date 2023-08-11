@@ -40,14 +40,14 @@ public class BookmarkControllerTest extends ControllerTest {
         // when
         willDoNothing()
                 .given(bookmarkService)
-                        .register(request);
+                        .save(request);
 
         // then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class BookmarkControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(delete(baseURL + "/{id}", bookmarkId))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test

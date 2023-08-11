@@ -76,7 +76,7 @@ public class BookmarkServiceTest {
 
 
         // then
-        assertDoesNotThrow(() -> bookmarkService.register(request));
+        assertDoesNotThrow(() -> bookmarkService.save(request));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class BookmarkServiceTest {
 
         // then
         assertThatThrownBy(
-                () -> bookmarkService.register(request))
+                () -> bookmarkService.save(request))
                 .isInstanceOf(DuplicatedBookmarkException.class)
                 .hasMessageContaining("이미 존재하는 북마크입니다.");
     }
@@ -131,7 +131,7 @@ public class BookmarkServiceTest {
 
         // then
         assertThatThrownBy(
-                () -> bookmarkService.register(request))
+                () -> bookmarkService.save(request))
                 .isInstanceOf(NoSuchMemberException.class)
                 .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
@@ -148,7 +148,7 @@ public class BookmarkServiceTest {
 
         // then
         assertThatThrownBy(
-                () -> bookmarkService.register(request))
+                () -> bookmarkService.save(request))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
     }
