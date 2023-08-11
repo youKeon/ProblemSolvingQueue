@@ -2,6 +2,7 @@ package com.problem.solving.member.application;
 
 import com.problem.solving.member.dto.request.MemberSignUpRequest;
 import com.problem.solving.member.exception.DuplicatedEmailException;
+import com.problem.solving.member.exception.NoSuchMemberException;
 import com.problem.solving.member.persistence.MemberRepository;
 import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.domain.Problem;
@@ -34,6 +35,9 @@ public class MemberService {
                                                     Category category,
                                                     Boolean isSolved,
                                                     Pageable pageable) {
+
+        if (!memberRepository.existsById(id))
+            throw new NoSuchProblemException();
 
         Page<Problem> problemList = problemRepository.findAllProblem(id, level, category, isSolved, pageable);
         if (problemList.getNumberOfElements() == 0) throw new NoSuchProblemException();
