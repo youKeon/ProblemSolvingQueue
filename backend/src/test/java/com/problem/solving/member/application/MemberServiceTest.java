@@ -62,7 +62,7 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("회원 id와 페이지를 입력하면 문제 리스트를 조회한다")
-    public void getProblems() throws Exception {
+    public void getProblemListTest() throws Exception {
         // given
         List<Problem> problems = Arrays.asList(problem1, problem2, problem3);
 
@@ -70,6 +70,8 @@ public class MemberServiceTest {
 
         // when
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(problemPage);
+        when(memberRepository.existsById(member.getId())).thenReturn(true);
+
         List<ProblemListResponse> result = memberService.getProblemList(member.getId(), 3, Category.DFS, false, pageable);
 
         // then
@@ -89,6 +91,19 @@ public class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("사용자 정보가 존재하지 않는 경우 예외가 발생한다")
+    public void getProblemListNoSuchMemberExceptionTest() throws Exception {
+        // given
+        Long 존재하지_않는_사용자_ID = 0L;
+
+        // when, then
+        assertThatThrownBy(
+                () -> memberService.getProblemList(존재하지_않는_사용자_ID, 3, Category.DFS, false, pageable))
+                .isInstanceOf(NoSuchProblemException.class)
+                .hasMessageContaining("존재하지 않는 문제입니다.");
+    }
+
+    @Test
     @DisplayName("문제 리스트가 없는 경우 예외가 발생한다")
     public void getProblemsEmptyException() throws Exception {
         // given
@@ -96,6 +111,7 @@ public class MemberServiceTest {
 
         // when
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(page);
+        when(memberRepository.existsById(member.getId())).thenReturn(true);
 
         // then
         assertThatThrownBy(
@@ -119,7 +135,7 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("회원가입 시 이메일이 중복되면 예외가 발생한다")
-    void signUpEmailDuplicatedExceptionTest() {
+    void signUpDuplicatedEmailExceptionTest() {
         // given
         MemberSignUpRequest request = new MemberSignUpRequest("yukeon@gmail.com", "1234");
 
