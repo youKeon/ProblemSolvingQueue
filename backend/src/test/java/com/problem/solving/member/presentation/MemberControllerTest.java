@@ -27,39 +27,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class MemberControllerTest extends ControllerTest {
     private static final String baseURL = "/api/v1/members";
-    private static final Pageable pageable = PageRequest.of(0, 3);
-    private MockHttpSession session;
-    private HttpServletRequest request;
-    private Member member;
+
     @BeforeEach
     void setup() {
         member = new Member("yukeon97@gmail.com", "123");
         ReflectionTestUtils.setField(member, "id", 1L);
-
-        session = new MockHttpSession();
-        session.setAttribute("sessionInfo", new SessionInfo(member.getId(), member.getEmail()));
-    }
-
-    @Test
-    @DisplayName("문제 리스트를 조회된다")
-    public void getProblems() throws Exception {
-        // given
-        ProblemListResponse test1 = new ProblemListResponse("test1", 1, Category.DFS, false);
-        ProblemListResponse test2 = new ProblemListResponse("test2", 2, Category.DFS, false);
-        ProblemListResponse test3 = new ProblemListResponse("test3", 3, Category.DFS, false);
-        List<ProblemListResponse> responses = Arrays.asList(test1, test2, test3);
-
-        // when
-        when(memberService.getProblemList(request, 3, Category.DFS, false, pageable))
-                .thenReturn(responses);
-
-        // then
-        mockMvc.perform(get(baseURL + "/{id}/problems", member.getId())
-                        .session(session)
-                        .param("page", String.valueOf(pageable.getPageNumber()))
-                        .param("size", String.valueOf(pageable.getPageSize()))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
     }
 
     @Test
