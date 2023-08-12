@@ -30,7 +30,7 @@ public class BookmarkServiceTest extends ServiceTest {
     void setup() {
         bookmark = new Bookmark(member, problem1);
 
-        member = new Member("yukeon97@gmail.com", "123");
+        member = new Member("yukeon97@gmail.com", "123", "salt");
 
         problem1 = new Problem(member, "title", "problem1", 3, Category.DFS, false);
         problem2 = new Problem(member, "title", "problem2", 3, Category.BFS, false);

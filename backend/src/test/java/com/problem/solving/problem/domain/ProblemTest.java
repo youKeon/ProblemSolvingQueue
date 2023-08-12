@@ -15,7 +15,7 @@ public class ProblemTest {
     private Member member;
     @BeforeEach
     void setup() {
-        member = new Member("yukeon97@gmail.com", "123");
+        member = new Member("yukeon97@gmail.com", "123", "salt");
     }
     @Test
     @DisplayName("문제를 생성한다")

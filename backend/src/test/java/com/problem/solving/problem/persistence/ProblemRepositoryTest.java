@@ -2,14 +2,12 @@ package com.problem.solving.problem.persistence;
 
 import com.problem.solving.common.annotation.RepositoryTest;
 import com.problem.solving.member.domain.Member;
-import com.problem.solving.member.persistence.MemberRepository;
 import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.domain.Problem;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +28,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setup() {
-        member = memberRepository.save(new Member("yukeon97@gmail.com", "123"));
+        member = memberRepository.save(new Member("yukeon97@gmail.com", "123", "salt"));
         problem1 = problemRepository.save(
                 new Problem(
                         this.member,
@@ -54,7 +52,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
     @DisplayName("가장 먼저 등록한 문제를 조회한다")
     public void pollProblemTest() throws Exception {
         // when
-        Optional<Problem> actual = problemRepository.findFirstByOrderByCreatedAtAsc();
+        Optional<Problem> actual = problemRepository.pollProblem(member.getId());
 
         // then
         Assertions.assertThat(problem1.getUrl()).isEqualTo(actual.get().getUrl());
@@ -67,7 +65,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
         clearProblem();
 
         // when
-        Optional<Problem> actual = problemRepository.findFirstByOrderByCreatedAtAsc();
+        Optional<Problem> actual = problemRepository.pollProblem(member.getId());
 
         // then
         Assertions.assertThat(actual).isEmpty();

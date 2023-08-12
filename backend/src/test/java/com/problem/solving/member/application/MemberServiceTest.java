@@ -25,9 +25,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MemberServiceTest extends ServiceTest {
+
     @BeforeEach
     void setup() {
-        member = new Member("yukeon97@gmail.com", "123");
+        member = new Member("yukeon97@gmail.com", encodePassword, salt);
         problem1 = new Problem(member, "title", "problem1", 3, Category.DFS, false);
         problem2 = new Problem(member, "title", "problem2", 3, Category.DFS, false);
         problem3 = new Problem(member, "title", "problem3", 3, Category.DFS, false);
@@ -47,11 +48,9 @@ public class MemberServiceTest extends ServiceTest {
     void signUpTest() {
         // given
         MemberSignUpRequest request = new MemberSignUpRequest(member.getEmail(), member.getPassword());
-        String encodedPassword = "encodedPassword";
 
         // when
         when(memberRepository.existsMemberByEmail(request.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode(request.getPassword())).thenReturn(encodedPassword);
 
         // then
         assertDoesNotThrow(() -> memberService.signup(request));
@@ -61,7 +60,7 @@ public class MemberServiceTest extends ServiceTest {
     @DisplayName("회원가입 시 이메일이 중복되면 예외가 발생한다")
     void signUpDuplicatedEmailExceptionTest() {
         // given
-        MemberSignUpRequest request = new MemberSignUpRequest("yukeon@gmail.com", "1234");
+        MemberSignUpRequest request = new MemberSignUpRequest(member.getEmail(), member.getPassword());
 
         // when
         when(memberRepository.existsMemberByEmail(request.getEmail())).thenReturn(true);
@@ -77,17 +76,14 @@ public class MemberServiceTest extends ServiceTest {
     @DisplayName("이메일과 비밀번호를 받아 로그인을 한다")
     void signInTest() {
         // given
-        MemberSignInRequest request = new MemberSignInRequest(member.getEmail(), member.getPassword());
+        MemberSignInRequest request = new MemberSignInRequest(member.getEmail(), password);
 
         // when
         when(memberRepository.findByEmail(request.getEmail()))
                 .thenReturn(Optional.ofNullable(member));
-        when(passwordEncoder.matches(request.getPassword(), member.getPassword()))
-                .thenReturn(true);
 
         // then
         assertDoesNotThrow(() -> memberService.signin(request, session));
-
     }
 
     @Test

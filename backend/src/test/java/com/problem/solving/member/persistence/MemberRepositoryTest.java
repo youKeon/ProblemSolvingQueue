@@ -19,7 +19,7 @@ public class MemberRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setup() {
-        member = memberRepository.save(new Member("yukeon97@gmail.com", "123"));
+        member = memberRepository.save(new Member("yukeon97@gmail.com", "123", "salt"));
         problem1 = problemRepository.save(
                 new Problem(
                         this.member,

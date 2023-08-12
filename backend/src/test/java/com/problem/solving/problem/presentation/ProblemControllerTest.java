@@ -18,8 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,7 +28,7 @@ public class ProblemControllerTest extends ControllerTest {
 
     @BeforeEach
     void setup() {
-        member = new Member("yukeon97@gmail.com", "123");
+        member = new Member("yukeon97@gmail.com", "123", "salt");
         problemId = 1L;
         ReflectionTestUtils.setField(member, "id", 1L);
 
@@ -65,12 +64,7 @@ public class ProblemControllerTest extends ControllerTest {
         // given
         ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title", "test", Category.DFS, 3);
 
-        // when
-        willDoNothing()
-                .given(problemService)
-                .save(any());
-
-        // then
+        // when, then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -157,7 +151,7 @@ public class ProblemControllerTest extends ControllerTest {
         ProblemResponse response = new ProblemResponse("test1", 1, Category.DFS, false);
 
         // when
-        when(problemService.pollProblem()).thenReturn(response);
+        when(problemService.pollProblem(request)).thenReturn(response);
 
         // then
         mockMvc.perform(get(baseURL + "/poll"))
@@ -167,10 +161,7 @@ public class ProblemControllerTest extends ControllerTest {
     @Test
     @DisplayName("문제를 삭제한다")
     public void deleteProblem() throws Exception {
-        // when
-        doNothing().when(problemService).delete(problemId);
-
-        // then
+        // when, then
         mockMvc.perform(delete(baseURL + "/{id}", problemId))
                 .andExpect(status().isOk());
     }
@@ -180,9 +171,8 @@ public class ProblemControllerTest extends ControllerTest {
     public void updateProblem() throws Exception {
         //given
         ProblemUpdateRequest request = new ProblemUpdateRequest("url", Category.DFS, false, 3);
-        doNothing().when(problemService).update(problemId, request);
 
-        // then
+        // when, then
         mockMvc.perform(put(baseURL + "/{id}", problemId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -276,10 +266,7 @@ public class ProblemControllerTest extends ControllerTest {
     @Test
     @DisplayName("(논리적)삭제된 문제를 되돌린다")
     public void recoveryProblem() throws Exception {
-        //given
-        doNothing().when(problemService).recovery(problemId);
-
-        // then
+        // when, then
         mockMvc.perform(put(baseURL + "/{id}/recovery", problemId))
                 .andExpect(status().isOk());
     }

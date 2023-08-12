@@ -7,6 +7,7 @@ import com.problem.solving.member.application.MemberService;
 import com.problem.solving.member.domain.Member;
 import com.problem.solving.member.domain.SessionInfo;
 import com.problem.solving.member.persistence.MemberRepository;
+import com.problem.solving.member.util.PasswordUtil;
 import com.problem.solving.problem.application.ProblemService;
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.persistence.ProblemRepository;
@@ -17,10 +18,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static com.problem.solving.member.util.PasswordUtil.encodePassword;
+import static com.problem.solving.member.util.PasswordUtil.generateSalt;
+
 @ExtendWith(MockitoExtension.class)
 @Transactional
 public abstract class ServiceTest {
@@ -34,11 +38,11 @@ public abstract class ServiceTest {
     @Mock
     protected BookmarkRepository bookmarkRepository;
     @Mock
+    protected PasswordUtil passwordUtil;
+    @Mock
     protected ProblemRepository problemRepository;
     @Mock
     protected MemberRepository memberRepository;
-    @Mock
-    protected BCryptPasswordEncoder passwordEncoder;
     @Mock
     protected HttpServletRequest request;
 
@@ -51,4 +55,7 @@ public abstract class ServiceTest {
     protected Problem problem2;
     protected Problem problem3;
     protected Bookmark bookmark;
+    protected String password = "1234";
+    protected String salt = generateSalt();
+    protected String encodePassword = encodePassword(password, salt);
 }

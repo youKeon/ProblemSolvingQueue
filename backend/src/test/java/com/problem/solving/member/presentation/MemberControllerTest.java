@@ -19,7 +19,7 @@ public class MemberControllerTest extends ControllerTest {
 
     @BeforeEach
     void setup() {
-        member = new Member("yukeon97@gmail.com", "123");
+        member = new Member("yukeon97@gmail.com", "123", "salt");
         ReflectionTestUtils.setField(member, "id", 1L);
 
         session = new MockHttpSession();

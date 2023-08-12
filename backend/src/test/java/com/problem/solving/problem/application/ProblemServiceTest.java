@@ -5,8 +5,8 @@ import com.problem.solving.member.application.MemberService;
 import com.problem.solving.member.domain.Member;
 import com.problem.solving.member.domain.SessionInfo;
 import com.problem.solving.member.exception.NoSuchMemberException;
-import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.domain.Category;
+import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
@@ -21,13 +21,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 
 public class ProblemServiceTest extends ServiceTest {
@@ -36,7 +40,7 @@ public class ProblemServiceTest extends ServiceTest {
 
     @BeforeEach
     void setup() {
-        member = new Member("yukeon97@gmail.com", "123");
+        member = new Member("yukeon97@gmail.com", password, salt);
         problem1 = new Problem(member, "title", "problem1", 3, Category.DFS, false);
         problem2 = new Problem(member, "title", "problem2", 3, Category.DFS, false);
         problem3 = new Problem(member, "title", "problem3", 3, Category.DFS, false);
@@ -52,7 +56,7 @@ public class ProblemServiceTest extends ServiceTest {
 
 
     @Test
-    @DisplayName("회원 id와 페이지를 입력하면 문제 리스트를 조회한다")
+    @DisplayName("세션 정보와 주어진 필터 조건으로(난이도, 풀이 여부, 문제 유형 등) 문제 리스트를 조회한다")
     public void getProblemListTest() throws Exception {
         // given
         List<Problem> problems = Arrays.asList(problem1, problem2, problem3);
@@ -82,17 +86,17 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("사용자 정보가 존재하지 않는 경우 예외가 발생한다")
+    @DisplayName("문제 리스트 조회 시 사용자의 세션 정보가 존재하지 않는 경우 예외가 발생한다")
     public void getProblemListNoSuchMemberExceptionTest() throws Exception {
         // given
-        when(memberRepository.existsById(sessionInfo.getId())).thenReturn(false);
-        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
+        SessionInfo 존재하지_않는_세션_정보 = new SessionInfo(0L, "noSuch@email.com");
+        when(memberService.getSessionInfo(request)).thenReturn(존재하지_않는_세션_정보);
 
         // when, then
         assertThatThrownBy(
                 () -> problemService.getProblemList(request, 3, Category.DFS, false, pageable))
-                .isInstanceOf(NoSuchProblemException.class)
-                .hasMessageContaining("존재하지 않는 문제입니다.");
+                .isInstanceOf(NoSuchMemberException.class)
+                .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
 
     @Test
@@ -168,11 +172,26 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("가장 먼저 저장한 문제를 조회한다")
+    @DisplayName("가장 먼저 저장한 문제를 poll한다")
     public void pollProblem() throws Exception {
+        // given
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+
+        LocalDateTime dateTime1 = LocalDateTime.parse("2023-08-12 20:44:17.423552", formatter);
+        ReflectionTestUtils.setField(problem1, "createdAt", dateTime1);
+
+        LocalDateTime dateTime2 = LocalDateTime.parse("2023-08-13 20:44:17.423552", formatter);
+        ReflectionTestUtils.setField(problem2, "createdAt", dateTime2);
+
+        LocalDateTime dateTime3 = LocalDateTime.parse("2023-08-14 20:44:17.423552", formatter);
+        ReflectionTestUtils.setField(problem3, "createdAt", dateTime3);
+
         // when
-        when(problemRepository.findFirstByOrderByCreatedAtAsc()).thenReturn(Optional.ofNullable(problem1));
-        ProblemResponse result = problemService.pollProblem();
+        when(problemRepository.pollProblem(member.getId())).thenReturn(Optional.ofNullable(problem1));
+        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
+        when(memberRepository.existsById(member.getId())).thenReturn(true);
+
+        ProblemResponse result = problemService.pollProblem(request);
 
         // then
         assertAll(
@@ -183,11 +202,15 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("문제가 없는 경우 예외가 발생한다")
+    @DisplayName("poll할 수 있는 문제가 없는 경우 예외가 발생한다")
     public void pollProblemEmptyException() throws Exception {
-        // when, then
+        // when
+        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
+        when(memberRepository.existsById(member.getId())).thenReturn(true);
+
+        // then
         assertThatThrownBy(
-                () -> problemService.pollProblem())
+                () -> problemService.pollProblem(request))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
     }
