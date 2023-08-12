@@ -121,29 +121,29 @@ public class ProblemServiceTest extends ServiceTest {
     @DisplayName("문제를 저장한다")
     public void registerProblem() throws Exception {
         // given
-        ProblemSaveRequest request = new ProblemSaveRequest(member.getId(), "title","problem", Category.DFS, 3);
+        ProblemSaveRequest saveRequest = new ProblemSaveRequest("url", "title", Category.DFS, 3);
 
         // when
         when(memberRepository.findById(member.getId())).thenReturn(Optional.ofNullable(member));
+        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
 
         // then
-        assertDoesNotThrow(() -> problemService.save(request));
+        assertDoesNotThrow(() -> problemService.save(request, saveRequest));
     }
 
     @Test
     @DisplayName("존재하지 않는 유저 정보로 문제를 저장하면 예외가 발생한다")
     public void registerProblemEmptyMemberException() throws Exception {
         // given
-        Long 존재하지_않는_사용자_ID = 0L;
-
-        ProblemSaveRequest request = new ProblemSaveRequest(존재하지_않는_사용자_ID, "title","problem", Category.DFS, 3);
+        ProblemSaveRequest saveRequest = new ProblemSaveRequest("title","problem", Category.DFS, 3);
 
         // when
-        when(memberRepository.findById(존재하지_않는_사용자_ID)).thenReturn(Optional.empty());
+        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
+        when(memberRepository.findById(sessionInfo.getId())).thenReturn(Optional.empty());
 
         // then
         assertThatThrownBy(
-                () -> problemService.save(request))
+                 () -> problemService.save(request, saveRequest))
                 .isInstanceOf(NoSuchMemberException.class)
                 .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
