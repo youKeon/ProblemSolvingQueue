@@ -35,18 +35,18 @@ public class BookmarkControllerTest extends ControllerTest {
     @DisplayName("사용자 id와 문제 id를 받아 북마크에 등록한다")
     public void registerBookmark() throws Exception {
         // given
-        BookmarkSaveRequest request = new BookmarkSaveRequest(memberId, problemId);
+        BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(problemId);
 
         // when
         willDoNothing()
                 .given(bookmarkService)
-                        .save(request);
+                        .save(request, saveRequest);
 
         // then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(saveRequest)))
                 .andExpect(status().isCreated());
     }
 
@@ -54,7 +54,7 @@ public class BookmarkControllerTest extends ControllerTest {
     @DisplayName("북마크에 등록 시 사용자 id가 null인 경우 예외가 발생한다")
     public void registerBookmarkMemberIdNullExceptionTest() throws Exception {
         // given
-        BookmarkSaveRequest request = new BookmarkSaveRequest(null, problemId);
+        BookmarkSaveRequest request = new BookmarkSaveRequest(null);
 
         // when, then
         mockMvc.perform(post(baseURL)
@@ -68,7 +68,7 @@ public class BookmarkControllerTest extends ControllerTest {
     @DisplayName("북마크에 등록 시 문제 id가 null인 경우 예외가 발생한다")
     public void registerBookmarkProblemIdNullExceptionTest() throws Exception {
         // given
-        BookmarkSaveRequest request = new BookmarkSaveRequest(memberId, null);
+        BookmarkSaveRequest request = new BookmarkSaveRequest(null);
 
         // when, then
         mockMvc.perform(post(baseURL)

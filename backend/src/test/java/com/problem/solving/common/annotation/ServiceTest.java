@@ -38,11 +38,11 @@ public abstract class ServiceTest {
     @Mock
     protected BookmarkRepository bookmarkRepository;
     @Mock
-    protected PasswordUtil passwordUtil;
+    protected MemberRepository memberRepository;
     @Mock
     protected ProblemRepository problemRepository;
     @Mock
-    protected MemberRepository memberRepository;
+    protected PasswordUtil passwordUtil;
     @Mock
     protected HttpServletRequest request;
 
