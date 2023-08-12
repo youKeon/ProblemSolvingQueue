@@ -1,16 +1,21 @@
 package com.problem.solving.problem.presentation;
 
 import com.problem.solving.problem.application.ProblemService;
+import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.dto.request.ProblemSaveRequest;
 import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
+import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.dto.response.ProblemResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +27,17 @@ public class ProblemController {
     @GetMapping("/{id}")
     public ResponseEntity<ProblemResponse> getProblem(@PathVariable Long id) {
         ProblemResponse response = problemService.getProblem(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "문제 조회")
+    @GetMapping("/problems")
+    public ResponseEntity<List<ProblemListResponse>> getProblemList(HttpServletRequest request,
+                                                                    @RequestParam(required = false) Integer level,
+                                                                    @RequestParam(required = false) Category category,
+                                                                    @RequestParam(required = false) Boolean isSolved,
+                                                                    Pageable pageable) {
+        List<ProblemListResponse> response = problemService.getProblemList(request, level, category, isSolved, pageable);
         return ResponseEntity.ok(response);
     }
 
