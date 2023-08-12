@@ -8,25 +8,30 @@ import com.problem.solving.member.exception.DuplicatedEmailException;
 import com.problem.solving.member.exception.NoSuchMemberException;
 import com.problem.solving.member.persistence.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import static com.problem.solving.member.util.PasswordUtil.encodePassword;
+import static com.problem.solving.member.util.PasswordUtil.generateSalt;
+
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     public void signup(MemberSignUpRequest request) {
-        if (memberRepository.existsMemberByEmail(request.getEmail())) throw new DuplicatedEmailException();
+        if (memberRepository.existsMemberByEmail(request.getEmail()))
+            throw new DuplicatedEmailException();
 
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        memberRepository.save(request.toEntity(encodedPassword));
+        String salt = generateSalt();
+        String encodedPassword = encodePassword(request.getPassword(), salt);
+
+        memberRepository.save(request.toEntity(encodedPassword, salt));
     }
 
     public void signin(MemberSignInRequest request, HttpSession session) {
@@ -34,7 +39,9 @@ public class MemberService {
                 () -> new NoSuchMemberException("로그인에 실패했습니다.")
         );
 
-        if (!passwordEncoder.matches(request.getPassword(), member.getPassword()))
+        if (!member.getPassword().equals(
+                encodePassword(request.getPassword(), member.getSalt()))
+        )
             throw new NoSuchMemberException("로그인에 실패했습니다.");
 
         SessionInfo sessionInfo = new SessionInfo(member.getId(), member.getEmail());

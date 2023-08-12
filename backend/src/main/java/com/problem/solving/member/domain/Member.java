@@ -21,11 +21,18 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    public Member(String email, String password) {
+    @Column(nullable = false)
+    private String salt;
+
+    public Member(String email,
+                  String password,
+                  String salt) {
         validateEmail(email);
         validatePassword(password);
+
         this.email = email;
         this.password = password;
+        this.salt = salt;
     }
 
     private void validateEmail(String email) {
