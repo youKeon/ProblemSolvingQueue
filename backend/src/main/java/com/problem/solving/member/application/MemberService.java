@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.net.http.HttpRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,27 +35,7 @@ public class MemberService {
         else throw new DuplicatedEmailException();
     }
 
-    public List<ProblemListResponse> getProblemList(HttpServletRequest request,
-                                                    Integer level,
-                                                    Category category,
-                                                    Boolean isSolved,
-                                                    Pageable pageable) {
-
-
-        SessionInfo sessionInfo = getSessionInfo(request);
-        Long memberId = sessionInfo.getId();
-        if (!memberRepository.existsById(memberId))
-            throw new NoSuchProblemException();
-
-        Page<Problem> problemList = problemRepository.findAllProblem(memberId, level, category, isSolved, pageable);
-        if (problemList.getNumberOfElements() == 0) throw new NoSuchProblemException();
-
-        return problemList.stream()
-                .map(ProblemListResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    public SessionInfo createSessionInfo(MemberSignInRequest request) {
+    public SessionInfo signin(MemberSignInRequest request, HttpSession session) {
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
                 () -> new NoSuchMemberException("로그인에 실패했습니다.")
         );
@@ -64,10 +43,15 @@ public class MemberService {
         if (!member.getPassword().equals(request.getPassword()))
             throw new NoSuchMemberException("로그인에 실패했습니다.");
 
-        return new SessionInfo(member.getId(), member.getEmail());
+        SessionInfo sessionInfo = new SessionInfo(member.getId(), member.getEmail());
+        session.setAttribute("sessionInfo", sessionInfo);
+
+        return sessionInfo;
     }
 
     public SessionInfo getSessionInfo(HttpServletRequest request) {
-        return (SessionInfo) request.getSession().getAttribute("sessionInfo");
+        SessionInfo sessionInfo = (SessionInfo) request.getSession().getAttribute("sessionInfo");
+        if (sessionInfo == null) throw new NoSuchMemberException("잘못된 세션 정보입니다.");
+        return sessionInfo;
     }
 }
