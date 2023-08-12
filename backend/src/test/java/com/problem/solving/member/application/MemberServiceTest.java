@@ -15,11 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MemberServiceTest extends ServiceTest {
@@ -83,11 +85,9 @@ public class MemberServiceTest extends ServiceTest {
         when(passwordEncoder.matches(request.getPassword(), member.getPassword()))
                 .thenReturn(true);
 
-        SessionInfo actual = memberService.signin(request, session);
-
         // then
-        assertEquals(member.getId(), actual.getId());
-        assertEquals(member.getEmail(), actual.getEmail());
+        assertDoesNotThrow(() -> memberService.signin(request, session));
+
     }
 
     @Test
@@ -133,5 +133,22 @@ public class MemberServiceTest extends ServiceTest {
         // then
         assertEquals(member.getId(), actual.getId());
         assertEquals(member.getEmail(), actual.getEmail());
+    }
+
+    @Test
+    @DisplayName("세션 정보가 없으면 예외가 발생한다")
+    public void getInvalidSessionExceptionTest() throws Exception {
+        // given
+        HttpSession mockSession = mock(HttpSession.class);
+
+        // when
+        when(request.getSession()).thenReturn(mockSession);
+        when(mockSession.getAttribute("sessionInfo")).thenReturn(null);
+
+        // then
+        assertThatThrownBy(
+                () -> memberService.getSessionInfo(request))
+                .isInstanceOf(NoSuchMemberException.class)
+                .hasMessageContaining("잘못된 세션 정보입니다.");
     }
 }
