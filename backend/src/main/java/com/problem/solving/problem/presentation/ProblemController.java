@@ -43,8 +43,8 @@ public class ProblemController {
 
     @Operation(summary = "가장 먼저 등록한 문제 조회")
     @GetMapping("/poll")
-    public ResponseEntity<ProblemResponse> pollProblem() {
-        ProblemResponse response = problemService.pollProblem();
+    public ResponseEntity<ProblemResponse> pollProblem(HttpServletRequest request) {
+        ProblemResponse response = problemService.pollProblem(request);
         return ResponseEntity.ok(response);
     }
 

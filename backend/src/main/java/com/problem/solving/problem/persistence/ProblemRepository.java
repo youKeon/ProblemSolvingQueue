@@ -10,7 +10,12 @@ import java.util.Optional;
 
 public interface ProblemRepository extends JpaRepository<Problem, Long>, ProblemCustomRepository {
 
-    Optional<Problem> findFirstByOrderByCreatedAtAsc();
+    @Query(value = "SELECT * " +
+            "FROM Problem p " +
+            "WHERE p.member_id = :memberId " +
+            "ORDER BY p.created_at ASC " +
+            "LIMIT 1", nativeQuery = true)
+    Optional<Problem> pollProblem(Long memberId);
 
     @Query(value = "SELECT * " +
                     "FROM Problem " +

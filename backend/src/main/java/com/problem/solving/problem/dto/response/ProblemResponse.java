@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class ProblemResponse {
+    private String title;
     private String url;
     private int level;
     private Category category;
@@ -15,6 +16,7 @@ public class ProblemResponse {
 
     public static ProblemResponse from(Problem problem) {
         return new ProblemResponse(
+                problem.getTitle(),
                 problem.getUrl(),
                 problem.getLevel(),
                 problem.getCategory(),
