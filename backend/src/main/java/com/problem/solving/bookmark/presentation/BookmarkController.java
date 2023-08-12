@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -20,8 +21,9 @@ public class BookmarkController {
 
     @Operation(summary = "북마크 등록")
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody @Valid BookmarkSaveRequest request) {
-        bookmarkService.save(request);
+    public ResponseEntity<Void> save(@RequestBody @Valid BookmarkSaveRequest saveRequest,
+                                     HttpServletRequest request) {
+        bookmarkService.save(request, saveRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     @Operation(summary = "북마크 삭제")
