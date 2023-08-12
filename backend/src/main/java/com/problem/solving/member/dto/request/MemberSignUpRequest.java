@@ -16,8 +16,8 @@ public class MemberSignUpRequest {
     @NotBlank(message = "공백일 수 없습니다.")
     private String password;
 
-    public Member toEntity() {
-        return new Member(email, password);
+    public Member toEntity(String encodedPassword) {
+        return new Member(email, encodedPassword);
     }
 
 }
