@@ -4,47 +4,28 @@ import com.problem.solving.bookmark.domain.Bookmark;
 import com.problem.solving.bookmark.dto.request.BookmarkSaveRequest;
 import com.problem.solving.bookmark.exception.DuplicatedBookmarkException;
 import com.problem.solving.bookmark.exception.NoSuchBookmarkException;
-import com.problem.solving.bookmark.persistence.BookmarkRepository;
+import com.problem.solving.common.annotation.ServiceTest;
 import com.problem.solving.member.domain.Member;
 import com.problem.solving.member.exception.NoSuchMemberException;
-import com.problem.solving.member.persistence.MemberRepository;
 import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.domain.Problem;
 import com.problem.solving.problem.dto.response.ProblemListResponse;
 import com.problem.solving.problem.exception.NoSuchProblemException;
-import com.problem.solving.problem.persistence.ProblemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@Transactional
-public class BookmarkServiceTest {
-    @InjectMocks
-    private BookmarkService bookmarkService;
-    @Mock
-    private BookmarkRepository bookmarkRepository;
-    @Mock
-    private MemberRepository memberRepository;
-    @Mock
-    private ProblemRepository problemRepository;
-    private Bookmark bookmark;
-    private Member member;
-    private Problem problem1;
-    private Problem problem2;
-    private Problem problem3;
+public class BookmarkServiceTest extends ServiceTest {
+
     @BeforeEach
     void setup() {
         bookmark = new Bookmark(member, problem1);
@@ -73,7 +54,6 @@ public class BookmarkServiceTest {
         // when
         when(problemRepository.findById(request.getProblemId())).thenReturn(Optional.ofNullable(problem1));
         when(memberRepository.findById(request.getMemberId())).thenReturn(Optional.ofNullable(member));
-
 
         // then
         assertDoesNotThrow(() -> bookmarkService.save(request));
