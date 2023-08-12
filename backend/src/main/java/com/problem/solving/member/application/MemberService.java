@@ -29,7 +29,7 @@ public class MemberService {
         memberRepository.save(request.toEntity(encodedPassword));
     }
 
-    public SessionInfo signin(MemberSignInRequest request, HttpSession session) {
+    public void signin(MemberSignInRequest request, HttpSession session) {
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
                 () -> new NoSuchMemberException("로그인에 실패했습니다.")
         );
@@ -39,8 +39,6 @@ public class MemberService {
 
         SessionInfo sessionInfo = new SessionInfo(member.getId(), member.getEmail());
         session.setAttribute("sessionInfo", sessionInfo);
-
-        return sessionInfo;
     }
 
     public SessionInfo getSessionInfo(HttpServletRequest request) {
