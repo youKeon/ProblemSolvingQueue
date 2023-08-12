@@ -18,19 +18,19 @@ import java.util.List;
 public class BookmarkController {
     private final BookmarkService bookmarkService;
 
-    @Operation(summary = "save bookmark", description = "북마크 등록")
+    @Operation(summary = "북마크 등록")
     @PostMapping
     public ResponseEntity<Void> save(@RequestBody @Valid BookmarkSaveRequest request) {
         bookmarkService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-    @Operation(summary = "delete bookmark", description = "북마크 삭제")
+    @Operation(summary = "북마크 삭제")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         bookmarkService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-    @Operation(summary = "get bookmark list", description = "북마크 리스트 조회")
+    @Operation(summary = "북마크 리스트 조회")
     @GetMapping("/{id}")
     public ResponseEntity<List<ProblemListResponse>> getBookmarkList(@PathVariable Long id) {
         List<ProblemListResponse> response = bookmarkService.getBookmarkList(id);
