@@ -1,6 +1,7 @@
 package com.problem.solving.member.application;
 
 import com.problem.solving.member.domain.Member;
+import com.problem.solving.member.domain.SessionInfo;
 import com.problem.solving.member.dto.request.MemberSignUpRequest;
 import com.problem.solving.member.exception.DuplicatedEmailException;
 import com.problem.solving.member.persistence.MemberRepository;
@@ -23,12 +24,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,11 +44,15 @@ public class MemberServiceTest {
     private ProblemRepository problemRepository;
     @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpSession session;
     private static final Pageable pageable = PageRequest.of(0, 3);
+    private SessionInfo sessionInfo;
     private Member member;
-    private Problem problem1;
-    private Problem problem2;
-    private Problem problem3;
+    private Problem problem1, problem2, problem3;
     @BeforeEach
     void setup() {
         member = new Member("yukeon97@gmail.com", "123");
@@ -58,6 +66,8 @@ public class MemberServiceTest {
         ReflectionTestUtils.setField(problem1, "id", 1L);
         ReflectionTestUtils.setField(problem2, "id", 2L);
         ReflectionTestUtils.setField(problem3, "id", 3L);
+
+        sessionInfo = new SessionInfo(member.getId(), member.getEmail());
     }
 
     @Test
@@ -65,14 +75,15 @@ public class MemberServiceTest {
     public void getProblemListTest() throws Exception {
         // given
         List<Problem> problems = Arrays.asList(problem1, problem2, problem3);
-
         Page<Problem> problemPage = new PageImpl<>(problems, pageable, problems.size());
 
         // when
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("sessionInfo")).thenReturn(sessionInfo);
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(problemPage);
         when(memberRepository.existsById(member.getId())).thenReturn(true);
 
-        List<ProblemListResponse> result = memberService.getProblemList(member.getId(), 3, Category.DFS, false, pageable);
+        List<ProblemListResponse> result = memberService.getProblemList(request, 3, Category.DFS, false, pageable);
 
         // then
         assertAll(
@@ -94,11 +105,13 @@ public class MemberServiceTest {
     @DisplayName("사용자 정보가 존재하지 않는 경우 예외가 발생한다")
     public void getProblemListNoSuchMemberExceptionTest() throws Exception {
         // given
-        Long 존재하지_않는_사용자_ID = 0L;
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("sessionInfo")).thenReturn(sessionInfo);
+        when(memberRepository.existsById(sessionInfo.getId())).thenReturn(false);
 
         // when, then
         assertThatThrownBy(
-                () -> memberService.getProblemList(존재하지_않는_사용자_ID, 3, Category.DFS, false, pageable))
+                () -> memberService.getProblemList(request, 3, Category.DFS, false, pageable))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
     }
@@ -110,12 +123,14 @@ public class MemberServiceTest {
         Page<Problem> page = Page.empty();
 
         // when
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("sessionInfo")).thenReturn(sessionInfo);
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(page);
         when(memberRepository.existsById(member.getId())).thenReturn(true);
 
         // then
         assertThatThrownBy(
-                () -> memberService.getProblemList(member.getId(), 3, Category.DFS, false, pageable))
+                () -> memberService.getProblemList(request, 3, Category.DFS, false, pageable))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
     }

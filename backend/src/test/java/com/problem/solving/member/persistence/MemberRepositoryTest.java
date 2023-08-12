@@ -9,7 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.mysema.commons.lang.Assert.assertThat;
+import java.util.Optional;
+
 
 public class MemberRepositoryTest extends RepositoryTest {
     private Problem problem1;
@@ -45,11 +46,11 @@ public class MemberRepositoryTest extends RepositoryTest {
         String email = "yukeon97@gmail.com";
 
         // when
-        Member actual = memberRepository.findByEmail(email);
+        Optional<Member> actual = memberRepository.findByEmail(email);
 
         // then
-        Assertions.assertThat(actual.getEmail()).isEqualTo(member.getEmail());
-        Assertions.assertThat(actual.getPassword()).isEqualTo(member.getPassword());
+        Assertions.assertThat(actual.get().getEmail()).isEqualTo(member.getEmail());
+        Assertions.assertThat(actual.get().getPassword()).isEqualTo(member.getPassword());
     }
     
     @Test

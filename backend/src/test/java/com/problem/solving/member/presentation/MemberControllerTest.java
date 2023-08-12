@@ -2,6 +2,7 @@ package com.problem.solving.member.presentation;
 
 import com.problem.solving.common.annotation.ControllerTest;
 import com.problem.solving.member.domain.Member;
+import com.problem.solving.member.domain.SessionInfo;
 import com.problem.solving.member.dto.request.MemberSignUpRequest;
 import com.problem.solving.member.exception.InvalidMemberException;
 import com.problem.solving.problem.domain.Category;
@@ -12,8 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,11 +28,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MemberControllerTest extends ControllerTest {
     private static final String baseURL = "/api/v1/members";
     private static final Pageable pageable = PageRequest.of(0, 3);
+    private MockHttpSession session;
+    private HttpServletRequest request;
     private Member member;
     @BeforeEach
     void setup() {
         member = new Member("yukeon97@gmail.com", "123");
         ReflectionTestUtils.setField(member, "id", 1L);
+
+        session = new MockHttpSession();
+        session.setAttribute("sessionInfo", new SessionInfo(member.getId(), member.getEmail()));
     }
 
     @Test
@@ -41,10 +49,13 @@ public class MemberControllerTest extends ControllerTest {
         ProblemListResponse test3 = new ProblemListResponse("test3", 3, Category.DFS, false);
         List<ProblemListResponse> responses = Arrays.asList(test1, test2, test3);
 
-        given(memberService.getProblemList(member.getId(), 3, Category.DFS, false, pageable)).willReturn(responses);
+        // when
+        when(memberService.getProblemList(request, 3, Category.DFS, false, pageable))
+                .thenReturn(responses);
 
-        // when, then
+        // then
         mockMvc.perform(get(baseURL + "/{id}/problems", member.getId())
+                        .session(session)
                         .param("page", String.valueOf(pageable.getPageNumber()))
                         .param("size", String.valueOf(pageable.getPageSize()))
                         .contentType(MediaType.APPLICATION_JSON))
