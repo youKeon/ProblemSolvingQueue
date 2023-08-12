@@ -3,19 +3,17 @@ package com.problem.solving.member.presentation;
 import com.problem.solving.member.application.MemberService;
 import com.problem.solving.member.dto.request.MemberSignInRequest;
 import com.problem.solving.member.dto.request.MemberSignUpRequest;
-import com.problem.solving.problem.domain.Category;
-import com.problem.solving.problem.dto.response.ProblemListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,10 +30,8 @@ public class MemberController {
 
     @Operation(summary = "로그인")
     @PostMapping("/signin")
-    public ResponseEntity<Void> signin(@RequestBody @Valid MemberSignInRequest request, HttpSession session) {
-        memberService.signin(request, session);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<String> signin(@RequestBody @Valid MemberSignInRequest request, HttpSession session) {
+        String key = memberService.signin(request, session);
+        return ResponseEntity.ok(key);
     }
-
-
 }
