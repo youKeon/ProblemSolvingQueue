@@ -134,7 +134,7 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("Id로 문제를 단건 조회한다")
     public void getProblemById() throws Exception {
         //given
-        ProblemResponse response = new ProblemResponse("test1", 1, Category.DFS, false);
+        ProblemResponse response = new ProblemResponse("title", "test1", 1, Category.DFS, false);
 
         // when
         when(problemService.getProblem(problemId)).thenReturn(response);
@@ -148,7 +148,7 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("가장 먼저 저장한 문제를 조회한다")
     public void pollProblem() throws Exception {
         // given
-        ProblemResponse response = new ProblemResponse("test1", 1, Category.DFS, false);
+        ProblemResponse response = new ProblemResponse("title", "test1", 1, Category.DFS, false);
 
         // when
         when(problemService.pollProblem(request)).thenReturn(response);
