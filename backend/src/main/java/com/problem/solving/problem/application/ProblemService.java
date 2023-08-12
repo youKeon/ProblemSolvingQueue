@@ -34,8 +34,13 @@ public class ProblemService {
 
 
 
-    public void save(ProblemSaveRequest request) {
-        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(
+    public void save(HttpServletRequest servletRequest,
+                     ProblemSaveRequest request) {
+
+        SessionInfo sessionInfo = memberService.getSessionInfo(servletRequest);
+        Long memberId = sessionInfo.getId();
+
+        Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new NoSuchMemberException()
         );
         Problem problem = request.toEntity(member);

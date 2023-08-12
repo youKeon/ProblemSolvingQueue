@@ -14,9 +14,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Getter
 public class ProblemSaveRequest {
-    @NotNull(message = "공백일 수 없습니다.")
-    private Long memberId;
-
     @NotBlank(message = "공백일 수 없습니다.")
     private String url;
     @NotBlank(message = "공백일 수 없습니다.")

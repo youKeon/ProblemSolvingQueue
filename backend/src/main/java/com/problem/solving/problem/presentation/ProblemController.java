@@ -50,8 +50,9 @@ public class ProblemController {
 
     @Operation(summary = "문제 등록")
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody @Valid ProblemSaveRequest request) {
-        problemService.save(request);
+    public ResponseEntity<Void> save(HttpServletRequest servletRequest,
+                                     @RequestBody @Valid ProblemSaveRequest request) {
+        problemService.save(servletRequest, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
