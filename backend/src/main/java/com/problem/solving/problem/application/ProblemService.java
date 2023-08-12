@@ -52,7 +52,7 @@ public class ProblemService {
         SessionInfo sessionInfo = memberService.getSessionInfo(request);
         Long memberId = sessionInfo.getId();
         if (!memberRepository.existsById(memberId))
-            throw new NoSuchProblemException();
+            throw new NoSuchMemberException();
 
         Page<Problem> problemList = problemRepository.findAllProblem(memberId, level, category, isSolved, pageable);
         if (problemList.getNumberOfElements() == 0) throw new NoSuchProblemException("문제가 존재하지 않습니다.");
@@ -77,8 +77,14 @@ public class ProblemService {
         return ProblemResponse.from(problem);
     }
 
-    public ProblemResponse pollProblem() {
-        Problem problem = problemRepository.findFirstByOrderByCreatedAtAsc().orElseThrow(
+    public ProblemResponse pollProblem(HttpServletRequest request) {
+        SessionInfo sessionInfo = memberService.getSessionInfo(request);
+        Long memberId = sessionInfo.getId();
+
+        if (!memberRepository.existsById(memberId))
+            throw new NoSuchMemberException();
+
+        Problem problem = problemRepository.pollProblem(memberId).orElseThrow(
                 () -> new NoSuchProblemException()
         );
         return ProblemResponse.from(problem);
