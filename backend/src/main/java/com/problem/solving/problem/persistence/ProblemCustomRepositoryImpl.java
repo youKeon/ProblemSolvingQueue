@@ -2,11 +2,9 @@ package com.problem.solving.problem.persistence;
 
 import com.problem.solving.problem.domain.Category;
 import com.problem.solving.problem.domain.Problem;
-import com.problem.solving.problem.domain.QProblem;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -48,5 +46,17 @@ public class ProblemCustomRepositoryImpl implements ProblemCustomRepository {
                 .collect(Collectors.toList());
 
         return PageableExecutionUtils.getPage(problemList, pageable, result::size);
+    }
+
+    @Override
+    public Optional<Problem> pollProblem(Long memberId) {
+        return Optional.ofNullable(
+                jpaQueryFactory
+                        .selectFrom(problem)
+                        .where(problem.member.id.eq(memberId))
+                        .orderBy(problem.createdAt.asc())
+                        .limit(1)
+                        .fetchOne()
+        );
     }
 }
