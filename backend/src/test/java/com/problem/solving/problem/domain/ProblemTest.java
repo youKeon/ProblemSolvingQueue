@@ -22,7 +22,7 @@ public class ProblemTest {
     public void createProblem() throws Exception {
         //given, when, then
 
-        assertDoesNotThrow(() -> new Problem(member, "title", "test", 1, Category.DFS, false));
+        assertDoesNotThrow(() -> new Problem(member, "title", "url", 1, Category.DFS, false));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class ProblemTest {
     public void createProblemEmptyLevelException() throws Exception {
         //given, when, then
         Assertions.assertThatThrownBy(
-                        () -> new Problem(member, "title", "test", null, Category.TWO_POINTER, false))
+                        () -> new Problem(member, "title", "url", null, Category.TWO_POINTER, false))
                 .isInstanceOf(InvalidProblemException.class)
                 .hasMessageContaining("난이도는 1 이상 5 이하입니다.");
     }
@@ -49,7 +49,7 @@ public class ProblemTest {
     @DisplayName("문제 생성 시 level이 1보다 작으면 예외가 발생한다")
     public void createProblemLowLevelException() throws Exception {
         //given, when, then
-        assertThatThrownBy(() -> new Problem(member, "title", "test", 0, Category.TWO_POINTER, false))
+        assertThatThrownBy(() -> new Problem(member, "title", "url", 0, Category.TWO_POINTER, false))
                 .isInstanceOf(InvalidProblemException.class)
                 .hasMessageContaining("난이도는 1 이상 5 이하입니다.");
     }
@@ -58,7 +58,7 @@ public class ProblemTest {
     @DisplayName("문제 생성 시 level이 5보다 크면 예외가 발생한다")
     public void createProblemHighLevelException() throws Exception {
         //given, when, then
-        assertThatThrownBy(() -> new Problem(member, "title", "test", 6, Category.TWO_POINTER, false))
+        assertThatThrownBy(() -> new Problem(member, "title", "url", 6, Category.TWO_POINTER, false))
                 .isInstanceOf(InvalidProblemException.class)
                 .hasMessageContaining("난이도는 1 이상 5 이하입니다.");
     }
