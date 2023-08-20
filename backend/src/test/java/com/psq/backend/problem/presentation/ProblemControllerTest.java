@@ -1,13 +1,13 @@
-package com.problem.solving.problem.presentation;
+package com.psq.backend.problem.presentation;
 
-import com.problem.solving.common.annotation.ControllerTest;
-import com.problem.solving.member.domain.Member;
-import com.problem.solving.member.domain.SessionInfo;
-import com.problem.solving.problem.domain.Category;
-import com.problem.solving.problem.dto.request.ProblemSaveRequest;
-import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
-import com.problem.solving.problem.dto.response.ProblemListResponse;
-import com.problem.solving.problem.dto.response.ProblemResponse;
+import com.psq.backend.common.annotation.ControllerTest;
+import com.psq.backend.member.domain.Member;
+import com.psq.backend.member.domain.SessionInfo;
+import com.psq.backend.problem.domain.Category;
+import com.psq.backend.problem.dto.request.ProblemSaveRequest;
+import com.psq.backend.problem.dto.request.ProblemUpdateRequest;
+import com.psq.backend.problem.dto.response.ProblemListResponse;
+import com.psq.backend.problem.dto.response.ProblemResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
