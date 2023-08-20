@@ -1,7 +1,7 @@
 
 .DS_Store
 
-backend1/src/main/resources/application-local.yml
+backend/src/main/resources/application-local.yml
 
 .env
 
