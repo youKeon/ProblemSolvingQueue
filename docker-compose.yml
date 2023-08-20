@@ -14,7 +14,7 @@ services:
   springboot:
     container_name: springboot
     build:
-      context: ./backend
+      context: backend1
     restart: always
     ports:
       - "8080:8080"

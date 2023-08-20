@@ -1,149 +1,148 @@
 plugins {
-	id 'java'
-	id 'jacoco'
-	id 'org.springframework.boot' version '2.7.8'
-	id 'io.spring.dependency-management' version '1.1.2'
+    id 'java'
+    id 'jacoco'
+    id 'org.springframework.boot' version '2.7.8'
+    id 'io.spring.dependency-management' version '1.1.2'
 
-	// QueryDSL
-	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    // QueryDSL
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
-group = 'com.problem'
+group = 'com.psq'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '11'
+    sourceCompatibility = '11'
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-	// QueryDSL
-	querydsl.extendsFrom compileClasspath
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    // QueryDSL
+    querydsl.extendsFrom compileClasspath
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	// Spring-Boot
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // Spring-Boot
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// Batch
-	implementation 'org.springframework.boot:spring-boot-starter-batch'
+    // Batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 
-	// DB
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    // DB
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 
-	// JPA
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	// Lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	// QueryDSL
-	implementation "com.querydsl:querydsl-jpa:5.0.0"
-	implementation "com.querydsl:querydsl-apt:5.0.0"
+    // QueryDSL
+    implementation "com.querydsl:querydsl-jpa:5.0.0"
+    implementation "com.querydsl:querydsl-apt:5.0.0"
 
-	// Slack
-	implementation("com.slack.api:bolt:1.18.0")
-	implementation("com.slack.api:bolt-servlet:1.18.0")
-	implementation("com.slack.api:bolt-jetty:1.18.0")
+    // Slack
+    implementation("com.slack.api:bolt:1.18.0")
+    implementation("com.slack.api:bolt-servlet:1.18.0")
+    implementation("com.slack.api:bolt-jetty:1.18.0")
 
-	// Swagger
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
 
-	// Test
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.batch:spring-batch-test'
-	runtimeOnly 'com.h2database:h2'
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.batch:spring-batch-test'
+    runtimeOnly 'com.h2database:h2'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
-	finalizedBy 'jacocoTestReport'
+    useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }
 
 // ==================== QueryDSL ==================== //
 def querydslDir = "$buildDir/generated/querydsl"
 
 querydsl {
-	jpa = true
-	querydslSourcesDir = querydslDir
+    jpa = true
+    querydslSourcesDir = querydslDir
 }
 
 sourceSets {
-	main.java.srcDir querydslDir
+    main.java.srcDir querydslDir
 }
 
 compileQuerydsl{
-	options.annotationProcessorPath = configurations.querydsl
+    options.annotationProcessorPath = configurations.querydsl
 }
 
 // ==================== Jacoco ==================== //
 
 jacoco {
-	toolVersion = "0.8.7"
+    toolVersion = "0.8.7"
 }
 
 jacocoTestReport {
-	reports {
-		xml.required = true
-		csv.required = true
-		html.required = true
-	}
-	finalizedBy 'jacocoTestCoverageVerification'
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: [
-					"**/Q*",
-					'**/dto/**',
-					'**/exception/**',
-					'**/batch/**',
-					"**/*Application*",
-					"**/global/**"
-			])
-		}))
-	}
+    reports {
+        xml.required = true
+        csv.required = true
+        html.required = true
+    }
+    finalizedBy 'jacocoTestCoverageVerification'
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/Q*",
+                    '**/dto/**',
+                    '**/exception/**',
+                    '**/batch/**',
+                    "**/*Application*",
+                    "**/global/**"
+            ])
+        }))
+    }
 }
 
 jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			element = 'CLASS'
+    violationRules {
+        rule {
+            element = 'CLASS'
 
-			limit {
-				counter = 'BRANCH'
-				value = 'COVEREDRATIO'
-				minimum = 0.80
-			}
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
 
-			limit {
-				counter = 'LINE'
-				value = 'COVEREDRATIO'
-				minimum = 0.70
-			}
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.70
+            }
 
-			limit {
-				counter = 'METHOD'
-				value = 'COVEREDRATIO'
-				minimum = 0.60
-			}
-			excludes = [
-					'*.*Application',
-					'*.Q*',
-					'*.*Exception',
-					'*.dto.*',
-					'*.batch.*',
-					'*.global.*',
-					'*.BaseEntity',
-			]
-		}
-	}
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+            excludes = [
+                    '*.*Application',
+                    '*.Q*',
+                    '*.*Exception',
+                    '*.dto.*',
+                    '*.batch.*',
+                    '*.global.*',
+                    '*.BaseEntity',
+            ]
+        }
+    }
 }
-
