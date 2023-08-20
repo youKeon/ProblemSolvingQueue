@@ -5,6 +5,7 @@ on:
     branches: ["master"]
 
 env:
+  PROJECT_NAME: psq
   S3_BUCKET_NAME: problemsolvingqueue
   CODE_DEPLOY_APPLICATION_NAME: psq
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: psq-codeDeploy
@@ -44,13 +45,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Upload to AWS S3
-        run: |
-          aws deploy push \
-            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-            --ignore-hidden-files \
-            --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
-            --source .
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
 
       - name: Deploy to AWS EC2 from S3
         run: |
