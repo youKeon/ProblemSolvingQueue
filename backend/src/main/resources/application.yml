@@ -4,6 +4,11 @@ spring:
 
   batch:
     job:
-      enabled: false # ??? ??? ???? ?? ??
+      enabled: false
     jdbc:
-      initialize-schema: always # ?? ??? ??
+      initialize-schema: always
+
+server:
+  servlet:
+    session:
+      timeout: 315360000

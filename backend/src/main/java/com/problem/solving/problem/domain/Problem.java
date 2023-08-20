@@ -1,7 +1,9 @@
 package com.problem.solving.problem.domain;
 
 import com.problem.solving.common.BaseEntity;
-import lombok.Builder;
+import com.problem.solving.member.domain.Member;
+import com.problem.solving.problem.dto.request.ProblemUpdateRequest;
+import com.problem.solving.problem.exception.InvalidProblemException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,26 +17,69 @@ public class Problem extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String url;
-    private int level;
+
+    @Column(nullable = false)
+    private String title;
+    @Column(nullable = false)
+    private Integer level;
     @Enumerated(EnumType.STRING)
-    private Type type;
+    @Column(nullable = false)
+    private Category category;
+    @Column(nullable = false)
     private boolean isSolved = false;
 
-    private boolean isDeleted = true;
+    private boolean isDeleted = false;
 
-    @Builder
-    public Problem(Long id,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    public Problem(Member member,
+                   String title,
                    String url,
-                   int level,
-                   Type type) {
-        this.id = id;
+                   Integer level,
+                   Category category,
+                   boolean isSolved) {
+
+        validateProblemUrl(url);
+        validateProblemLevel(level);
+        this.title = title;
+        this.member = member;
         this.url = url;
         this.level = level;
-        this.type = type;
+        this.category = category;
+        this.isSolved = isSolved;
     }
 
     public void softDelete() {
         isDeleted = true;
+    }
+
+    public void update(ProblemUpdateRequest request) {
+        validateProblemUrl(request.getUrl());
+        validateProblemLevel(request.getLevel());
+
+        this.url = request.getUrl();
+        this.level = request.getLevel();
+        this.category = request.getCategory();
+        this.isSolved = request.getIsSolved();
+    }
+
+    private void validateProblemUrl(String url) {
+        if (url.length() == 0) {
+            throw new InvalidProblemException("URL은 공백일 수 없습니다.");
+        }
+    }
+
+    private void validateProblemLevel(Integer level) {
+        if (level == null || level <= 0 || level >= 6) {
+            throw new InvalidProblemException("난이도는 1 이상 5 이하입니다.");
+        }
+    }
+
+    public void recovery() {
+        isDeleted = false;
     }
 }
