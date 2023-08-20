@@ -10,7 +10,6 @@ env:
 
 jobs:
   build:
-    name: CD
     runs-on: ubuntu-latest
 
     steps:
