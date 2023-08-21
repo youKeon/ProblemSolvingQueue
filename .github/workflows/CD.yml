@@ -49,7 +49,7 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
 
       - name: Copy script
-        run: cp ./scripts/*.sh ./deploy
+        run: cp ./backend/scripts/*.sh ./deploy
 
       - name: Deploy to AWS EC2 from S3
         run: |
