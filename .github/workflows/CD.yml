@@ -55,5 +55,5 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$S3_BUCKET_NAME/$GITHUB_SHA.zip \
+          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=psq/$GITHUB_SHA.zip \
           --region ap-northeast-2 \
