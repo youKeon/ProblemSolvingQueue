@@ -146,7 +146,3 @@ jacocoTestCoverageVerification {
         }
     }
 }
-
-jar {
-    enabled = false
-}
