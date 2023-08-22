@@ -1,6 +1,5 @@
 #!/bin/bash
 JAR_NAME=backend-0.0.1-SNAPSHOT.jar
-
 echo "> build 파일명: $JAR_NAME" >> /home/ubuntu/app/deploy.log
 
 DEPLOY_PATH=/home/ubuntu/app/
