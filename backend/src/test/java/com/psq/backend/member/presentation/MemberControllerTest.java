@@ -29,7 +29,7 @@ public class MemberControllerTest extends ControllerTest {
     @DisplayName("이메일과 비밀번호를 받아 회원가입을 한다")
     public void signUpMember() throws Exception {
         // given
-        MemberSignUpRequest request = new MemberSignUpRequest(member.getEmail(), member.getPassword());
+        MemberSignUpRequest request = new MemberSignUpRequest("email@email.com", "password");
 
         // when, then
         mockMvc.perform(post(baseURL + "/signup")
@@ -72,7 +72,7 @@ public class MemberControllerTest extends ControllerTest {
     @DisplayName("회원가입 시 비밀번호가 공백인 경우 예외가 발생한다")
     public void signUpMemberInvalidPasswordEmptyException() throws Exception {
         // given
-        MemberSignUpRequest request = new MemberSignUpRequest(member.getEmail(), "");
+        MemberSignUpRequest request = new MemberSignUpRequest("email@email.com", "");
 
         // when, then
         mockMvc.perform(post(baseURL + "/signup")

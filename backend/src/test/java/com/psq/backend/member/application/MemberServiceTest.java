@@ -47,7 +47,7 @@ public class MemberServiceTest extends ServiceTest {
     @DisplayName("이메일과 비밀번호를 받아 회원가입을 한다")
     void signUpTest() {
         // given
-        MemberSignUpRequest request = new MemberSignUpRequest(member.getEmail(), member.getPassword());
+        MemberSignUpRequest request = new MemberSignUpRequest("email@email.com", "password");
 
         // when
         when(memberRepository.existsMemberByEmail(request.getEmail())).thenReturn(false);
@@ -60,7 +60,7 @@ public class MemberServiceTest extends ServiceTest {
     @DisplayName("회원가입 시 이메일이 중복되면 예외가 발생한다")
     void signUpDuplicatedEmailExceptionTest() {
         // given
-        MemberSignUpRequest request = new MemberSignUpRequest(member.getEmail(), member.getPassword());
+        MemberSignUpRequest request = new MemberSignUpRequest("email@email.com", "password");
 
         // when
         when(memberRepository.existsMemberByEmail(request.getEmail())).thenReturn(true);
