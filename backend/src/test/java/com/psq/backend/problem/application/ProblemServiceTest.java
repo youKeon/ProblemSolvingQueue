@@ -24,6 +24,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,13 +103,11 @@ public class ProblemServiceTest extends ServiceTest {
     @Test
     @DisplayName("문제 리스트가 없는 경우 예외가 발생한다")
     public void getProblemsEmptyException() throws Exception {
-        // given
-        Page<Problem> page = Page.empty();
-
         // when
         when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
         when(memberRepository.existsById(member.getId())).thenReturn(true);
-        when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(page);
+        when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable))
+                .thenReturn(Page.empty());
 
         // then
         assertThatThrownBy(
@@ -191,13 +190,13 @@ public class ProblemServiceTest extends ServiceTest {
         when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
         when(memberRepository.existsById(member.getId())).thenReturn(true);
 
-        ProblemResponse result = problemService.pollProblem(request);
+        ProblemResponse actual = problemService.pollProblem(request);
 
         // then
         assertAll(
-                () -> assertThat(result.getUrl()).isEqualTo(problem1.getUrl()),
-                () -> assertThat(result.getLevel()).isEqualTo(problem1.getLevel()),
-                () -> assertThat(result.getCategory()).isEqualTo(problem1.getCategory())
+                () -> assertThat(actual.getUrl()).isEqualTo(problem1.getUrl()),
+                () -> assertThat(actual.getLevel()).isEqualTo(problem1.getLevel()),
+                () -> assertThat(actual.getCategory()).isEqualTo(problem1.getCategory())
         );
     }
 
@@ -220,13 +219,13 @@ public class ProblemServiceTest extends ServiceTest {
     public void getProblemById() throws Exception {
         // when
         when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
-        ProblemResponse result = problemService.getProblem(problem1.getId());
+        ProblemResponse actual = problemService.getProblem(problem1.getId());
 
         // then
         assertAll(
-                () -> assertThat(result.getUrl()).isEqualTo(problem1.getUrl()),
-                () -> assertThat(result.getCategory()).isEqualTo(problem1.getCategory()),
-                () -> assertThat(result.getLevel()).isEqualTo(problem1.getLevel())
+                () -> assertThat(actual.getUrl()).isEqualTo(problem1.getUrl()),
+                () -> assertThat(actual.getCategory()).isEqualTo(problem1.getCategory()),
+                () -> assertThat(actual.getLevel()).isEqualTo(problem1.getLevel())
         );
     }
 

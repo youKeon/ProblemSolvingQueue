@@ -13,15 +13,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.HttpServletRequest;
 
-@WebMvcTest({ProblemController.class,
+@WebMvcTest({
+        ProblemController.class,
         MemberController.class,
-        BookmarkController.class})
+        BookmarkController.class
+})
 @ActiveProfiles("test")
 public abstract class ControllerTest {
     @Autowired

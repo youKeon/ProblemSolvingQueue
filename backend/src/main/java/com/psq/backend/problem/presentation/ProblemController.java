@@ -31,7 +31,7 @@ public class ProblemController {
     }
 
     @Operation(summary = "문제 조회")
-    @GetMapping("/problems")
+    @GetMapping
     public ResponseEntity<List<ProblemListResponse>> getProblemList(HttpServletRequest request,
                                                                     @RequestParam(required = false) Integer level,
                                                                     @RequestParam(required = false) Category category,

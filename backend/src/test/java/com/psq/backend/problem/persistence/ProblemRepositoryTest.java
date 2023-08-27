@@ -4,7 +4,6 @@ import com.psq.backend.common.annotation.RepositoryTest;
 import com.psq.backend.member.domain.Member;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +14,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProblemRepositoryTest extends RepositoryTest {
 
@@ -55,7 +53,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
         Optional<Problem> actual = problemRepository.pollProblem(member.getId());
 
         // then
-        Assertions.assertThat(problem1.getUrl()).isEqualTo(actual.get().getUrl());
+        assertThat(problem1.getUrl()).isEqualTo(actual.get().getUrl());
     }
 
     @Test
@@ -68,7 +66,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
         Optional<Problem> actual = problemRepository.pollProblem(member.getId());
 
         // then
-        Assertions.assertThat(actual).isEmpty();
+        assertThat(actual).isEmpty();
     }
     
     @Test
@@ -78,10 +76,11 @@ public class ProblemRepositoryTest extends RepositoryTest {
         Page<Problem> result = problemRepository.findAllProblem(member.getId(), 1, Category.DFS, false, pageable);
 
         // then
-        List<Problem> problems = result.getContent();
-        assertEquals(2, problems.size());
-        assertTrue(problems.contains(problem1));
-        assertTrue(problems.contains(problem2));
+        List<Problem> problemList = result.getContent();
+
+        assertThat(problemList.size()).isEqualTo(2);
+        assertThat(problemList.get(0)).usingRecursiveComparison().isEqualTo(problem1);
+        assertThat(problemList.get(1)).usingRecursiveComparison().isEqualTo(problem2);
     }
 
     @Test
@@ -94,7 +93,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
         Page<Problem> result = problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable);
 
         // then
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     private void clearProblem() {

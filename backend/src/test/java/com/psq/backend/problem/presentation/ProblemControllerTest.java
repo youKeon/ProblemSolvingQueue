@@ -12,14 +12,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ProblemControllerTest extends ControllerTest {
@@ -34,28 +37,46 @@ public class ProblemControllerTest extends ControllerTest {
 
         session = new MockHttpSession();
         session.setAttribute("sessionInfo", new SessionInfo(member.getId(), member.getEmail()));
+        request = new MockHttpServletRequest();
     }
 
     @Test
     @DisplayName("문제 리스트를 조회된다")
     public void getProblems() throws Exception {
         // given
-        ProblemListResponse test1 = new ProblemListResponse("test1", 1, Category.DFS, false);
-        ProblemListResponse test2 = new ProblemListResponse("test2", 2, Category.DFS, false);
+        ProblemListResponse test1 = new ProblemListResponse("test1", 3, Category.DFS, false);
+        ProblemListResponse test2 = new ProblemListResponse("test2", 3, Category.DFS, false);
         ProblemListResponse test3 = new ProblemListResponse("test3", 3, Category.DFS, false);
-        List<ProblemListResponse> responses = Arrays.asList(test1, test2, test3);
+        List<ProblemListResponse> responseList = Arrays.asList(test1, test2, test3);
 
         // when
-        when(problemService.getProblemList(request, 3, Category.DFS, false, pageable))
-                .thenReturn(responses);
+        when(problemService.getProblemList(any(), any(), any(), any(), any()))
+                .thenReturn(responseList);
 
         // then
-        mockMvc.perform(get(baseURL + "/problems")
+        mockMvc.perform(get(baseURL)
                         .session(session)
+                        .param("level", "3")
+                        .param("category", "DFS")
+                        .param("isSolved", "false")
                         .param("page", String.valueOf(pageable.getPageNumber()))
-                        .param("size", String.valueOf(pageable.getPageSize()))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                        .param("size", String.valueOf(pageable.getPageSize())))
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].url").value(responseList.get(0).getUrl()))
+                .andExpect(jsonPath("$[0].level").value(responseList.get(0).getLevel()))
+                .andExpect(jsonPath("$[0].solved").value(responseList.get(0).isSolved()))
+                .andExpect(jsonPath("$[0].category").value("DFS"))
+
+                .andExpect(jsonPath("$[1].url").value(responseList.get(1).getUrl()))
+                .andExpect(jsonPath("$[1].level").value(responseList.get(1).getLevel()))
+                .andExpect(jsonPath("$[1].solved").value(responseList.get(1).isSolved()))
+                .andExpect(jsonPath("$[1].category").value("DFS"))
+
+                .andExpect(jsonPath("$[2].url").value(responseList.get(2).getUrl()))
+                .andExpect(jsonPath("$[2].level").value(responseList.get(2).getLevel()))
+                .andExpect(jsonPath("$[2].solved").value(responseList.get(2).isSolved()))
+                .andExpect(jsonPath("$[2].category").value("DFS"));
     }
 
     @Test
@@ -141,7 +162,12 @@ public class ProblemControllerTest extends ControllerTest {
 
         // then
         mockMvc.perform(get(baseURL + "/{id}", problemId))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(response.getTitle()))
+                .andExpect(jsonPath("$.url").value(response.getUrl()))
+                .andExpect(jsonPath("$.level").value(response.getLevel()))
+                .andExpect(jsonPath("$.solved").value(response.isSolved()))
+                .andExpect(jsonPath("$.category").value("DFS"));
     }
 
     @Test
@@ -151,11 +177,16 @@ public class ProblemControllerTest extends ControllerTest {
         ProblemResponse response = new ProblemResponse("title", "test1", 1, Category.DFS, false);
 
         // when
-        when(problemService.pollProblem(request)).thenReturn(response);
+        when(problemService.pollProblem(any())).thenReturn(response);
 
         // then
         mockMvc.perform(get(baseURL + "/poll"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(response.getTitle()))
+                .andExpect(jsonPath("$.url").value(response.getUrl()))
+                .andExpect(jsonPath("$.level").value(response.getLevel()))
+                .andExpect(jsonPath("$.solved").value(response.isSolved()))
+                .andExpect(jsonPath("$.category").value("DFS"));
     }
 
     @Test
