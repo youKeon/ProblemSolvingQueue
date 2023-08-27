@@ -17,6 +17,8 @@ import static com.psq.backend.problem.domain.Category.DFS;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class BookmarkControllerTest extends ControllerTest {
@@ -37,12 +39,7 @@ public class BookmarkControllerTest extends ControllerTest {
         // given
         BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(problemId);
 
-        // when
-        willDoNothing()
-                .given(bookmarkService)
-                        .save(request, saveRequest);
-
-        // then
+        // when, then
         mockMvc.perform(post(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -105,6 +102,17 @@ public class BookmarkControllerTest extends ControllerTest {
 
         // then
         mockMvc.perform(get(baseURL + "/{id}", memberId))
-                .andExpect(status().isOk());
+                .andDo(print())
+                .andExpect(status().isOk())
+
+                .andExpect(jsonPath("$[0].url").value(responses.get(0).getUrl()))
+                .andExpect(jsonPath("$[0].level").value(responses.get(0).getLevel()))
+                .andExpect(jsonPath("$[0].category").value("DFS"))
+                .andExpect(jsonPath("$[0].solved").value(responses.get(0).isSolved()))
+
+                .andExpect(jsonPath("$[1].url").value(responses.get(1).getUrl()))
+                .andExpect(jsonPath("$[1].level").value(responses.get(1).getLevel()))
+                .andExpect(jsonPath("$[1].category").value("BFS"))
+                .andExpect(jsonPath("$[1].solved").value(responses.get(1).isSolved()));
     }
 }

@@ -53,7 +53,7 @@ public class BookmarkServiceTest extends ServiceTest {
     @DisplayName("사용자 id와 문제 id를 받아 북마크에 등록한다")
     void saveBookmarkTest() {
         // given
-        BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(1L);
+        BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(problem1.getId());
 
         // when
         when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);

@@ -8,6 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
+    /**
+     * TODO
+     * QueryDSL로 리팩토링
+     */
     @Query("SELECT b FROM Bookmark b JOIN FETCH b.problem WHERE b.member.id = :memberId")
     List<Bookmark> findBookmarkByFetchJoin(Long memberId);
 
