@@ -279,7 +279,7 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("(논리적)삭제된 문제를 되돌린다")
+    @DisplayName("삭제된 문제를 되돌린다")
     public void recoveryProblem() throws Exception {
         // given
         problem1.softDelete();
