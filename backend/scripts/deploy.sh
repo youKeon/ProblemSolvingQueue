@@ -10,6 +10,7 @@ cp $BUILD_JAR_PATH $DEPLOY_PATH
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') > 현재 실행중인 애플리케이션 pid 확인" >> /home/ubuntu/app/deploy.log
 CURRENT_PID=$(pgrep -f $JAR_NAME)
+echo "$(date '+%Y-%m-%d %H:%M:%S') > 현재 실행중인 애플리케이션 PID: $CURRENT_PID" >> /home/ubuntu/app/deploy.log
 
 if [ -z $CURRENT_PID ]
 then
