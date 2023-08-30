@@ -8,19 +8,18 @@ BUILD_JAR_PATH=/home/ubuntu/app/build/libs/$JAR_NAME
 echo "$(date '+%Y-%m-%d %H:%M:%S') > build 파일 복사" >> /home/ubuntu/app/deploy.log
 cp $BUILD_JAR_PATH $DEPLOY_PATH
 
-echo "$(date '+%Y-%m-%d %H:%M:%S') > 현재 실행중인 애플리케이션 pid 확인" >> /home/ubuntu/app/deploy.log
+echo "$(date '+%Y-%m-%d %H:%M:%S') > 현재 실행 중인 애플리케이션 pid 확인" >> /home/ubuntu/app/deploy.log
 CURRENT_PID=$(pgrep -f $JAR_NAME)
-echo "$(date '+%Y-%m-%d %H:%M:%S') > 현재 실행중인 애플리케이션 PID: $CURRENT_PID" >> /home/ubuntu/app/deploy.log
 
 if [ -z $CURRENT_PID ]
 then
-  echo "$(date '+%Y-%m-%d %H:%M:%S') > 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다." >> /home/ubuntu/app/deploy.log
+  echo "$(date '+%Y-%m-%d %H:%M:%S') > 현재 구동 중인 애플리케이션이 없습니다." >> /home/ubuntu/app/deploy.log
 else
-  echo "$(date '+%Y-%m-%d %H:%M:%S') > kill -15 $CURRENT_PID"
+  echo "$(date '+%Y-%m-%d %H:%M:%S') > kill -15 $CURRENT_PID" >> /home/ubuntu/app/deploy.log
   kill -15 $CURRENT_PID
   sleep 5
 fi
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
-echo "$(date '+%Y-%m-%d %H:%M:%S') > DEPLOY_JAR 배포" >> /home/ubuntu/app/deploy.log
+echo "$(date '+%Y-%m-%d %H:%M:%S') > JAR 실행" >> /home/ubuntu/app/deploy.log
 nohup java -Duser.timezone=Asia/Seoul -jar $DEPLOY_JAR >> /home/ubuntu/deploy.log 2>/home/ubuntu/app/deploy_err.log &
