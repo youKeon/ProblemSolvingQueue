@@ -17,7 +17,7 @@ then
 else
   echo "$(date '+%Y-%m-%d %H:%M:%S') > kill -15 $CURRENT_PID" >> /home/ubuntu/app/deploy.log
   kill -15 $CURRENT_PID
-  sleep 5
+  sleep 10
 fi
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
