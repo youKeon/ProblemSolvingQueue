@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.psq.backend.bookmark.exception.DuplicatedBookmarkException;
 import com.psq.backend.bookmark.exception.NoSuchBookmarkException;
+import com.psq.backend.member.exception.DuplicatedEmailException;
 import com.psq.backend.member.exception.InvalidMemberException;
 import com.psq.backend.member.exception.NoSuchMemberException;
 import com.psq.backend.problem.exception.InvalidProblemException;
@@ -60,6 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             InvalidProblemException.class,
             InvalidMemberException.class,
             DuplicatedBookmarkException.class,
+            DuplicatedEmailException.class,
             NotDeletedProblemException.class,
     })
     public ResponseEntity<ErrorResponse> handleInvalidData(final RuntimeException e) {
