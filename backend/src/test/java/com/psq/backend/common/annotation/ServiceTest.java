@@ -43,8 +43,6 @@ public abstract class ServiceTest {
     @Mock
     protected ProblemRepository problemRepository;
     @Mock
-    protected PasswordUtil passwordUtil;
-    @Mock
     protected HttpServletRequest request;
 
     protected static Pageable pageable = PageRequest.of(0, 3);

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,5 +60,16 @@ public class ProblemCustomRepositoryImpl implements ProblemCustomRepository {
                         .limit(1)
                         .fetchOne()
         );
+    }
+
+    @Override
+    public long deleteSoftDeletedProblem() {
+        return jpaQueryFactory
+                .delete(problem)
+                .where(
+                        problem.isDeleted.isTrue(),
+                        problem.updatedAt.before(LocalDateTime.now().minusDays(3))
+                )
+                .execute();
     }
 }

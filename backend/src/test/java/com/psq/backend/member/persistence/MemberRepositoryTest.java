@@ -13,30 +13,11 @@ import java.util.Optional;
 
 
 public class MemberRepositoryTest extends RepositoryTest {
-    private Problem problem1;
-    private Problem problem2;
     private Member member;
 
     @BeforeEach
     void setup() {
         member = memberRepository.save(new Member("yukeon97@gmail.com", "123", "salt"));
-        problem1 = problemRepository.save(
-                new Problem(
-                        this.member,
-                        "title",
-                        "test",
-                        1,
-                        Category.DFS,
-                        false));
-
-        problem2 = problemRepository.save(
-                new Problem(
-                        this.member,
-                        "title",
-                        "test",
-                        1,
-                        Category.DFS,
-                        false));
     }
 
     @Test

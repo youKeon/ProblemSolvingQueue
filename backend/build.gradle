@@ -104,7 +104,8 @@ jacocoTestReport {
                     "**/Q*",
                     '**/dto/**',
                     '**/exception/**',
-                    '**/batch/**',
+                    '**/BaseEntity*',
+//                    '**/batch/**',
                     "**/*Application*",
                     "**/global/**"
             ])
@@ -139,7 +140,8 @@ jacocoTestCoverageVerification {
                     '*.Q*',
                     '*.*Exception',
                     '*.dto.*',
-                    '*.batch.*',
+//                    '*.batch.*',
+                    '**.*BaseEntity*',
                     '*.global.*',
                     '*.BaseEntity',
             ]
