@@ -78,7 +78,7 @@ public class BookmarkRepositoryTest extends RepositoryTest {
     @DisplayName("이미 존재하는 북마크를 조회하면 true를 반환한다")
     public void getExistBookmark() throws Exception {
         // when, then
-        boolean actual = bookmarkRepository.existsBookmarkByMember_IdAndProblem_Id(member.getId(), problem1.getId());
+        boolean actual = bookmarkRepository.isExistedBookmark(member.getId(), problem1.getId());
         assertThat(actual).isTrue();
     }
 
@@ -90,7 +90,7 @@ public class BookmarkRepositoryTest extends RepositoryTest {
         Long newProblemId = 0L;
 
         // when
-        boolean actual = bookmarkRepository.existsBookmarkByMember_IdAndProblem_Id(newMemberId, newProblemId);
+        boolean actual = bookmarkRepository.isExistedBookmark(newMemberId, newProblemId);
 
         // then
         assertThat(actual).isFalse();
