@@ -1,5 +1,6 @@
 package com.psq.backend.problem.application;
 
+import com.psq.backend.bookmark.dto.request.BookmarkSaveRequest;
 import com.psq.backend.common.annotation.ServiceTest;
 import com.psq.backend.member.application.MemberService;
 import com.psq.backend.member.domain.Member;
@@ -202,7 +203,7 @@ public class ProblemServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("poll할 수 있는 문제가 없는 경우 예외가 발생한다")
-    public void pollProblemEmptyException() throws Exception {
+    public void pollProblemEmptyProblemException() throws Exception {
         // when
         when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
         when(memberRepository.existsById(member.getId())).thenReturn(true);
@@ -212,6 +213,22 @@ public class ProblemServiceTest extends ServiceTest {
                 () -> problemService.pollProblem(request))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 사용자 id로 문제를 poll하면 예외가 발생한다")
+    void pollProblemEmptyMemberException() {
+        // given
+        SessionInfo 존재하지_않는_세션_정보 = new SessionInfo(0L, "noSuch@email.com");
+
+        // when
+        when(memberService.getSessionInfo(request)).thenReturn(존재하지_않는_세션_정보);
+
+        // then
+        assertThatThrownBy(
+                () ->problemService.pollProblem(request))
+                .isInstanceOf(NoSuchMemberException.class)
+                .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
 
     @Test
