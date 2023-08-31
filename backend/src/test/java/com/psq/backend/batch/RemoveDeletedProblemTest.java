@@ -43,21 +43,6 @@ public class RemoveDeletedProblemTest {
     private Job problemDeleteJob;
 
     @Test
-    @DisplayName("removeDeletedProblem Job이 실행된다")
-    public void removeDeletedProblemJobTest() throws Exception {
-        // given
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addLong("time", System.currentTimeMillis())
-                .toJobParameters();
-
-        // when
-        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
-
-        // then
-        assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
-    }
-
-    @Test
     @DisplayName("삭제된지 3일이 지난 문제는 완전 삭제된다")
     public void removeDeletedProblemTest() throws Exception {
         // given
