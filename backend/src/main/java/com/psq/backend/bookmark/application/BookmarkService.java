@@ -44,7 +44,7 @@ public class BookmarkService {
                 () -> new NoSuchProblemException()
         );
 
-        if (bookmarkRepository.existsBookmarkByMember_IdAndProblem_Id(member.getId(), problem.getId()))
+        if (bookmarkRepository.isExistedBookmark(member.getId(), problem.getId()))
             throw new DuplicatedBookmarkException();
 
         bookmarkRepository.save(saveRequest.toEntity(member, problem));

@@ -26,7 +26,6 @@ public class BatchConfiguration {
 
     @Bean
     public Job removeDeletedProblemJob() {
-        log.info("[문제 완전 삭제] job start");
         Job job = jobBuilderFactory.get("job")
                 .start(removeDeletedProblemStep())
                 .build();
@@ -35,9 +34,9 @@ public class BatchConfiguration {
 
     @Bean
     public Step removeDeletedProblemStep() {
-        log.info("[문제 완전 삭제] step start");
         return stepBuilderFactory.get("step")
                 .tasklet((contribution, chunkContext) -> {
+                    log.info("[문제 완전 삭제] step start");
                     long deletedCount = problemRepository.deleteSoftDeletedProblem();
                     log.info("[문제 완전 삭제] 삭제된 문제 : {} 문제", deletedCount);
                     return RepeatStatus.FINISHED;

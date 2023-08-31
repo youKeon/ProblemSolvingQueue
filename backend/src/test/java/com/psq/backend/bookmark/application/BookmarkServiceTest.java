@@ -59,7 +59,7 @@ public class BookmarkServiceTest extends ServiceTest {
         when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
         when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
         when(problemRepository.findById(saveRequest.getProblemId())).thenReturn(Optional.of(problem1));
-        when(bookmarkRepository.existsBookmarkByMember_IdAndProblem_Id(anyLong(), anyLong())).thenReturn(false);
+        when(bookmarkRepository.isExistedBookmark(anyLong(), anyLong())).thenReturn(false);
 
         // then
         assertDoesNotThrow(() -> bookmarkService.save(request, saveRequest));
@@ -75,7 +75,7 @@ public class BookmarkServiceTest extends ServiceTest {
         when(problemRepository.findById(saveRequest.getProblemId())).thenReturn(Optional.ofNullable(problem1));
         when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
         when(memberRepository.findById(sessionInfo.getId())).thenReturn(Optional.ofNullable(member));
-        when(bookmarkRepository.existsBookmarkByMember_IdAndProblem_Id(sessionInfo.getId(), problem1.getId()))
+        when(bookmarkRepository.isExistedBookmark(sessionInfo.getId(), problem1.getId()))
                 .thenReturn(true);
 
 
