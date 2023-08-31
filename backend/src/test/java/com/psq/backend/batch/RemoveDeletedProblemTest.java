@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,9 +25,6 @@ import static org.assertj.core.api.Assertions.*;
 @ActiveProfiles("test")
 @SpringBootTest
 public class RemoveDeletedProblemTest {
-
-    @Autowired
-    private JobLauncherTestUtils jobLauncherTestUtils;
 
     @Autowired
     private JobLauncher jobLauncher;
@@ -70,13 +66,12 @@ public class RemoveDeletedProblemTest {
                 .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
 
-        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
-        jobLauncher.run(problemDeleteJob, jobParameters);
+        JobExecution execution = jobLauncher.run(problemDeleteJob, jobParameters);
 
         List<Problem> actual = problemRepository.findAll();
 
         // then 전체 문제(12) - 삭제된 문제(7) = 5
-        assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
+        assertThat(execution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
         assertThat(actual).hasSize(5);
     }
 }
