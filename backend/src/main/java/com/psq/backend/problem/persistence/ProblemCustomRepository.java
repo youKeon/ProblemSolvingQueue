@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProblemCustomRepository {
-    Page<Problem> findAllProblem(Long memberId,
+    List<Problem> findAllProblem(Long memberId,
                                  Integer level,
                                  Category category,
                                  Boolean isSolved,

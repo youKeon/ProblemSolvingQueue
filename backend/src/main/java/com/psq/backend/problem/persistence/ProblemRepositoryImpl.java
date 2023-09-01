@@ -3,9 +3,11 @@ package com.psq.backend.problem.persistence;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
@@ -18,37 +20,32 @@ import static com.psq.backend.problem.domain.QProblem.problem;
 
 
 @RequiredArgsConstructor
-public class ProblemCustomRepositoryImpl implements ProblemCustomRepository {
+public class ProblemRepositoryImpl implements ProblemCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
     @Override
-    public Page<Problem> findAllProblem(Long memberId,
+    public List<Problem> findAllProblem(Long memberId,
                                         Integer level,
                                         Category category,
                                         Boolean isSolved,
                                         Pageable pageable) {
 
         BooleanBuilder builder = new BooleanBuilder();
-
         builder.and(problem.member.id.eq(memberId));
 
         Optional.ofNullable(level).ifPresent(value -> builder.and(problem.level.eq(value)));
         Optional.ofNullable(category).ifPresent(value -> builder.and(problem.category.eq(value)));
         Optional.ofNullable(isSolved).ifPresent(value -> builder.and(problem.isSolved.eq(value)));
 
-
-        List<Problem> result = jpaQueryFactory
+        return jpaQueryFactory
                 .selectFrom(problem)
                 .where(builder)
                 .orderBy(problem.createdAt.asc())
-                .limit(pageable.getPageSize() + 1)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        List<Problem> problemList = result.stream()
-                .limit(pageable.getPageSize())
-                .collect(Collectors.toList());
-
-        return PageableExecutionUtils.getPage(problemList, pageable, result::size);
     }
+
 
     @Override
     public Optional<Problem> pollProblem(Long memberId) {

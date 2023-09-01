@@ -73,14 +73,12 @@ public class ProblemRepositoryTest extends RepositoryTest {
     @DisplayName("전체 질문을 조회한다(페이징 적용)")
     public void findAllProblem() throws Exception {
         // when
-        Page<Problem> result = problemRepository.findAllProblem(member.getId(), 1, Category.DFS, false, pageable);
+        List<Problem> actual = problemRepository.findAllProblem(member.getId(), 1, Category.DFS, false, pageable);
 
         // then
-        List<Problem> problemList = result.getContent();
-
-        assertThat(problemList.size()).isEqualTo(2);
-        assertThat(problemList.get(0)).usingRecursiveComparison().isEqualTo(problem1);
-        assertThat(problemList.get(1)).usingRecursiveComparison().isEqualTo(problem2);
+        assertThat(actual.size()).isEqualTo(2);
+        assertThat(actual.get(0)).usingRecursiveComparison().isEqualTo(problem1);
+        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(problem2);
     }
 
     @Test
@@ -90,10 +88,10 @@ public class ProblemRepositoryTest extends RepositoryTest {
         clearProblem();
 
         // when
-        Page<Problem> result = problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable);
+        List<Problem> actual = problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable);
 
         // then
-        assertThat(result).isEmpty();
+        assertThat(actual).isEmpty();
     }
 
     private void clearProblem() {
