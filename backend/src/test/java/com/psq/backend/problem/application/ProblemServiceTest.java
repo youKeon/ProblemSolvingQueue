@@ -1,6 +1,5 @@
 package com.psq.backend.problem.application;
 
-import com.psq.backend.bookmark.dto.request.BookmarkSaveRequest;
 import com.psq.backend.common.annotation.ServiceTest;
 import com.psq.backend.member.application.MemberService;
 import com.psq.backend.member.domain.Member;
@@ -18,8 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -65,8 +62,7 @@ public class ProblemServiceTest extends ServiceTest {
 
         // when
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(problemList);
-        when(memberRepository.existsById(member.getId())).thenReturn(true);
-        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
+        when(memberService.getMemberInfo(request)).thenReturn(member);
 
         List<ProblemListResponse> actual = problemService.getProblemList(request, 3, Category.DFS, false, pageable);
 
@@ -89,11 +85,10 @@ public class ProblemServiceTest extends ServiceTest {
     @Test
     @DisplayName("문제 리스트 조회 시 사용자의 세션 정보가 존재하지 않는 경우 예외가 발생한다")
     public void getProblemListNoSuchMemberExceptionTest() throws Exception {
-        // given
-        SessionInfo 존재하지_않는_세션_정보 = new SessionInfo(0L, "noSuch@email.com");
-        when(memberService.getSessionInfo(request)).thenReturn(존재하지_않는_세션_정보);
+        // when
+        when(memberService.getMemberInfo(request)).thenThrow(new NoSuchMemberException());
 
-        // when, then
+        // then
         assertThatThrownBy(
                 () -> problemService.getProblemList(request, 3, Category.DFS, false, pageable))
                 .isInstanceOf(NoSuchMemberException.class)
@@ -104,8 +99,7 @@ public class ProblemServiceTest extends ServiceTest {
     @DisplayName("문제 리스트가 없는 경우 예외가 발생한다")
     public void getProblemsEmptyException() throws Exception {
         // when
-        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
-        when(memberRepository.existsById(member.getId())).thenReturn(true);
+        when(memberService.getMemberInfo(request)).thenReturn(member);
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable))
                 .thenReturn(Collections.emptyList());
 
@@ -123,8 +117,7 @@ public class ProblemServiceTest extends ServiceTest {
         ProblemSaveRequest saveRequest = new ProblemSaveRequest("url", "title", Category.DFS, 3);
 
         // when
-        when(memberRepository.findById(member.getId())).thenReturn(Optional.ofNullable(member));
-        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
+        when(memberService.getMemberInfo(request)).thenReturn(member);
 
         // then
         assertDoesNotThrow(() -> problemService.save(request, saveRequest));
@@ -137,8 +130,7 @@ public class ProblemServiceTest extends ServiceTest {
         ProblemSaveRequest saveRequest = new ProblemSaveRequest("title","problem", Category.DFS, 3);
 
         // when
-        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
-        when(memberRepository.findById(sessionInfo.getId())).thenReturn(Optional.empty());
+        when(memberService.getMemberInfo(request)).thenThrow(new NoSuchMemberException());
 
         // then
         assertThatThrownBy(
@@ -163,6 +155,7 @@ public class ProblemServiceTest extends ServiceTest {
     public void deleteProblemEmptyException() throws Exception {
         // given
         Long 존재하지_않는_문제_ID = 0L;
+
         // when, then
         assertThatThrownBy(
                 () -> problemService.delete(존재하지_않는_문제_ID))
@@ -187,8 +180,7 @@ public class ProblemServiceTest extends ServiceTest {
 
         // when
         when(problemRepository.pollProblem(member.getId())).thenReturn(Optional.ofNullable(problem1));
-        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
-        when(memberRepository.existsById(member.getId())).thenReturn(true);
+        when(memberService.getMemberInfo(request)).thenReturn(member);
 
         ProblemResponse actual = problemService.pollProblem(request);
 
@@ -204,8 +196,7 @@ public class ProblemServiceTest extends ServiceTest {
     @DisplayName("poll할 수 있는 문제가 없는 경우 예외가 발생한다")
     public void pollProblemEmptyProblemException() throws Exception {
         // when
-        when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
-        when(memberRepository.existsById(member.getId())).thenReturn(true);
+        when(memberService.getMemberInfo(request)).thenReturn(member);
 
         // then
         assertThatThrownBy(
@@ -217,11 +208,8 @@ public class ProblemServiceTest extends ServiceTest {
     @Test
     @DisplayName("존재하지 않는 사용자 id로 문제를 poll하면 예외가 발생한다")
     void pollProblemEmptyMemberException() {
-        // given
-        SessionInfo 존재하지_않는_세션_정보 = new SessionInfo(0L, "noSuch@email.com");
-
         // when
-        when(memberService.getSessionInfo(request)).thenReturn(존재하지_않는_세션_정보);
+        when(memberService.getMemberInfo(request)).thenThrow(new NoSuchMemberException());
 
         // then
         assertThatThrownBy(
@@ -264,9 +252,10 @@ public class ProblemServiceTest extends ServiceTest {
         // given
         ProblemUpdateRequest request = new ProblemUpdateRequest(
                 "afterUpdate",
+                "afterTitle",
                 Category.DFS,
-                true,
-                3);
+                3,
+                true);
 
 
         // when
@@ -276,6 +265,7 @@ public class ProblemServiceTest extends ServiceTest {
         // then
         assertAll(
                 () -> assertEquals(problem1.getUrl(), request.getUrl()),
+                () -> assertEquals(problem1.getTitle(), request.getTitle()),
                 () -> assertEquals(problem1.getCategory(), request.getCategory()),
                 () -> assertEquals(problem1.isSolved(), request.getIsSolved()),
                 () -> assertEquals(problem1.getLevel(), request.getLevel())

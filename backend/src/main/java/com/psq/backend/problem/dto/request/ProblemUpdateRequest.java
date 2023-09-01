@@ -14,12 +14,17 @@ import javax.validation.constraints.NotNull;
 public class ProblemUpdateRequest {
     @NotBlank(message = "공백일 수 없습니다.")
     private String url;
+
+    @NotBlank(message = "공백일 수 없습니다.")
+    private String title;
+
     @NotNull(message = "공백일 수 없습니다.")
     private Category category;
-    @NotNull(message = "공백일 수 없습니다.")
-    private Boolean isSolved;
+
     @Min(1) @Max(5)
     @NotNull(message = "공백일 수 없습니다.")
     private Integer level;
 
+    @NotNull(message = "공백일 수 없습니다.")
+    private Boolean isSolved;
 }

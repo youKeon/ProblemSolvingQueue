@@ -62,8 +62,9 @@ public class Problem extends BaseEntity {
         validateProblemLevel(request.getLevel());
 
         this.url = request.getUrl();
-        this.level = request.getLevel();
+        this.title = request.getTitle();
         this.category = request.getCategory();
+        this.level = request.getLevel();
         this.isSolved = request.getIsSolved();
     }
 
