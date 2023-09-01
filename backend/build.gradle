@@ -105,7 +105,6 @@ jacocoTestReport {
                     '**/dto/**',
                     '**/exception/**',
                     '**/BaseEntity*',
-//                    '**/batch/**',
                     "**/*Application*",
                     "**/global/**"
             ])
@@ -140,11 +139,14 @@ jacocoTestCoverageVerification {
                     '*.Q*',
                     '*.*Exception',
                     '*.dto.*',
-//                    '*.batch.*',
                     '**.*BaseEntity*',
                     '*.global.*',
                     '*.BaseEntity',
             ]
         }
     }
+}
+
+tasks.named("jar") {
+    enabled = false
 }
