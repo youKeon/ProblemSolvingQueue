@@ -61,29 +61,28 @@ public class ProblemServiceTest extends ServiceTest {
     @DisplayName("세션 정보와 주어진 필터 조건으로(난이도, 풀이 여부, 문제 유형 등) 문제 리스트를 조회한다")
     public void getProblemListTest() throws Exception {
         // given
-        List<Problem> problems = Arrays.asList(problem1, problem2, problem3);
-        Page<Problem> problemPage = new PageImpl<>(problems, pageable, problems.size());
+        List<Problem> problemList = Arrays.asList(problem1, problem2, problem3);
 
         // when
-        when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(problemPage);
+        when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(problemList);
         when(memberRepository.existsById(member.getId())).thenReturn(true);
         when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
 
-        List<ProblemListResponse> result = problemService.getProblemList(request, 3, Category.DFS, false, pageable);
+        List<ProblemListResponse> actual = problemService.getProblemList(request, 3, Category.DFS, false, pageable);
 
         // then
         assertAll(
-                () -> assertThat(result.size()).isEqualTo(3),
-                () -> assertThat(result.get(0).getCategory()).isEqualTo(problem1.getCategory()),
-                () -> assertThat(result.get(0).getLevel()).isEqualTo(problem1.getLevel()),
+                () -> assertThat(actual.size()).isEqualTo(3),
+                () -> assertThat(actual.get(0).getCategory()).isEqualTo(problem1.getCategory()),
+                () -> assertThat(actual.get(0).getLevel()).isEqualTo(problem1.getLevel()),
 
-                () -> assertThat(result.get(1).getUrl()).isEqualTo(problem2.getUrl()),
-                () -> assertThat(result.get(1).getCategory()).isEqualTo(problem2.getCategory()),
-                () -> assertThat(result.get(1).getLevel()).isEqualTo(problem2.getLevel()),
+                () -> assertThat(actual.get(1).getUrl()).isEqualTo(problem2.getUrl()),
+                () -> assertThat(actual.get(1).getCategory()).isEqualTo(problem2.getCategory()),
+                () -> assertThat(actual.get(1).getLevel()).isEqualTo(problem2.getLevel()),
 
-                () -> assertThat(result.get(2).getUrl()).isEqualTo(problem3.getUrl()),
-                () -> assertThat(result.get(2).getCategory()).isEqualTo(problem3.getCategory()),
-                () -> assertThat(result.get(2).getLevel()).isEqualTo(problem3.getLevel())
+                () -> assertThat(actual.get(2).getUrl()).isEqualTo(problem3.getUrl()),
+                () -> assertThat(actual.get(2).getCategory()).isEqualTo(problem3.getCategory()),
+                () -> assertThat(actual.get(2).getLevel()).isEqualTo(problem3.getLevel())
         );
     }
 
@@ -108,7 +107,7 @@ public class ProblemServiceTest extends ServiceTest {
         when(memberService.getSessionInfo(request)).thenReturn(sessionInfo);
         when(memberRepository.existsById(member.getId())).thenReturn(true);
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable))
-                .thenReturn(Page.empty());
+                .thenReturn(Collections.emptyList());
 
         // then
         assertThatThrownBy(

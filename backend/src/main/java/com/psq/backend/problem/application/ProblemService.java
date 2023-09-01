@@ -59,8 +59,9 @@ public class ProblemService {
         if (!memberRepository.existsById(memberId))
             throw new NoSuchMemberException();
 
-        Page<Problem> problemList = problemRepository.findAllProblem(memberId, level, category, isSolved, pageable);
-        if (problemList.getNumberOfElements() == 0) throw new NoSuchProblemException("문제가 존재하지 않습니다.");
+        List<Problem> problemList = problemRepository.findAllProblem(memberId, level, category, isSolved, pageable);
+
+        if (problemList.size() == 0) throw new NoSuchProblemException("문제가 존재하지 않습니다.");
 
         return problemList.stream()
                 .map(ProblemListResponse::from)

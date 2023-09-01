@@ -10,7 +10,7 @@ import static com.psq.backend.bookmark.domain.QBookmark.bookmark;
 import static com.psq.backend.problem.domain.QProblem.problem;
 
 @RequiredArgsConstructor
-public class BookmarkCustomRepositoryImpl implements BookmarkCustomRepository {
+public class BookmarkRepositoryImpl implements BookmarkCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
     @Override
     public List<Bookmark> findBookmarkByFetchJoin(Long memberId) {
