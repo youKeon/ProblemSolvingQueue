@@ -12,12 +12,14 @@ import com.psq.backend.problem.domain.Problem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +41,7 @@ public class MemberServiceTest extends ServiceTest {
         ReflectionTestUtils.setField(problem2, "id", 2L);
         ReflectionTestUtils.setField(problem3, "id", 3L);
 
+        request = new MockHttpServletRequest();
         session = new MockHttpSession();
         sessionInfo = new SessionInfo(member.getId(), member.getEmail());
     }
@@ -69,7 +72,7 @@ public class MemberServiceTest extends ServiceTest {
         assertThatThrownBy(
                 () -> memberService.signup(request))
                 .isInstanceOf(DuplicatedEmailException.class)
-                .hasMessageContaining("");
+                .hasMessageContaining("이미 등록된 이메일입니다.");
     }
 
     @Test
@@ -118,33 +121,40 @@ public class MemberServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("세션 정보를 가져온다")
-    public void getSessionInfoTest() throws Exception {
-        // when
-        when(request.getSession()).thenReturn(session);
-
+    @DisplayName("사용자 정보를 가져온다")
+    public void getMemberInfoTest() throws Exception {
+        // given
         request.getSession().setAttribute("sessionInfo", sessionInfo);
-        SessionInfo actual = memberService.getSessionInfo(request);
+
+        // when
+        when(memberRepository.findById(sessionInfo.getId())).thenReturn(Optional.ofNullable(member));
+        Member actual = memberService.getMemberInfo(request);
 
         // then
-        assertEquals(member.getId(), actual.getId());
-        assertEquals(member.getEmail(), actual.getEmail());
+        assertThat(actual).usingRecursiveComparison().isEqualTo(member);
     }
 
     @Test
     @DisplayName("세션 정보가 없으면 예외가 발생한다")
-    public void getInvalidSessionExceptionTest() throws Exception {
-        // given
-        HttpSession mockSession = mock(HttpSession.class);
-
-        // when
-        when(request.getSession()).thenReturn(mockSession);
-        when(mockSession.getAttribute("sessionInfo")).thenReturn(null);
-
-        // then
+    public void getMemberInfoInvalidSessionExceptionTest() throws Exception {
+        // when, then
         assertThatThrownBy(
-                () -> memberService.getSessionInfo(request))
+                () -> memberService.getMemberInfo(request))
                 .isInstanceOf(NoSuchMemberException.class)
                 .hasMessageContaining("잘못된 세션 정보입니다.");
+    }
+
+    @Test
+    @DisplayName("세션 정보에 존재하지 않는 사용자 정보가 있으면 예외가 발생한다")
+    public void getMemberInfoNoSuchMemberExceptionTest() throws Exception {
+        // given
+        SessionInfo 존재하지_않는_사용자의_세션_정보 = new SessionInfo(0L, "noSuch@member.com");
+        request.getSession().setAttribute("sessionInfo", 존재하지_않는_사용자의_세션_정보);
+
+        // when, then
+        assertThatThrownBy(
+                () -> memberService.getMemberInfo(request))
+                .isInstanceOf(NoSuchMemberException.class)
+                .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
 }

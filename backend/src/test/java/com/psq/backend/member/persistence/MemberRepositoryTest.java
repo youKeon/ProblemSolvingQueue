@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
+
 
 public class MemberRepositoryTest extends RepositoryTest {
     private Member member;
@@ -30,8 +32,8 @@ public class MemberRepositoryTest extends RepositoryTest {
         Optional<Member> actual = memberRepository.findByEmail(email);
 
         // then
-        Assertions.assertThat(actual.get().getEmail()).isEqualTo(member.getEmail());
-        Assertions.assertThat(actual.get().getPassword()).isEqualTo(member.getPassword());
+        assertThat(actual.get().getEmail()).isEqualTo(member.getEmail());
+        assertThat(actual.get().getPassword()).isEqualTo(member.getPassword());
     }
     
     @Test
@@ -44,7 +46,7 @@ public class MemberRepositoryTest extends RepositoryTest {
         boolean actual = memberRepository.existsMemberByEmail(email);
 
         // then
-        Assertions.assertThat(actual).isTrue();
+        assertThat(actual).isTrue();
     }
 
     @Test
@@ -57,7 +59,7 @@ public class MemberRepositoryTest extends RepositoryTest {
         boolean actual = memberRepository.existsMemberByEmail(email);
 
         // then
-        Assertions.assertThat(actual).isFalse();
+        assertThat(actual).isFalse();
     }
 
 }
