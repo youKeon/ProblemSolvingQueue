@@ -50,11 +50,6 @@ dependencies {
     implementation "com.querydsl:querydsl-jpa:5.0.0"
     implementation "com.querydsl:querydsl-apt:5.0.0"
 
-    // Slack
-    implementation("com.slack.api:bolt:1.18.0")
-    implementation("com.slack.api:bolt-servlet:1.18.0")
-    implementation("com.slack.api:bolt-jetty:1.18.0")
-
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
 
