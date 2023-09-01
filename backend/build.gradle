@@ -6,6 +6,9 @@ plugins {
 
     // QueryDSL
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+
+    // Rest Docs
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'com.psq'
@@ -21,6 +24,9 @@ configurations {
     }
     // QueryDSL
     querydsl.extendsFrom compileClasspath
+
+    // Rest Docs
+    asciidoctorExtensions
 }
 
 repositories {
@@ -52,6 +58,10 @@ dependencies {
 
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
+
+    // Rest Docs
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -140,6 +150,39 @@ jacocoTestCoverageVerification {
             ]
         }
     }
+}
+
+// =================== Rest Docs =================== //
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+tasks.named('test') {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
+}
+
+asciidoctor {
+    configurations 'asciidoctorExtensions'
+    inputs.dir snippetsDir
+
+    dependsOn test
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+task createDocument(type: Copy) {
+    dependsOn asciidoctor
+
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static")
+}
+
+build {
+    dependsOn createDocument
 }
 
 tasks.named("jar") {
