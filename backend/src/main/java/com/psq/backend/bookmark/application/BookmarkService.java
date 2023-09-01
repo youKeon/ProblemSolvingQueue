@@ -28,17 +28,10 @@ import java.util.stream.Collectors;
 public class BookmarkService {
     private final BookmarkRepository bookmarkRepository;
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
     private final ProblemRepository problemRepository;
 
     public void save(HttpServletRequest request, BookmarkSaveRequest saveRequest) {
-
-        SessionInfo sessionInfo = memberService.getSessionInfo(request);
-        Long memberId = sessionInfo.getId();
-
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new NoSuchMemberException()
-        );
+        Member member = memberService.getMemberInfo(request);
 
         Problem problem = problemRepository.findById(saveRequest.getProblemId()).orElseThrow(
                 () -> new NoSuchProblemException()
@@ -57,8 +50,10 @@ public class BookmarkService {
         bookmarkRepository.delete(bookmark);
     }
 
-    public List<ProblemListResponse> getBookmarkList(Long id) {
-        List<Bookmark> bookmarkList = bookmarkRepository.findBookmarkByFetchJoin(id);
+    public List<ProblemListResponse> getBookmarkList(HttpServletRequest request) {
+        Long memberId = memberService.getMemberInfo(request).getId();
+
+        List<Bookmark> bookmarkList = bookmarkRepository.findBookmarkByFetchJoin(memberId);
 
         if (bookmarkList.isEmpty()) throw new NoSuchBookmarkException();
 

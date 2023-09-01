@@ -9,6 +9,7 @@ import com.psq.backend.member.presentation.MemberController;
 import com.psq.backend.problem.application.ProblemService;
 import com.psq.backend.problem.presentation.ProblemController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
         BookmarkController.class
 })
 @ActiveProfiles("test")
+@AutoConfigureRestDocs
 public abstract class ControllerTest {
     @Autowired
     protected MockMvc mockMvc;

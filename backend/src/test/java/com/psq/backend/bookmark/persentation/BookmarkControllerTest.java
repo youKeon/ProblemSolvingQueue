@@ -14,9 +14,15 @@ import java.util.List;
 
 import static com.psq.backend.problem.domain.Category.BFS;
 import static com.psq.backend.problem.domain.Category.DFS;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +40,7 @@ public class BookmarkControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 id와 문제 id를 받아 북마크에 등록한다")
+    @DisplayName("문제 id를 받아 북마크에 등록한다")
     public void registerBookmark() throws Exception {
         // given
         BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(problemId);
@@ -44,11 +50,17 @@ public class BookmarkControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveRequest)))
-                .andExpect(status().isCreated());
-    }
+                .andExpect(status().isCreated())
 
+                .andDo(print())
+                .andDo(document("bookmark/save/success",
+                        requestFields(
+                                fieldWithPath("problemId").description("문제 ID")
+                        )
+                ));
+    }
     @Test
-    @DisplayName("북마크에 등록 시 사용자 id가 null인 경우 예외가 발생한다")
+    @DisplayName("북마크 등록 시 문제 id가 null인 경우 예외가 발생한다")
     public void registerBookmarkMemberIdNullExceptionTest() throws Exception {
         // given
         BookmarkSaveRequest request = new BookmarkSaveRequest(null);
@@ -58,21 +70,18 @@ public class BookmarkControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
-    }
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("problemId 필드는 공백일 수 없습니다. (전달된 값: null)"))
 
-    @Test
-    @DisplayName("북마크에 등록 시 문제 id가 null인 경우 예외가 발생한다")
-    public void registerBookmarkProblemIdNullExceptionTest() throws Exception {
-        // given
-        BookmarkSaveRequest request = new BookmarkSaveRequest(null);
-
-        // when, then
-        mockMvc.perform(post(baseURL)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andDo(print())
+                .andDo(document("bookmark/save/fail/emptyProblemId",
+                        requestFields(
+                                fieldWithPath("problemId").description("문제 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("응답 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -85,34 +94,50 @@ public class BookmarkControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(delete(baseURL + "/{id}", bookmarkId))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+
+                .andDo(print())
+                .andDo(document("bookmark/delete/success",
+                        pathParameters(
+                                parameterWithName("id").description("북마크 ID")
+                        ))
+                );
     }
 
     @Test
-    @DisplayName("사용자 id를 받아 북마크로 등록한 문제를 조회한다")
+    @DisplayName("사용자가 북마크로 등록한 문제를 조회한다")
     public void getBookmarkedProblemListTest() throws Exception {
         // given
-        List<ProblemListResponse> responses = new ArrayList<>(Arrays.asList(
+        List<ProblemListResponse> responseList = new ArrayList<>(Arrays.asList(
                 new ProblemListResponse("url1", 1, DFS, false),
                 new ProblemListResponse("url2", 2, BFS, false)
         ));
 
         // when
-        when(bookmarkService.getBookmarkList(memberId)).thenReturn(responses);
+        when(bookmarkService.getBookmarkList(any())).thenReturn(responseList);
 
         // then
-        mockMvc.perform(get(baseURL + "/{id}", memberId))
-                .andDo(print())
+        mockMvc.perform(get(baseURL))
                 .andExpect(status().isOk())
 
-                .andExpect(jsonPath("$[0].url").value(responses.get(0).getUrl()))
-                .andExpect(jsonPath("$[0].level").value(responses.get(0).getLevel()))
+                .andExpect(jsonPath("$[0].url").value(responseList.get(0).getUrl()))
+                .andExpect(jsonPath("$[0].level").value(responseList.get(0).getLevel()))
                 .andExpect(jsonPath("$[0].category").value("DFS"))
-                .andExpect(jsonPath("$[0].solved").value(responses.get(0).isSolved()))
+                .andExpect(jsonPath("$[0].solved").value(responseList.get(0).isSolved()))
 
-                .andExpect(jsonPath("$[1].url").value(responses.get(1).getUrl()))
-                .andExpect(jsonPath("$[1].level").value(responses.get(1).getLevel()))
+                .andExpect(jsonPath("$[1].url").value(responseList.get(1).getUrl()))
+                .andExpect(jsonPath("$[1].level").value(responseList.get(1).getLevel()))
                 .andExpect(jsonPath("$[1].category").value("BFS"))
-                .andExpect(jsonPath("$[1].solved").value(responses.get(1).isSolved()));
+                .andExpect(jsonPath("$[1].solved").value(responseList.get(1).isSolved()))
+
+                .andDo(print())
+                .andDo(document("bookmark/findAll/success",
+                        responseFields(
+                                fieldWithPath("[].url").description("문제 URL"),
+                                fieldWithPath("[].level").description("문제의 난이도 레벨"),
+                                fieldWithPath("[].category").description("문제의 카테고리"),
+                                fieldWithPath("[].solved").description("문제의 해결 여부")
+                        )
+                ));
     }
 }
