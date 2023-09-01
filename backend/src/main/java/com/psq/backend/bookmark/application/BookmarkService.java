@@ -30,6 +30,10 @@ public class BookmarkService {
     private final MemberService memberService;
     private final ProblemRepository problemRepository;
 
+    /**
+     * TODO
+     * ProblemRepository에 의존하지 않고 ProblemService에 의존하기
+     */
     public void save(HttpServletRequest request, BookmarkSaveRequest saveRequest) {
         Member member = memberService.getMemberInfo(request);
 
