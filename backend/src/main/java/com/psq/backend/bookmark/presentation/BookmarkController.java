@@ -33,9 +33,9 @@ public class BookmarkController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     @Operation(summary = "북마크 리스트 조회")
-    @GetMapping("/{id}")
-    public ResponseEntity<List<ProblemListResponse>> getBookmarkList(@PathVariable Long id) {
-        List<ProblemListResponse> response = bookmarkService.getBookmarkList(id);
+    @GetMapping
+    public ResponseEntity<List<ProblemListResponse>> getBookmarkList(HttpServletRequest request) {
+        List<ProblemListResponse> response = bookmarkService.getBookmarkList(request);
         return ResponseEntity.ok(response);
     }
 }

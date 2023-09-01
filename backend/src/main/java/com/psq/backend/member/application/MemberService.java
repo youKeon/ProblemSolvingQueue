@@ -49,9 +49,15 @@ public class MemberService {
         return session.getId();
     }
 
-    public SessionInfo getSessionInfo(HttpServletRequest request) {
+    public Member getMemberInfo(HttpServletRequest request) {
         SessionInfo sessionInfo = (SessionInfo) request.getSession().getAttribute("sessionInfo");
         if (sessionInfo == null) throw new NoSuchMemberException("잘못된 세션 정보입니다.");
-        return sessionInfo;
+
+        Long memberId = sessionInfo.getId();
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new NoSuchMemberException()
+        );
+
+        return member;
     }
 }

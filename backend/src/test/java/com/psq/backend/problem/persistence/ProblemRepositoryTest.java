@@ -70,7 +70,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
     }
     
     @Test
-    @DisplayName("전체 질문을 조회한다(페이징 적용)")
+    @DisplayName("전체 질문을 조회한다")
     public void findAllProblem() throws Exception {
         // when
         List<Problem> actual = problemRepository.findAllProblem(member.getId(), 1, Category.DFS, false, pageable);

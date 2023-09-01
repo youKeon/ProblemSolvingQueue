@@ -9,9 +9,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class MemberControllerTest extends ControllerTest {
@@ -36,14 +41,22 @@ public class MemberControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+
+                .andDo(print())
+                .andDo(document("member/signUp/success",
+                        requestFields(
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("password").description("비밀번호")
+                        )
+                ));
     }
 
     @Test
     @DisplayName("회원가입 시 이메일 형식이 올바르지 않은 경우 예외가 발생한다")
     public void signUpMemberInvalidEmailFormatException() throws Exception {
         // given
-        String 잘못된_이메일_형식 = "InvaildEmailFormat";
+        String 잘못된_이메일_형식 = "InvalidEmailFormat";
         MemberSignUpRequest request = new MemberSignUpRequest(잘못된_이메일_형식, "1234");
 
         // when, then
@@ -51,7 +64,19 @@ public class MemberControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("email 필드는 올바른 이메일 형식이어야 합니다. (전달된 값: InvalidEmailFormat)"))
+
+                .andDo(print())
+                .andDo(document("member/signUp/fail/invalidEmail",
+                        requestFields(
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("password").description("비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("응답 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -65,7 +90,19 @@ public class MemberControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("email 필드는 공백일 수 없습니다. (전달된 값: )"))
+
+                .andDo(print())
+                .andDo(document("member/signUp/fail/emptyEmail",
+                        requestFields(
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("password").description("비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("응답 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -79,7 +116,19 @@ public class MemberControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("password 필드는 공백일 수 없습니다. (전달된 값: )"))
+
+                .andDo(print())
+                .andDo(document("member/signUp/fail/emptyPassword",
+                        requestFields(
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("password").description("비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("응답 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -93,7 +142,15 @@ public class MemberControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+
+                .andDo(print())
+                .andDo(document("member/signIn/success",
+                        requestFields(
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("password").description("비밀번호")
+                        )
+                ));
     }
 
     @Test
@@ -108,7 +165,19 @@ public class MemberControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("email 필드는 올바른 이메일 형식이어야 합니다. (전달된 값: InvaildEmailFormat)"))
+
+                .andDo(print())
+                .andDo(document("member/signIn/fail/invalidEmail",
+                        requestFields(
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("password").description("비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("응답 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -122,7 +191,19 @@ public class MemberControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("email 필드는 공백일 수 없습니다. (전달된 값: )"))
+                
+                .andDo(print())
+                .andDo(document("member/signIn/fail/emptyEmail",
+                        requestFields(
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("password").description("비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("응답 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -136,6 +217,18 @@ public class MemberControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("password 필드는 공백일 수 없습니다. (전달된 값: )"))
+                
+                .andDo(print())
+                .andDo(document("member/signIn/fail/emptyPassword",
+                        requestFields(
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("password").description("비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("응답 메세지")
+                        )
+                ));
     }
 }

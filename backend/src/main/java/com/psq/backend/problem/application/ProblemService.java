@@ -15,7 +15,6 @@ import com.psq.backend.problem.exception.NoSuchProblemException;
 import com.psq.backend.problem.exception.NotDeletedProblemException;
 import com.psq.backend.problem.persistence.ProblemRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProblemService {
     private final ProblemRepository problemRepository;
-    private final MemberRepository memberRepository;
     private final MemberService memberService;
 
 
@@ -37,12 +35,7 @@ public class ProblemService {
     public void save(HttpServletRequest servletRequest,
                      ProblemSaveRequest request) {
 
-        SessionInfo sessionInfo = memberService.getSessionInfo(servletRequest);
-        Long memberId = sessionInfo.getId();
-
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new NoSuchMemberException()
-        );
+        Member member = memberService.getMemberInfo(servletRequest);
         Problem problem = request.toEntity(member);
         problemRepository.save(problem);
     }
@@ -54,10 +47,7 @@ public class ProblemService {
                                                     Pageable pageable) {
 
 
-        SessionInfo sessionInfo = memberService.getSessionInfo(request);
-        Long memberId = sessionInfo.getId();
-        if (!memberRepository.existsById(memberId))
-            throw new NoSuchMemberException();
+        Long memberId = memberService.getMemberInfo(request).getId();
 
         List<Problem> problemList = problemRepository.findAllProblem(memberId, level, category, isSolved, pageable);
 
@@ -84,11 +74,7 @@ public class ProblemService {
     }
 
     public ProblemResponse pollProblem(HttpServletRequest request) {
-        SessionInfo sessionInfo = memberService.getSessionInfo(request);
-        Long memberId = sessionInfo.getId();
-
-        if (!memberRepository.existsById(memberId))
-            throw new NoSuchMemberException();
+        Long memberId = memberService.getMemberInfo(request).getId();
 
         Problem problem = problemRepository.pollProblem(memberId).orElseThrow(
                 () -> new NoSuchProblemException()
@@ -98,6 +84,7 @@ public class ProblemService {
 
     public void update(Long id,
                        ProblemUpdateRequest request) {
+
         Problem problem = problemRepository.findById(id).orElseThrow(
                 () -> new NoSuchProblemException()
         );
