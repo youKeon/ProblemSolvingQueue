@@ -20,5 +20,4 @@ public class MemberSignUpRequest {
                            String salt) {
         return new Member(email, encodedPassword, salt);
     }
-
 }

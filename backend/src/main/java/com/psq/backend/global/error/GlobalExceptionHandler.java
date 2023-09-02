@@ -9,7 +9,6 @@ import com.psq.backend.member.exception.InvalidMemberException;
 import com.psq.backend.member.exception.NoSuchMemberException;
 import com.psq.backend.problem.exception.InvalidProblemException;
 import com.psq.backend.problem.exception.NoSuchProblemException;
-import com.psq.backend.problem.exception.NotDeletedProblemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -61,8 +60,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             InvalidProblemException.class,
             InvalidMemberException.class,
             DuplicatedBookmarkException.class,
-            DuplicatedEmailException.class,
-            NotDeletedProblemException.class,
+            DuplicatedEmailException.class
     })
     public ResponseEntity<ErrorResponse> handleInvalidData(final RuntimeException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
