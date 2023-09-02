@@ -3,7 +3,7 @@
 
 [width="70%"]
 |===
-|link:member.html[사용자 API]
-|link:problem.html[문제 API]
-|link:bookmark.html[북마크 API]
+|link:member.html[[.big]#Member API#]
+|link:problem.html[[.big]#Problem API#]
+|link:bookmark.html[[.big]#Bookmark API#]
 |===

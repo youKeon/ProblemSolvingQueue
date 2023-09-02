@@ -518,10 +518,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signup HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Content-Length: 49
+Content-Length: 60
 Host: localhost:8080
 
-{"email":"email@email.com","password":"password"}</code></pre>
+{
+  "email" : "email@email.com",
+  "password" : "password"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -546,10 +549,13 @@ Vary: Access-Control-Request-Headers</code></pre>
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signup HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Content-Length: 48
+Content-Length: 59
 Host: localhost:8080
 
-{"email":"InvalidEmailFormat","password":"1234"}</code></pre>
+{
+  "email" : "InvalidEmailFormat",
+  "password" : "1234"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -562,9 +568,11 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 112
+Content-Length: 118
 
-{"message":"email 필드는 올바른 이메일 형식이어야 합니다. (전달된 값: InvalidEmailFormat)"}</code></pre>
+{
+  "message" : "email 필드는 올바른 이메일 형식이어야 합니다. (전달된 값: InvalidEmailFormat)"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -578,10 +586,13 @@ Content-Length: 112
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signup HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Content-Length: 30
+Content-Length: 41
 Host: localhost:8080
 
-{"email":"","password":"1234"}</code></pre>
+{
+  "email" : "",
+  "password" : "1234"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -594,9 +605,11 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 75
+Content-Length: 81
 
-{"message":"email 필드는 공백일 수 없습니다. (전달된 값: )"}</code></pre>
+{
+  "message" : "email 필드는 공백일 수 없습니다. (전달된 값: )"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -610,10 +623,13 @@ Content-Length: 75
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signup HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Content-Length: 41
+Content-Length: 52
 Host: localhost:8080
 
-{"email":"email@email.com","password":""}</code></pre>
+{
+  "email" : "email@email.com",
+  "password" : ""
+}</code></pre>
 </div>
 </div>
 </div>
@@ -626,9 +642,11 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 78
+Content-Length: 84
 
-{"message":"password 필드는 공백일 수 없습니다. (전달된 값: )"}</code></pre>
+{
+  "message" : "password 필드는 공백일 수 없습니다. (전달된 값: )"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -647,10 +665,13 @@ Content-Length: 78
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signin HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Content-Length: 47
+Content-Length: 58
 Host: localhost:8080
 
-{"email":"yukeon97@gmail.com","password":"123"}</code></pre>
+{
+  "email" : "yukeon97@gmail.com",
+  "password" : "123"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -672,13 +693,16 @@ Vary: Access-Control-Request-Headers</code></pre>
 <h4 id="_request_6">Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signup HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signin HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Content-Length: 48
+Content-Length: 59
 Host: localhost:8080
 
-{"email":"InvaildEmailFormat","password":"1234"}</code></pre>
+{
+  "email" : "InvaildEmailFormat",
+  "password" : "1234"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -691,9 +715,11 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 112
+Content-Length: 118
 
-{"message":"email 필드는 올바른 이메일 형식이어야 합니다. (전달된 값: InvaildEmailFormat)"}</code></pre>
+{
+  "message" : "email 필드는 올바른 이메일 형식이어야 합니다. (전달된 값: InvaildEmailFormat)"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -704,13 +730,16 @@ Content-Length: 112
 <h4 id="_request_7">Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signup HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signin HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Content-Length: 30
+Content-Length: 41
 Host: localhost:8080
 
-{"email":"","password":"1234"}</code></pre>
+{
+  "email" : "",
+  "password" : "1234"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -723,9 +752,11 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 75
+Content-Length: 81
 
-{"message":"email 필드는 공백일 수 없습니다. (전달된 값: )"}</code></pre>
+{
+  "message" : "email 필드는 공백일 수 없습니다. (전달된 값: )"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -736,13 +767,16 @@ Content-Length: 75
 <h4 id="_request_8">Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signup HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/signin HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Content-Length: 44
+Content-Length: 55
 Host: localhost:8080
 
-{"email":"yukeon97@gmail.com","password":""}</code></pre>
+{
+  "email" : "yukeon97@gmail.com",
+  "password" : ""
+}</code></pre>
 </div>
 </div>
 </div>
@@ -755,9 +789,11 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 78
+Content-Length: 84
 
-{"message":"password 필드는 공백일 수 없습니다. (전달된 값: )"}</code></pre>
+{
+  "message" : "password 필드는 공백일 수 없습니다. (전달된 값: )"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -768,7 +804,7 @@ Content-Length: 78
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-09-03 02:15:55 +0900
+Last updated 2023-09-03 02:30:52 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

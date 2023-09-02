@@ -13,6 +13,10 @@ endif::[]
 === 성공
 ==== Request
 include::{snippets}/bookmark/save/success/http-request.adoc[]
+==== Request Fields
+include::{snippets}/bookmark/save/success/request-fields.adoc[]
+==== Request Field
+include::{snippets}/bookmark/save/success/http-request.adoc[]
 ==== Response
 include::{snippets}/bookmark/save/success/http-response.adoc[]
 
