@@ -56,7 +56,7 @@ jobs:
           reporter: java-junit
 
       - name: Make zip file
-        run: zip -r ./$GITHUB_SHA.zip ./backend/
+        run: zip -r ./PR-${{ github.event.number }}.zip ./backend/
         shell: bash
 
       - name: Configure AWS credentials
@@ -67,4 +67,4 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+        run: aws s3 cp --region ap-northeast-2 ./PR-${{ github.event.number }}.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/PR-${{ github.event.number }}.zip
