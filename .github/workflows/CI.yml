@@ -6,6 +6,7 @@ on:
 
 env:
   PROJECT_NAME: psq
+  S3_BUCKET_NAME: problemsolvingqueue
 
 jobs:
   backend-test:

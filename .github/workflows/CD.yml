@@ -5,9 +5,9 @@ on:
     branches: ["master"]
 
 env:
-  S3_BUCKET_NAME: problemsolvingqueue/
-  CODE_DEPLOY_APPLICATION_NAME: psq/
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: psq-codeDeploy/
+  S3_BUCKET_NAME: problemsolvingqueue
+  CODE_DEPLOY_APPLICATION_NAME: psq
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: psq-codeDeploy
 
 jobs:
   build:
