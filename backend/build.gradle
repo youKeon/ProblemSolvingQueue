@@ -167,7 +167,7 @@ asciidoctor {
     configurations 'asciidoctorExtensions'
     inputs.dir snippetsDir
 
-    dependsOn test
+    dependsOn build
 }
 
 asciidoctor.doFirst {
