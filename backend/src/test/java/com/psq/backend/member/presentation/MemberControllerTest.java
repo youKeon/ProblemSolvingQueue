@@ -9,10 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentRequest;
-import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentResponse;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -46,8 +45,6 @@ public class MemberControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("member/signUp/success",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호")
@@ -72,8 +69,6 @@ public class MemberControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("member/signUp/fail/invalidEmail",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호")
@@ -100,8 +95,6 @@ public class MemberControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("member/signUp/fail/emptyEmail",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호")
@@ -128,8 +121,6 @@ public class MemberControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("member/signUp/fail/emptyPassword",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호")
@@ -155,8 +146,6 @@ public class MemberControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("member/signIn/success",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호")
@@ -172,7 +161,7 @@ public class MemberControllerTest extends ControllerTest {
         MemberSignUpRequest request = new MemberSignUpRequest(잘못된_이메일_형식, "1234");
 
         // when, then
-        mockMvc.perform(post(baseURL + "/signin")
+        mockMvc.perform(post(baseURL + "/signup")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -181,8 +170,6 @@ public class MemberControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("member/signIn/fail/invalidEmail",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호")
@@ -200,7 +187,7 @@ public class MemberControllerTest extends ControllerTest {
         MemberSignUpRequest request = new MemberSignUpRequest("", "1234");
 
         // when, then
-        mockMvc.perform(post(baseURL + "/signin")
+        mockMvc.perform(post(baseURL + "/signup")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -209,8 +196,6 @@ public class MemberControllerTest extends ControllerTest {
                 
                 .andDo(print())
                 .andDo(document("member/signIn/fail/emptyEmail",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호")
@@ -228,7 +213,7 @@ public class MemberControllerTest extends ControllerTest {
         MemberSignUpRequest request = new MemberSignUpRequest(member.getEmail(), "");
 
         // when, then
-        mockMvc.perform(post(baseURL + "/signin")
+        mockMvc.perform(post(baseURL + "/signup")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -237,8 +222,6 @@ public class MemberControllerTest extends ControllerTest {
                 
                 .andDo(print())
                 .andDo(document("member/signIn/fail/emptyPassword",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호")
