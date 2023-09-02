@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: ["master"]
 
+env:
+  PROJECT_NAME: psq
+
 jobs:
   backend-test:
     permissions:
@@ -28,13 +31,20 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('backend/**/*') }}
           restore-keys: ${{ runner.os }}-gradle-
 
+      - name: Make properties
+        run: |
+          cd backend/src/main/resources
+          touch ./application-local.yml
+          echo "${{ secrets.DEPLOY_PROPERTIES }}" > ./application-local.yml
+        shell: bash
+
       - name: Grant Execute Permission For Gradlew
         run: chmod +x backend/gradlew
 
       - name: Test with Gradle
         run: |
           cd backend
-          ./gradlew build --info
+          ./gradlew clean build --info
 
       - name: Test Report
         uses: dorny/test-reporter@v1
@@ -43,3 +53,17 @@ jobs:
           name: Tests Result
           path: "backend/build/test-results/**/*.xml"
           reporter: java-junit
+
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip ./backend/
+        shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip

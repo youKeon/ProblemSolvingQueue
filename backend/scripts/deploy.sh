@@ -15,8 +15,8 @@ then
   echo "$(date '+%Y-%m-%d %H:%M:%S') > 현재 구동 중인 애플리케이션이 없습니다." >> /home/ubuntu/app/deploy.log
 else
   echo "$(date '+%Y-%m-%d %H:%M:%S') > kill -15 $CURRENT_PID" >> /home/ubuntu/app/deploy.log
-  kill -15 $CURRENT_PID
-  sleep 5
+  kill -9 $CURRENT_PID
+  sleep 10
 fi
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
