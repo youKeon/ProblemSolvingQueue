@@ -1,0 +1,60 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+
+= Member API
+
+== 회원가입
+=== 성공
+==== Request
+include::{snippets}/member/signUp/success/http-request.adoc[]
+==== Response
+include::{snippets}/member/signUp/success/http-response.adoc[]
+
+=== 실패 : 이메일 형식 오류
+==== Request
+include::{snippets}/member/signUp/fail/invalidEmail/http-request.adoc[]
+==== Response
+include::{snippets}/member/signUp/fail/invalidEmail/http-response.adoc[]
+
+=== 실패 : 이메일 공백 오류
+==== Request
+include::{snippets}/member/signUp/fail/emptyEmail/http-request.adoc[]
+==== Response
+include::{snippets}/member/signUp/fail/emptyEmail/http-response.adoc[]
+
+=== 실패 : 비밀번호 공백 오류
+==== Request
+include::{snippets}/member/signUp/fail/emptyPassword/http-request.adoc[]
+==== Response
+include::{snippets}/member/signUp/fail/emptyPassword/http-response.adoc[]
+
+== 로그인
+=== 성공
+==== Request
+include::{snippets}/member/signIn/success/http-request.adoc[]
+==== Response
+include::{snippets}/member/signIn/success/http-response.adoc[]
+
+=== 실패 : 이메일 형식 오류
+==== Request
+include::{snippets}/member/signIn/fail/invalidEmail/http-request.adoc[]
+==== Response
+include::{snippets}/member/signIn/fail/invalidEmail/http-response.adoc[]
+
+=== 실패 : 이메일 공백 오류
+==== Request
+include::{snippets}/member/signIn/fail/emptyEmail/http-request.adoc[]
+==== Response
+include::{snippets}/member/signIn/fail/emptyEmail/http-response.adoc[]
+
+=== 실패 : 비밀번호 공백 오류
+==== Request
+include::{snippets}/member/signIn/fail/emptyPassword/http-request.adoc[]
+==== Response
+include::{snippets}/member/signIn/fail/emptyPassword/http-response.adoc[]
