@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentRequest;
+import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -63,7 +65,6 @@ public class ProblemControllerTest extends ControllerTest {
 
         // then
         mockMvc.perform(get(baseURL)
-//                        .session(session)
                         .param("level", "3")
                         .param("category", "DFS")
                         .param("isSolved", "false")
@@ -88,6 +89,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/findAll/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestParameters(
                                 parameterWithName("level").description("문제 레벨").optional(),
                                 parameterWithName("category").description("문제 유형").optional(),
@@ -107,7 +110,7 @@ public class ProblemControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("문제가 저장된다")
-    public void registerProblem() throws Exception {
+    public void saveProblem() throws Exception {
         // given
         ProblemSaveRequest request = new ProblemSaveRequest("title", "test", Category.DFS, 3);
 
@@ -120,6 +123,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/save/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -130,8 +135,8 @@ public class ProblemControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("문제를 저장 시 URL이 없으면 예외가 발생한다")
-    public void registerProblemGetException() throws Exception {
+    @DisplayName("문제 저장 시 URL이 없으면 예외가 발생한다")
+    public void saveProblemEmptyUrlException() throws Exception {
         // given
         ProblemSaveRequest request = new ProblemSaveRequest("", "title", Category.DFS, 3);
 
@@ -145,6 +150,68 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/save/fail/emptyUrl",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("url").description("문제 URL"),
+                                fieldWithPath("title").description("문제 이름"),
+                                fieldWithPath("category").description("문제 유형"),
+                                fieldWithPath("level").description("문제 레벨")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("응답 메세지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("문제 저장 시 title이 없으면 예외가 발생한다")
+    public void saveProblemEmptyTitleException() throws Exception {
+        // given
+        ProblemSaveRequest request = new ProblemSaveRequest("url", "", Category.DFS, 3);
+
+        // when, then
+        mockMvc.perform(post(baseURL)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("title 필드는 공백일 수 없습니다. (전달된 값: )"))
+
+                .andDo(print())
+                .andDo(document("problem/save/fail/emptyTitle",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("url").description("문제 URL"),
+                                fieldWithPath("title").description("문제 이름"),
+                                fieldWithPath("category").description("문제 유형"),
+                                fieldWithPath("level").description("문제 레벨")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("응답 메세지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("문제 저장 시 category가 없으면 예외가 발생한다")
+    public void saveProblemEmptyCategoryException() throws Exception {
+        // given
+        ProblemSaveRequest request = new ProblemSaveRequest("url", "title", null, 3);
+
+        // when, then
+        mockMvc.perform(post(baseURL)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("category 필드는 공백일 수 없습니다. (전달된 값: null)"))
+
+                .andDo(print())
+                .andDo(document("problem/save/fail/emptyCategory",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -159,8 +226,8 @@ public class ProblemControllerTest extends ControllerTest {
 
 
     @Test
-    @DisplayName("문제를 저장 시 level이 없으면 예외가 발생한다")
-    public void getLevelEmptyException() throws Exception {
+    @DisplayName("문제 저장 시 level이 없으면 예외가 발생한다")
+    public void saveProblemEmptyLevelException() throws Exception {
         //given
         ProblemSaveRequest request = new ProblemSaveRequest("title", "ps", Category.DFS, null);
 
@@ -174,6 +241,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/save/fail/emptyLevel",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -188,8 +257,8 @@ public class ProblemControllerTest extends ControllerTest {
 
 
     @Test
-    @DisplayName("문제를 저장 시 level이 1보다 작으면 예외가 발생한다")
-    public void getLowLevelException() throws Exception {
+    @DisplayName("문제 저장 시 level이 1보다 작으면 예외가 발생한다")
+    public void saveProblemLowLevelException() throws Exception {
         //given
         ProblemSaveRequest request = new ProblemSaveRequest("title", "ps", Category.DFS, 0);
 
@@ -204,6 +273,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/save/fail/lowLevel",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -217,8 +288,8 @@ public class ProblemControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("문제를 저장 시 level이 5보다 높으면 예외가 발생한다")
-    public void getHighLevelException() throws Exception {
+    @DisplayName("문제 저장 시 level이 5보다 높으면 예외가 발생한다")
+    public void saveProblemHighLevelException() throws Exception {
         //given
         ProblemSaveRequest request = new ProblemSaveRequest("title", "ps", Category.DFS, 8);
 
@@ -233,6 +304,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/save/fail/highLevel",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -265,6 +338,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/find/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("id").description("문제 ID")
                         ),
@@ -298,6 +373,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/pull/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("title").description("문제 제목"),
                                 fieldWithPath("url").description("문제 URL"),
@@ -318,6 +395,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/delete/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("id").description("문제 ID")
                         )));
@@ -339,6 +418,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/update/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -351,7 +432,7 @@ public class ProblemControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("문제 수정 시 url이 없으면 예외가 발생한다")
-    public void updateUrlEmptyException() throws Exception {
+    public void updateProblemUrlEmptyException() throws Exception {
         //given
         ProblemUpdateRequest request = new ProblemUpdateRequest(null, "title", Category.DFS, 3, false);
 
@@ -365,6 +446,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/update/fail/emptyUrl",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -379,8 +462,38 @@ public class ProblemControllerTest extends ControllerTest {
     }
 
     @Test
+    @DisplayName("문제 수정 시 title이 없으면 예외가 발생한다")
+    public void updateProblemTitleEmptyException() throws Exception {
+        //given
+        ProblemUpdateRequest request = new ProblemUpdateRequest("url", null, Category.DFS, 3, false);
+
+        // when, then
+        mockMvc.perform(put(baseURL + "/{id}", problemId)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("title 필드는 공백일 수 없습니다. (전달된 값: null)"))
+
+                .andDo(print())
+                .andDo(document("problem/update/fail/emptyTitle",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("url").description("문제 URL"),
+                                fieldWithPath("title").description("문제 이름"),
+                                fieldWithPath("category").description("문제 유형"),
+                                fieldWithPath("level").description("문제 레벨"),
+                                fieldWithPath("isSolved").description("문제 풀이 여부")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("응답 메세지")
+                        )
+                ));
+    }
+    @Test
     @DisplayName("문제 수정 시 category가 없으면 예외가 발생한다")
-    public void updateCategoryEmptyException() throws Exception {
+    public void updateProblemCategoryEmptyException() throws Exception {
         //given
         ProblemUpdateRequest request = new ProblemUpdateRequest("url", "title", null, 3, false);
 
@@ -394,6 +507,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/update/fail/emptyCategory",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -409,7 +524,7 @@ public class ProblemControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("문제 수정 시 isSolved가 없으면 예외가 발생한다")
-    public void updateIsSolvedEmptyException() throws Exception {
+    public void updateProblemIsSolvedEmptyException() throws Exception {
         //given
         ProblemUpdateRequest request = new ProblemUpdateRequest("test", "title", Category.DFS, 3, null);
 
@@ -423,6 +538,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/update/fail/emptyIsSolved",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -438,7 +555,7 @@ public class ProblemControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("문제 수정 시 level이 없으면 예외가 발생한다")
-    public void updateLevelEmptyException() throws Exception {
+    public void updateProblemLevelEmptyException() throws Exception {
         // given
         ProblemUpdateRequest request = new ProblemUpdateRequest("test", "title", Category.DFS, null, false);
 
@@ -452,6 +569,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/update/fail/emptyLevel",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -467,7 +586,7 @@ public class ProblemControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("문제 수정 시 level이 1보다 작으면 예외가 발생한다")
-    public void updateLowLevelEmptyException() throws Exception {
+    public void updateProblemLowLevelEmptyException() throws Exception {
         // given
         ProblemUpdateRequest request = new ProblemUpdateRequest("test", "title", Category.DFS, 0, false);
 
@@ -482,6 +601,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/update/fail/lowLevel",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -497,7 +618,7 @@ public class ProblemControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("문제 수정 시 level이 5보다 크면 예외가 발생한다")
-    public void updateHighLevelEmptyException() throws Exception {
+    public void updateProblemHighLevelEmptyException() throws Exception {
         //given
         ProblemUpdateRequest request = new ProblemUpdateRequest("test", "title", Category.DFS, 8, false);
 
@@ -512,6 +633,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/update/fail/highLevel",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -534,6 +657,8 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/recovery/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("id").description("문제 ID")
                         )));
