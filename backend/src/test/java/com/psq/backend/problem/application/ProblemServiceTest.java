@@ -11,8 +11,8 @@ import com.psq.backend.problem.dto.request.ProblemSaveRequest;
 import com.psq.backend.problem.dto.request.ProblemUpdateRequest;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
 import com.psq.backend.problem.dto.response.ProblemResponse;
+import com.psq.backend.problem.exception.InvalidProblemException;
 import com.psq.backend.problem.exception.NoSuchProblemException;
-import com.psq.backend.problem.exception.NotDeletedProblemException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +62,7 @@ public class ProblemServiceTest extends ServiceTest {
 
         // when
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(problemList);
-        when(memberService.getMemberInfo(request)).thenReturn(member);
+        when(memberService.getMember(request)).thenReturn(member);
 
         List<ProblemListResponse> actual = problemService.getProblemList(request, 3, Category.DFS, false, pageable);
 
@@ -86,7 +86,7 @@ public class ProblemServiceTest extends ServiceTest {
     @DisplayName("문제 리스트 조회 시 사용자의 세션 정보가 존재하지 않는 경우 예외가 발생한다")
     public void getProblemListNoSuchMemberExceptionTest() throws Exception {
         // when
-        when(memberService.getMemberInfo(request)).thenThrow(new NoSuchMemberException());
+        when(memberService.getMember(request)).thenThrow(new NoSuchMemberException());
 
         // then
         assertThatThrownBy(
@@ -96,10 +96,10 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("문제 리스트가 없는 경우 예외가 발생한다")
+    @DisplayName("문제 리스트 조회 시 문제 리스트가 없는 경우 예외가 발생한다")
     public void getProblemsEmptyException() throws Exception {
         // when
-        when(memberService.getMemberInfo(request)).thenReturn(member);
+        when(memberService.getMember(request)).thenReturn(member);
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable))
                 .thenReturn(Collections.emptyList());
 
@@ -117,20 +117,20 @@ public class ProblemServiceTest extends ServiceTest {
         ProblemSaveRequest saveRequest = new ProblemSaveRequest("url", "title", Category.DFS, 3);
 
         // when
-        when(memberService.getMemberInfo(request)).thenReturn(member);
+        when(memberService.getMember(request)).thenReturn(member);
 
         // then
         assertDoesNotThrow(() -> problemService.save(request, saveRequest));
     }
 
     @Test
-    @DisplayName("존재하지 않는 유저 정보로 문제를 저장하면 예외가 발생한다")
+    @DisplayName("문제 저장 시 존재하지 않는 유저 정보로 문제를 저장하면 예외가 발생한다")
     public void registerProblemEmptyMemberException() throws Exception {
         // given
         ProblemSaveRequest saveRequest = new ProblemSaveRequest("title","problem", Category.DFS, 3);
 
         // when
-        when(memberService.getMemberInfo(request)).thenThrow(new NoSuchMemberException());
+        when(memberService.getMember(request)).thenThrow(new NoSuchMemberException());
 
         // then
         assertThatThrownBy(
@@ -151,7 +151,7 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 문제를 삭제하려는 경우 예외가 발생한다")
+    @DisplayName("문제 삭제 시 존재하지 않는 문제를 삭제하려는 경우 예외가 발생한다")
     public void deleteProblemEmptyException() throws Exception {
         // given
         Long 존재하지_않는_문제_ID = 0L;
@@ -180,7 +180,7 @@ public class ProblemServiceTest extends ServiceTest {
 
         // when
         when(problemRepository.pollProblem(member.getId())).thenReturn(Optional.ofNullable(problem1));
-        when(memberService.getMemberInfo(request)).thenReturn(member);
+        when(memberService.getMember(request)).thenReturn(member);
 
         ProblemResponse actual = problemService.pollProblem(request);
 
@@ -193,10 +193,10 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("poll할 수 있는 문제가 없는 경우 예외가 발생한다")
+    @DisplayName("문제를 poll할 때 poll할 수 있는 문제가 없는 경우 예외가 발생한다")
     public void pollProblemEmptyProblemException() throws Exception {
         // when
-        when(memberService.getMemberInfo(request)).thenReturn(member);
+        when(memberService.getMember(request)).thenReturn(member);
 
         // then
         assertThatThrownBy(
@@ -206,10 +206,10 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자 id로 문제를 poll하면 예외가 발생한다")
+    @DisplayName("문제를 poll할 때 존재하지 않는 사용자 id로 문제를 poll하면 예외가 발생한다")
     void pollProblemEmptyMemberException() {
         // when
-        when(memberService.getMemberInfo(request)).thenThrow(new NoSuchMemberException());
+        when(memberService.getMember(request)).thenThrow(new NoSuchMemberException());
 
         // then
         assertThatThrownBy(
@@ -223,7 +223,7 @@ public class ProblemServiceTest extends ServiceTest {
     public void getProblemById() throws Exception {
         // when
         when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
-        ProblemResponse actual = problemService.getProblem(problem1.getId());
+        ProblemResponse actual = problemService.getProblemInfo(problem1.getId());
 
         // then
         assertAll(
@@ -234,14 +234,14 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 문제를 단건 조회하면 예외가 발생한다")
+    @DisplayName("문제 단건 조회 시 존재하지 않는 문제를 조회하면 예외가 발생한다")
     public void getProblemByIdEmptyException() throws Exception {
         // given
         Long 존재하지_않는_문제_ID = 0L;
 
         // when, then
         assertThatThrownBy(
-                () -> problemService.getProblem(존재하지_않는_문제_ID))
+                () -> problemService.getProblemInfo(존재하지_않는_문제_ID))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
     }
@@ -272,7 +272,7 @@ public class ProblemServiceTest extends ServiceTest {
         );
     }
     @Test
-    @DisplayName("존재하지 않는 문제를 수정하면 예외가 발생한다")
+    @DisplayName("문제 수정 시 존재하지 않는 문제를 수정하면 예외가 발생한다")
     public void updateEmptyProblemException() throws Exception {
         // given
         Long 존재하지_않는_문제_ID = 0L;
@@ -299,7 +299,7 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 문제를 되돌리면 예외가 발생한다")
+    @DisplayName("문제를 되돌릴 시 존재하지 않는 문제를 되돌리면 예외가 발생한다")
     public void recoveryNotExistProblemException() throws Exception {
         // given
         Long 존재하지_않는_문제_ID = 0L;
@@ -312,14 +312,35 @@ public class ProblemServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("isDeleted가 false(삭제X)인 문제를 되돌리면 예외가 발생한다")
+    @DisplayName("문제를 되돌릴 시 isDeleted가 false(삭제X)인  예외가 발생한다")
     public void recoveryNotDeletedProblemException() throws Exception {
         // when, then
         when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
 
         assertThatThrownBy(
                 () -> problemService.recovery(problem1.getId()))
-                .isInstanceOf(NotDeletedProblemException.class)
+                .isInstanceOf(InvalidProblemException.class)
                 .hasMessageContaining("삭제되지 않은 문제입니다.");
+    }
+
+    @Test
+    @DisplayName("Problem 엔티티를 조회한다")
+    public void getProblemTest() throws Exception {
+        // when
+        when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
+        Problem actual = problemService.getProblem(problem1.getId());
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(problem1);
+    }
+
+    @Test
+    @DisplayName("Problem 엔티티 조회 시 존재하지 않는 엔티티를 조회하면 예외가 발생한")
+    public void getProblemNoSuchProblemException() throws Exception {
+        // when, then
+        assertThatThrownBy(
+                () -> problemService.getProblem(problem1.getId()))
+                .isInstanceOf(NoSuchProblemException.class)
+                .hasMessageContaining("존재하지 않는 문제입니다.");
     }
 }

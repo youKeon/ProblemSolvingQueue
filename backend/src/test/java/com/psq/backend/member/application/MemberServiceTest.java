@@ -16,7 +16,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,7 +52,7 @@ public class MemberServiceTest extends ServiceTest {
         MemberSignUpRequest request = new MemberSignUpRequest("email@email.com", "password");
 
         // when
-        when(memberRepository.existsMemberByEmail(request.getEmail())).thenReturn(false);
+        when(memberRepository.existsByEmail(request.getEmail())).thenReturn(false);
 
         // then
         assertDoesNotThrow(() -> memberService.signup(request));
@@ -66,7 +65,7 @@ public class MemberServiceTest extends ServiceTest {
         MemberSignUpRequest request = new MemberSignUpRequest("email@email.com", "password");
 
         // when
-        when(memberRepository.existsMemberByEmail(request.getEmail())).thenReturn(true);
+        when(memberRepository.existsByEmail(request.getEmail())).thenReturn(true);
 
         // then
         assertThatThrownBy(
@@ -128,7 +127,7 @@ public class MemberServiceTest extends ServiceTest {
 
         // when
         when(memberRepository.findById(sessionInfo.getId())).thenReturn(Optional.ofNullable(member));
-        Member actual = memberService.getMemberInfo(request);
+        Member actual = memberService.getMember(request);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(member);
@@ -139,7 +138,7 @@ public class MemberServiceTest extends ServiceTest {
     public void getMemberInfoInvalidSessionExceptionTest() throws Exception {
         // when, then
         assertThatThrownBy(
-                () -> memberService.getMemberInfo(request))
+                () -> memberService.getMember(request))
                 .isInstanceOf(NoSuchMemberException.class)
                 .hasMessageContaining("잘못된 세션 정보입니다.");
     }
@@ -153,7 +152,7 @@ public class MemberServiceTest extends ServiceTest {
 
         // when, then
         assertThatThrownBy(
-                () -> memberService.getMemberInfo(request))
+                () -> memberService.getMember(request))
                 .isInstanceOf(NoSuchMemberException.class)
                 .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
