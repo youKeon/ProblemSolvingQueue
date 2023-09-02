@@ -1,7 +1,7 @@
 name: CI
 on:
   pull_request:
-    branches: ["dev"]
+    branches: ["master"]
 
 jobs:
   backend-test:
@@ -30,7 +30,6 @@ jobs:
       - name: Grant Execute Permission For Gradlew
         run: chmod +x backend/gradlew
 
-
       - name: Test with Gradle
         run: |
           cd backend
@@ -40,6 +39,6 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: PSQ Tests
+          name: Test Report
           path: "backend/build/test-results/**/*.xml"
           reporter: java-junit
