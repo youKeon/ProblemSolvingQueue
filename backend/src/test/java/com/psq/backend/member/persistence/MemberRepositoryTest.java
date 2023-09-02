@@ -2,9 +2,6 @@ package com.psq.backend.member.persistence;
 
 import com.psq.backend.common.annotation.RepositoryTest;
 import com.psq.backend.member.domain.Member;
-import com.psq.backend.problem.domain.Category;
-import com.psq.backend.problem.domain.Problem;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,7 +40,7 @@ public class MemberRepositoryTest extends RepositoryTest {
         String email = "yukeon97@gmail.com";
 
         // when
-        boolean actual = memberRepository.existsMemberByEmail(email);
+        boolean actual = memberRepository.existsByEmail(email);
 
         // then
         assertThat(actual).isTrue();
@@ -56,7 +53,7 @@ public class MemberRepositoryTest extends RepositoryTest {
         String email = "yukeon97@naver.com";
 
         // when
-        boolean actual = memberRepository.existsMemberByEmail(email);
+        boolean actual = memberRepository.existsByEmail(email);
 
         // then
         assertThat(actual).isFalse();

@@ -26,7 +26,7 @@ public class ProblemController {
     @Operation(summary = "문제 단건 조회")
     @GetMapping("/{id}")
     public ResponseEntity<ProblemResponse> getProblem(@PathVariable Long id) {
-        ProblemResponse response = problemService.getProblem(id);
+        ProblemResponse response = problemService.getProblemInfo(id);
         return ResponseEntity.ok(response);
     }
 

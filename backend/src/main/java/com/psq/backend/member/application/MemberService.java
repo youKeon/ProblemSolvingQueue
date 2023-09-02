@@ -25,7 +25,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public void signup(MemberSignUpRequest request) {
-        if (memberRepository.existsMemberByEmail(request.getEmail()))
+        if (memberRepository.existsByEmail(request.getEmail()))
             throw new DuplicatedEmailException();
 
         String salt = generateSalt();
@@ -49,7 +49,7 @@ public class MemberService {
         return session.getId();
     }
 
-    public Member getMemberInfo(HttpServletRequest request) {
+    public Member getMember(HttpServletRequest request) {
         SessionInfo sessionInfo = (SessionInfo) request.getSession().getAttribute("sessionInfo");
         if (sessionInfo == null) throw new NoSuchMemberException("잘못된 세션 정보입니다.");
 
@@ -57,7 +57,6 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new NoSuchMemberException()
         );
-
         return member;
     }
 }

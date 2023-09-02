@@ -9,6 +9,7 @@ import com.psq.backend.member.application.MemberService;
 import com.psq.backend.member.domain.Member;
 import com.psq.backend.member.domain.SessionInfo;
 import com.psq.backend.member.exception.NoSuchMemberException;
+import com.psq.backend.problem.application.ProblemService;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
@@ -31,6 +32,8 @@ import static org.mockito.Mockito.when;
 public class BookmarkServiceTest extends ServiceTest {
     @Mock
     private MemberService memberService;
+    @Mock
+    private ProblemService problemService;
     @BeforeEach
     void setup() {
         member = new Member("yukeon97@gmail.com", "123", "salt");
@@ -56,8 +59,8 @@ public class BookmarkServiceTest extends ServiceTest {
         BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(problem1.getId());
 
         // when
-        when(memberService.getMemberInfo(request)).thenReturn(member);
-        when(problemRepository.findById(saveRequest.getProblemId())).thenReturn(Optional.of(problem1));
+        when(memberService.getMember(request)).thenReturn(member);
+        when(problemService.getProblem(saveRequest.getProblemId())).thenReturn(problem1);
         when(bookmarkRepository.isExistedBookmark(anyLong(), anyLong())).thenReturn(false);
 
         // then
@@ -71,8 +74,8 @@ public class BookmarkServiceTest extends ServiceTest {
         BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(problem1.getId());
 
         // when
-        when(problemRepository.findById(saveRequest.getProblemId())).thenReturn(Optional.ofNullable(problem1));
-        when(memberService.getMemberInfo(request)).thenReturn(member);
+        when(memberService.getMember(request)).thenReturn(member);
+        when(problemService.getProblem(saveRequest.getProblemId())).thenReturn(problem1);
         when(bookmarkRepository.isExistedBookmark(member.getId(), problem1.getId()))
                 .thenReturn(true);
 
@@ -113,7 +116,7 @@ public class BookmarkServiceTest extends ServiceTest {
         BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(problem1.getId());
 
         // when
-        when(memberService.getMemberInfo(request)).thenThrow(new NoSuchMemberException());
+        when(memberService.getMember(request)).thenThrow(new NoSuchMemberException());
 
         // then
         assertThatThrownBy(
@@ -130,7 +133,8 @@ public class BookmarkServiceTest extends ServiceTest {
         BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(존재하지_않는_문제_ID);
 
         // when
-        when(memberService.getMemberInfo(request)).thenReturn(member);
+        when(memberService.getMember(request)).thenReturn(member);
+        when(problemService.getProblem(saveRequest.getProblemId())).thenThrow(new NoSuchProblemException());
 
         // then
         assertThatThrownBy(
@@ -151,7 +155,7 @@ public class BookmarkServiceTest extends ServiceTest {
 
         // when
         when(bookmarkRepository.findBookmarkByFetchJoin(member.getId())).thenReturn(bookmarkList);
-        when(memberService.getMemberInfo(request)).thenReturn(member);
+        when(memberService.getMember(request)).thenReturn(member);
 
         List<ProblemListResponse> actual = bookmarkService.getBookmarkList(request);
 
@@ -175,7 +179,7 @@ public class BookmarkServiceTest extends ServiceTest {
     @DisplayName("입력 받은 사용자 id에 해당되는 북마크가 없으면 예외가 발생한다")
     void getBookmarkEmptyExceptionTest() {
         // when
-        when(memberService.getMemberInfo(request)).thenReturn(member);
+        when(memberService.getMember(request)).thenReturn(member);
         when(bookmarkRepository.findBookmarkByFetchJoin(member.getId())).thenReturn(Collections.emptyList());
 
         // then

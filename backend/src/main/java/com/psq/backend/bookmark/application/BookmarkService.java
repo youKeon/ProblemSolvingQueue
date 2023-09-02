@@ -7,9 +7,7 @@ import com.psq.backend.bookmark.exception.NoSuchBookmarkException;
 import com.psq.backend.bookmark.persistence.BookmarkRepository;
 import com.psq.backend.member.application.MemberService;
 import com.psq.backend.member.domain.Member;
-import com.psq.backend.member.domain.SessionInfo;
-import com.psq.backend.member.exception.NoSuchMemberException;
-import com.psq.backend.member.persistence.MemberRepository;
+import com.psq.backend.problem.application.ProblemService;
 import com.psq.backend.problem.domain.Problem;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
 import com.psq.backend.problem.exception.NoSuchProblemException;
@@ -28,18 +26,11 @@ import java.util.stream.Collectors;
 public class BookmarkService {
     private final BookmarkRepository bookmarkRepository;
     private final MemberService memberService;
-    private final ProblemRepository problemRepository;
+    private final ProblemService problemService;
 
-    /**
-     * TODO
-     * ProblemRepository에 의존하지 않고 ProblemService에 의존하기
-     */
     public void save(HttpServletRequest request, BookmarkSaveRequest saveRequest) {
-        Member member = memberService.getMemberInfo(request);
-
-        Problem problem = problemRepository.findById(saveRequest.getProblemId()).orElseThrow(
-                () -> new NoSuchProblemException()
-        );
+        Member member = memberService.getMember(request);
+        Problem problem = problemService.getProblem(saveRequest.getProblemId());
 
         if (bookmarkRepository.isExistedBookmark(member.getId(), problem.getId()))
             throw new DuplicatedBookmarkException();
@@ -55,7 +46,7 @@ public class BookmarkService {
     }
 
     public List<ProblemListResponse> getBookmarkList(HttpServletRequest request) {
-        Long memberId = memberService.getMemberInfo(request).getId();
+        Long memberId = memberService.getMember(request).getId();
 
         List<Bookmark> bookmarkList = bookmarkRepository.findBookmarkByFetchJoin(memberId);
 

@@ -252,7 +252,7 @@ public class ProblemControllerTest extends ControllerTest {
         ProblemResponse response = new ProblemResponse("title", "test1", 1, Category.DFS, false);
 
         // when
-        when(problemService.getProblem(problemId)).thenReturn(response);
+        when(problemService.getProblemInfo(problemId)).thenReturn(response);
 
         // then
         mockMvc.perform(get(baseURL + "/{id}", problemId))

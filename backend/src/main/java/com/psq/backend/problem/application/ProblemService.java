@@ -2,17 +2,14 @@ package com.psq.backend.problem.application;
 
 import com.psq.backend.member.application.MemberService;
 import com.psq.backend.member.domain.Member;
-import com.psq.backend.member.domain.SessionInfo;
-import com.psq.backend.member.exception.NoSuchMemberException;
-import com.psq.backend.member.persistence.MemberRepository;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
 import com.psq.backend.problem.dto.request.ProblemSaveRequest;
 import com.psq.backend.problem.dto.request.ProblemUpdateRequest;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
 import com.psq.backend.problem.dto.response.ProblemResponse;
+import com.psq.backend.problem.exception.InvalidProblemException;
 import com.psq.backend.problem.exception.NoSuchProblemException;
-import com.psq.backend.problem.exception.NotDeletedProblemException;
 import com.psq.backend.problem.persistence.ProblemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,12 +27,10 @@ public class ProblemService {
     private final ProblemRepository problemRepository;
     private final MemberService memberService;
 
-
-
     public void save(HttpServletRequest servletRequest,
                      ProblemSaveRequest request) {
 
-        Member member = memberService.getMemberInfo(servletRequest);
+        Member member = memberService.getMember(servletRequest);
         Problem problem = request.toEntity(member);
         problemRepository.save(problem);
     }
@@ -47,7 +42,7 @@ public class ProblemService {
                                                     Pageable pageable) {
 
 
-        Long memberId = memberService.getMemberInfo(request).getId();
+        Long memberId = memberService.getMember(request).getId();
 
         List<Problem> problemList = problemRepository.findAllProblem(memberId, level, category, isSolved, pageable);
 
@@ -66,7 +61,7 @@ public class ProblemService {
         problem.softDelete();
     }
 
-    public ProblemResponse getProblem(Long id) {
+    public ProblemResponse getProblemInfo(Long id) {
         Problem problem = problemRepository.findById(id).orElseThrow(
                 () -> new NoSuchProblemException()
         );
@@ -74,7 +69,7 @@ public class ProblemService {
     }
 
     public ProblemResponse pollProblem(HttpServletRequest request) {
-        Long memberId = memberService.getMemberInfo(request).getId();
+        Long memberId = memberService.getMember(request).getId();
 
         Problem problem = problemRepository.pollProblem(memberId).orElseThrow(
                 () -> new NoSuchProblemException()
@@ -95,7 +90,14 @@ public class ProblemService {
         Problem problem = problemRepository.findById(id).orElseThrow(
                 () -> new NoSuchProblemException()
         );
-        if (!problem.isDeleted()) throw new NotDeletedProblemException();
+        if (!problem.isDeleted()) throw new InvalidProblemException("삭제되지 않은 문제입니다.");
         problem.recovery();
+    }
+
+    public Problem getProblem(Long id) {
+        Problem problem = problemRepository.findById(id).orElseThrow(
+                () -> new NoSuchProblemException()
+        );
+        return problem;
     }
 }
