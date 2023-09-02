@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentRequest;
-import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentResponse;
 import static com.psq.backend.problem.domain.Category.BFS;
 import static com.psq.backend.problem.domain.Category.DFS;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,8 +54,6 @@ public class BookmarkControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("bookmark/save/success",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("problemId").description("문제 ID")
                         )
@@ -79,8 +75,6 @@ public class BookmarkControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("bookmark/save/fail/emptyProblemId",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("problemId").description("문제 ID")
                         ),
@@ -104,8 +98,6 @@ public class BookmarkControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("bookmark/delete/success",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("id").description("북마크 ID")
                         ))
@@ -140,8 +132,6 @@ public class BookmarkControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("bookmark/findAll/success",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("[].url").description("문제 URL"),
                                 fieldWithPath("[].level").description("문제의 난이도 레벨"),
