@@ -185,6 +185,11 @@ build {
     dependsOn createDocument
 }
 
-tasks.named("jar") {
+bootJar {
+    dependsOn createDocument
+}
+
+jar {
+    dependsOn bootJar
     enabled = false
 }
