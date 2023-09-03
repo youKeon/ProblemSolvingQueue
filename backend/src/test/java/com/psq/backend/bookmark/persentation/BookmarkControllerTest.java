@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,7 +60,7 @@ public class BookmarkControllerTest extends ControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("problemId").description("문제 ID")
+                                fieldWithPath("problemId").type(JsonFieldType.NUMBER).description("문제 ID")
                         )
                 ));
     }

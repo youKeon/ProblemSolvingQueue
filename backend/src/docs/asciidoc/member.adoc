@@ -11,50 +11,26 @@ endif::[]
 
 == 회원가입
 === 성공
-==== Request
-include::{snippets}/member/signUp/success/http-request.adoc[]
-==== Response
-include::{snippets}/member/signUp/success/http-response.adoc[]
+operation::member/signUp/success[snippets='request-fields,http-request,http-response']
 
 === 실패 : 이메일 형식 오류
-==== Request
-include::{snippets}/member/signUp/fail/invalidEmail/http-request.adoc[]
-==== Response
-include::{snippets}/member/signUp/fail/invalidEmail/http-response.adoc[]
+operation::member/signUp/fail/invalidEmail[snippets='http-request,http-response']
 
 === 실패 : 이메일 공백 오류
-==== Request
-include::{snippets}/member/signUp/fail/emptyEmail/http-request.adoc[]
-==== Response
-include::{snippets}/member/signUp/fail/emptyEmail/http-response.adoc[]
+operation::member/signUp/fail/emptyEmail[snippets='http-request,http-response']
 
 === 실패 : 비밀번호 공백 오류
-==== Request
-include::{snippets}/member/signUp/fail/emptyPassword/http-request.adoc[]
-==== Response
-include::{snippets}/member/signUp/fail/emptyPassword/http-response.adoc[]
+operation::member/signUp/fail/emptyPassword[snippets='http-request,http-response']
 
 == 로그인
 === 성공
-==== Request
-include::{snippets}/member/signIn/success/http-request.adoc[]
-==== Response
-include::{snippets}/member/signIn/success/http-response.adoc[]
+operation::member/signIn/success[snippets='request-fields,http-request,http-response']
 
 === 실패 : 이메일 형식 오류
-==== Request
-include::{snippets}/member/signIn/fail/invalidEmail/http-request.adoc[]
-==== Response
-include::{snippets}/member/signIn/fail/invalidEmail/http-response.adoc[]
+operation::member/signIn/fail/invalidEmail[snippets='http-request,http-response']
 
 === 실패 : 이메일 공백 오류
-==== Request
-include::{snippets}/member/signIn/fail/emptyEmail/http-request.adoc[]
-==== Response
-include::{snippets}/member/signIn/fail/emptyEmail/http-response.adoc[]
+operation::member/signIn/fail/emptyEmail[snippets='http-request,http-response']
 
 === 실패 : 비밀번호 공백 오류
-==== Request
-include::{snippets}/member/signIn/fail/emptyPassword/http-request.adoc[]
-==== Response
-include::{snippets}/member/signIn/fail/emptyPassword/http-response.adoc[]
+operation::member/signIn/fail/emptyPassword[snippets='http-request,http-response']

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
@@ -126,10 +127,10 @@ public class ProblemControllerTest extends ControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("url").description("문제 URL"),
-                                fieldWithPath("title").description("문제 이름"),
-                                fieldWithPath("category").description("문제 유형"),
-                                fieldWithPath("level").description("문제 레벨")
+                                fieldWithPath("url").type(JsonFieldType.STRING).description("문제 URL"),
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("문제 이름"),
+                                fieldWithPath("category").type(JsonFieldType.STRING).description("문제 유형"),
+                                fieldWithPath("level").type(JsonFieldType.NUMBER).description("문제 레벨")
                         )
                 ));
     }
@@ -420,12 +421,15 @@ public class ProblemControllerTest extends ControllerTest {
                 .andDo(document("problem/update/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("문제 ID")
+                        ),
                         requestFields(
-                                fieldWithPath("url").description("문제 URL"),
-                                fieldWithPath("title").description("문제 이름"),
-                                fieldWithPath("level").description("문제 레벨"),
-                                fieldWithPath("category").description("문제 유형"),
-                                fieldWithPath("isSolved").description("문제 풀이 여부")
+                                fieldWithPath("url").type(JsonFieldType.STRING).description("문제 URL"),
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("문제 이름"),
+                                fieldWithPath("category").type(JsonFieldType.STRING).description("문제 유형"),
+                                fieldWithPath("level").type(JsonFieldType.NUMBER).description("문제 레벨"),
+                                fieldWithPath("isSolved").type(JsonFieldType.BOOLEAN).description("문제 풀이 여부")
                         )
                 ));
     }
@@ -448,6 +452,9 @@ public class ProblemControllerTest extends ControllerTest {
                 .andDo(document("problem/update/fail/emptyUrl",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("문제 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -479,6 +486,9 @@ public class ProblemControllerTest extends ControllerTest {
                 .andDo(document("problem/update/fail/emptyTitle",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("문제 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -509,6 +519,9 @@ public class ProblemControllerTest extends ControllerTest {
                 .andDo(document("problem/update/fail/emptyCategory",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("문제 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -540,6 +553,9 @@ public class ProblemControllerTest extends ControllerTest {
                 .andDo(document("problem/update/fail/emptyIsSolved",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("문제 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -571,6 +587,9 @@ public class ProblemControllerTest extends ControllerTest {
                 .andDo(document("problem/update/fail/emptyLevel",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("문제 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -603,6 +622,9 @@ public class ProblemControllerTest extends ControllerTest {
                 .andDo(document("problem/update/fail/lowLevel",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("문제 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
@@ -635,6 +657,9 @@ public class ProblemControllerTest extends ControllerTest {
                 .andDo(document("problem/update/fail/highLevel",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("문제 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("title").description("문제 이름"),
