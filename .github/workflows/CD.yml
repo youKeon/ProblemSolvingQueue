@@ -22,6 +22,13 @@ jobs:
           java-version: 11
           distribution: "temurin"
 
+      - name: Make properties
+        run: |
+          cd backend/src/main/resources
+          touch ./application-local.yml
+          echo "${{ secrets.DEPLOY_PROPERTIES }}" > ./application-local.yml
+        shell: bash
+
       - name: Grant execute permission for gradlew
         run: chmod +x backend/gradlew
         shell: bash
