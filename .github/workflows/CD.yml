@@ -36,7 +36,7 @@ jobs:
       - name: Build with Gradle
         run: |
           cd backend
-          ./gradlew clean build
+          ./gradlew clean build --info
         shell: bash
 
       - name: Make zip file
