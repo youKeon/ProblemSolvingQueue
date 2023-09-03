@@ -6,3 +6,5 @@ backend/src/main/resources/application-local.yml
 .env
 
 .idea/
+
+backend/src/main/resources/static/
