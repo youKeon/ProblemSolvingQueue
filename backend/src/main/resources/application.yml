@@ -11,4 +11,4 @@ spring:
 server:
   servlet:
     session:
-      timeout: 315350000
+      timeout: 315349999
