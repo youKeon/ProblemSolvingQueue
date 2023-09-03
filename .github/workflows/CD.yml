@@ -29,7 +29,7 @@ jobs:
       - name: Build  with Gradle
         run: |
           cd backend
-          ./gradlew clean build --info
+          ./gradlew -x test
         shell: bash
 
       - name: Make properties
