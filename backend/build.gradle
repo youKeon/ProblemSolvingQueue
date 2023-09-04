@@ -153,43 +153,43 @@ jacocoTestCoverageVerification {
 }
 
 // =================== Rest Docs =================== //
-//ext {
-//    set('snippetsDir', file("build/generated-snippets"))
-//}
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
 
 tasks.named('test') {
-//    outputs.dir snippetsDir
+    outputs.dir snippetsDir
     useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
 }
 
-//asciidoctor {
-//    configurations 'asciidoctorExtensions'
-//    inputs.dir snippetsDir
-//
-//    dependsOn test
-//}
-//
-//asciidoctor.doFirst {
-//    delete file('src/main/resources/static/docs')
-//}
-//
-//task createDocument(type: Copy) {
-//    dependsOn asciidoctor
-//
-//    from file("build/docs/asciidoc")
-//    into file("src/main/resources/static")
-//}
-//
-//build {
-//    dependsOn createDocument
-//}
-//
-//bootJar {
-//    dependsOn createDocument
-//}
+asciidoctor {
+    configurations 'asciidoctorExtensions'
+    inputs.dir snippetsDir
+
+    dependsOn test
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+task createDocument(type: Copy) {
+    dependsOn asciidoctor
+
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static")
+}
+
+build {
+    dependsOn createDocument
+}
+
+bootJar {
+    dependsOn createDocument
+}
 
 jar {
-//    dependsOn bootJar
+    dependsOn bootJar
     enabled = false
 }
