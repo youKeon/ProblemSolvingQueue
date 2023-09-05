@@ -171,20 +171,20 @@ asciidoctor {
 }
 
 asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')
+    delete file('src/main/resources/static')
 }
 
 task createDocument(type: Copy) {
     dependsOn asciidoctor
 
     from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
+    into file("src/main/resources/static")
 }
 
 bootJar {
     dependsOn createDocument
     from("${asciidoctor.outputDir}") {
-        into "static/docs"
+        into "static"
     }
 }
 
