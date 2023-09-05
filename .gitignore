@@ -7,3 +7,5 @@ backend/src/main/resources/application-local.yml
 
 .idea/
 
+# Rest Docs
+backend/src/main/resources/static/docs/

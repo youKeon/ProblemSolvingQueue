@@ -1,6 +1,5 @@
 package com.psq.backend.batch;
 
-import com.psq.backend.problem.domain.Problem;
 import com.psq.backend.problem.persistence.ProblemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +16,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableBatchProcessing
 @RequiredArgsConstructor
-public class BatchConfiguration {
+public class BatchConfig {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
-
     private final ProblemRepository problemRepository;
 
     @Bean
