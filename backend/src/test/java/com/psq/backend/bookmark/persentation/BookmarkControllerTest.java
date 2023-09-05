@@ -101,7 +101,7 @@ public class BookmarkControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(delete(baseURL + "/{id}", bookmarkId))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
 
                 .andDo(print())
                 .andDo(document("bookmark/delete/success",

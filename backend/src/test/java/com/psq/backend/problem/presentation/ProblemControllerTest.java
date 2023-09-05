@@ -392,7 +392,7 @@ public class ProblemControllerTest extends ControllerTest {
     public void deleteProblem() throws Exception {
         // when, then
         mockMvc.perform(delete(baseURL + "/{id}", problemId))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
 
                 .andDo(print())
                 .andDo(document("problem/delete/success",
@@ -415,7 +415,7 @@ public class ProblemControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
 
                 .andDo(print())
                 .andDo(document("problem/update/success",
@@ -678,7 +678,7 @@ public class ProblemControllerTest extends ControllerTest {
     public void recoveryProblem() throws Exception {
         // when, then
         mockMvc.perform(put(baseURL + "/{id}/recovery", problemId))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
 
                 .andDo(print())
                 .andDo(document("problem/recovery/success",

@@ -30,7 +30,7 @@ public class BookmarkController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         bookmarkService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.noContent().build();
     }
     @Operation(summary = "북마크 리스트 조회")
     @GetMapping

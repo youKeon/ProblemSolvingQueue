@@ -60,14 +60,14 @@ public class ProblemController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         problemService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "문제 되돌리기(isDeleted -> false)")
     @PutMapping("/{id}/recovery")
     public ResponseEntity<Void> recovery(@PathVariable Long id) {
         problemService.recovery(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "문제 수정")
@@ -75,6 +75,6 @@ public class ProblemController {
     public ResponseEntity<Void> update(@PathVariable Long id,
                                        @RequestBody @Valid ProblemUpdateRequest request) {
         problemService.update(id, request);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.noContent().build();
     }
 }
