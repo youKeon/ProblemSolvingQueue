@@ -187,6 +187,9 @@ build {
 
 bootJar {
     dependsOn createDocument
+    from ("build/docs/asciidoc") {
+        into 'BOOT-INF/classes/static/docs'
+    }
 }
 
 jar {
