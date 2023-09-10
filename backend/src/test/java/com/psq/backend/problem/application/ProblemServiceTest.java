@@ -58,7 +58,11 @@ public class ProblemServiceTest extends ServiceTest {
     @DisplayName("세션 정보와 주어진 필터 조건으로(난이도, 풀이 여부, 문제 유형 등) 문제 리스트를 조회한다")
     public void getProblemListTest() throws Exception {
         // given
-        List<Problem> problemList = Arrays.asList(problem1, problem2, problem3);
+        List<ProblemListResponse> problemList = Arrays.asList(
+                new ProblemListResponse(problem1.getUrl(), problem1.getLevel(), problem1.getCategory(), problem1.isSolved()),
+                new ProblemListResponse(problem2.getUrl(), problem2.getLevel(), problem2.getCategory(), problem2.isSolved()),
+                new ProblemListResponse(problem3.getUrl(), problem3.getLevel(), problem3.getCategory(), problem3.isSolved())
+        );
 
         // when
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(problemList);
@@ -178,8 +182,10 @@ public class ProblemServiceTest extends ServiceTest {
         LocalDateTime dateTime3 = LocalDateTime.parse("2023-08-14 20:44:17.423552", formatter);
         ReflectionTestUtils.setField(problem3, "createdAt", dateTime3);
 
+        ProblemResponse response = new ProblemResponse(problem1.getTitle(), problem1.getUrl(), problem1.getLevel(), problem1.getCategory(), problem1.isSolved());
+
         // when
-        when(problemRepository.pollProblem(member.getId())).thenReturn(Optional.ofNullable(problem1));
+        when(problemRepository.pollProblem(member.getId())).thenReturn(Optional.of(response));
         when(memberService.getMember(request)).thenReturn(member);
 
         ProblemResponse actual = problemService.pollProblem(request);
@@ -221,8 +227,11 @@ public class ProblemServiceTest extends ServiceTest {
     @Test
     @DisplayName("Id로 문제를 단건 조회한다")
     public void getProblemById() throws Exception {
+        // given
+        ProblemResponse response = new ProblemResponse(problem1.getTitle(), problem1.getUrl(), problem1.getLevel(), problem1.getCategory(), problem1.isSolved());
+
         // when
-        when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
+        when(problemRepository.findProblem(problem1.getId())).thenReturn(Optional.ofNullable(response));
         ProblemResponse actual = problemService.getProblemInfo(problem1.getId());
 
         // then

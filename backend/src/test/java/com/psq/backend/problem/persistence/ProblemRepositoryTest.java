@@ -4,6 +4,8 @@ import com.psq.backend.common.annotation.RepositoryTest;
 import com.psq.backend.member.domain.Member;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
+import com.psq.backend.problem.dto.response.ProblemListResponse;
+import com.psq.backend.problem.dto.response.ProblemResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,7 +52,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
     @DisplayName("가장 먼저 등록한 문제를 조회한다")
     public void pollProblemTest() throws Exception {
         // when
-        Optional<Problem> actual = problemRepository.pollProblem(member.getId());
+        Optional<ProblemResponse> actual = problemRepository.pollProblem(member.getId());
 
         // then
         assertThat(problem1.getUrl()).isEqualTo(actual.get().getUrl());
@@ -63,7 +65,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
         clearProblem();
 
         // when
-        Optional<Problem> actual = problemRepository.pollProblem(member.getId());
+        Optional<ProblemResponse> actual = problemRepository.pollProblem(member.getId());
 
         // then
         assertThat(actual).isEmpty();
@@ -73,7 +75,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
     @DisplayName("전체 질문을 조회한다")
     public void findAllProblem() throws Exception {
         // when
-        List<Problem> actual = problemRepository.findAllProblem(member.getId(), 1, Category.DFS, false, pageable);
+        List<ProblemListResponse> actual = problemRepository.findAllProblem(member.getId(), 1, Category.DFS, false, pageable);
 
         // then
         assertThat(actual.size()).isEqualTo(2);
@@ -88,7 +90,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
         clearProblem();
 
         // when
-        List<Problem> actual = problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable);
+        List<ProblemListResponse> actual = problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable);
 
         // then
         assertThat(actual).isEmpty();

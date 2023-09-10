@@ -20,15 +20,6 @@ public class SwaggerConfig {
                 .version("V1")
                 .description("PSQ API");
 
-
-        SecurityScheme auth = new SecurityScheme()
-                .type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.COOKIE).name("JSESSIONID");
-        SecurityRequirement securityRequirement = new SecurityRequirement().addList("AUTH");
-
-        return new OpenAPI()
-                .components(new Components()
-                        .addSecuritySchemes("AUTH", auth))
-                .addSecurityItem(securityRequirement)
-                .info(info);
+        return new OpenAPI().info(info);
     }
 }

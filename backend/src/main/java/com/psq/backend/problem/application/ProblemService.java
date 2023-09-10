@@ -44,60 +44,41 @@ public class ProblemService {
 
         Long memberId = memberService.getMember(request).getId();
 
-        List<Problem> problemList = problemRepository.findAllProblem(memberId, level, category, isSolved, pageable);
+        List<ProblemListResponse> problemList = problemRepository.findAllProblem(memberId, level, category, isSolved, pageable);
 
-        if (problemList.size() == 0) throw new NoSuchProblemException("문제가 존재하지 않습니다.");
-
-        return problemList.stream()
-                .map(ProblemListResponse::from)
-                .collect(Collectors.toList());
+        if (problemList.isEmpty()) throw new NoSuchProblemException("문제가 존재하지 않습니다.");
+        return problemList;
     }
 
 
     public void delete(Long id) {
-        Problem problem = problemRepository.findById(id).orElseThrow(
-                () -> new NoSuchProblemException()
-        );
+        Problem problem = problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
         problem.softDelete();
     }
 
     public ProblemResponse getProblemInfo(Long id) {
-        Problem problem = problemRepository.findById(id).orElseThrow(
-                () -> new NoSuchProblemException()
-        );
-        return ProblemResponse.from(problem);
+        return problemRepository.findProblem(id).orElseThrow(NoSuchProblemException::new);
     }
 
     public ProblemResponse pollProblem(HttpServletRequest request) {
         Long memberId = memberService.getMember(request).getId();
-
-        Problem problem = problemRepository.pollProblem(memberId).orElseThrow(
-                () -> new NoSuchProblemException()
-        );
-        return ProblemResponse.from(problem);
+        return problemRepository.pollProblem(memberId).orElseThrow(NoSuchProblemException::new);
     }
 
     public void update(Long id,
                        ProblemUpdateRequest request) {
 
-        Problem problem = problemRepository.findById(id).orElseThrow(
-                () -> new NoSuchProblemException()
-        );
+        Problem problem = problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
         problem.update(request);
     }
 
     public void recovery(Long id) {
-        Problem problem = problemRepository.findById(id).orElseThrow(
-                () -> new NoSuchProblemException()
-        );
+        Problem problem = problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
         if (!problem.isDeleted()) throw new InvalidProblemException("삭제되지 않은 문제입니다.");
         problem.recovery();
     }
 
     public Problem getProblem(Long id) {
-        Problem problem = problemRepository.findById(id).orElseThrow(
-                () -> new NoSuchProblemException()
-        );
-        return problem;
+        return problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
     }
 }
