@@ -25,28 +25,17 @@
 </header>
 
 <div class="contents">
-  <nav>
-    <input class="search-box" id="search-box" placeholder="제목 입력">
-    <div class="select-category">
-      여기에 selectbox들 배치
-    </div>
-  </nav>
-  <main>
-    <div class="list">이것은 리스트이다</div>
-  </main>
-  
-  <aside>
-    여기에 사이드 항목들 배치
-  </aside>
-  <nav>
-    <input class="search-box" id="search-box" placeholder="제목 입력">
-    <div class="select-category">
-      여기에 selectbox들 배치
-    </div>
-  </nav>
-  <main>
-    <div class="list">이것은 리스트이다</div>
-  </main>
+  <div class="main-part">
+    <nav>
+      <input class="search-box" id="search-box" placeholder="제목 입력">
+      <div class="select-category">
+        여기에 selectbox들 배치
+      </div>
+    </nav>
+    <main>
+      <div class="list">이것은 리스트이다</div>
+    </main>
+  </div>
   <aside>
     여기에 사이드 항목들 배치
   </aside>
@@ -69,5 +58,11 @@
   }
   header .logo{
     height: 56px;
+  }
+
+  .contents{
+    display: flex;
+    justify-content: space-between;
+    margin : 0 16px;
   }
 </style>
