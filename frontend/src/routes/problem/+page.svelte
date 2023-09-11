@@ -25,24 +25,25 @@
 </header>
 
 <div class="contents">
-  <div class="main-part">
-    <nav>
+  <section class="main-part">
+    <nav aria-label="주요 메뉴">
+      <label for="search-box" class="visually-hidden">제목 입력</label>
       <input class="search-box" id="search-box" placeholder="제목 입력">
       <div class="select-category">
         여기에 selectbox들 배치
       </div>
     </nav>
-    <main>
+    <main aria-label="주 콘텐츠">
       <div class="list">이것은 리스트이다</div>
     </main>
-  </div>
-  <aside>
+  </section>
+  <aside aria-label="사이드 메뉴">
     여기에 사이드 항목들 배치
   </aside>
 </div>
 
 <style>
-  header{
+  header {
     top: 0;
     width: 100%;
     height: 88px;
@@ -50,19 +51,32 @@
     justify-content: space-between;
     align-items: center;
     background-color: white;
-    border-radius: 8;
+    border-radius: 8px;
     margin-bottom: 24px;
   }
-  nav{
-    margin-bottom: 24px;
-  }
-  header .logo{
+  .logo {
     height: 56px;
   }
-
-  .contents{
+  nav {
+    margin-bottom: 24px;
+  }
+  .contents {
     display: flex;
     justify-content: space-between;
-    margin : 0 16px;
+    margin: 0 16px;
+  }
+  .search-box {
+    margin-bottom: 24px;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>
