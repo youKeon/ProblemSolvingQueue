@@ -31,7 +31,7 @@
 
 <div class="contents">
   <section class="main-part">
-    <nav aria-label="주요 메뉴">
+    <nav aria-label="주요 메뉴 검색">
       <label for="search-box" class="visually-hidden">제목 입력</label>
       <input class="search-box" id="search-box" placeholder="제목 입력">
       <div class="select-category">
@@ -41,6 +41,9 @@
     <main aria-label="주 콘텐츠">
       <div class="list">이것은 리스트이다</div>
     </main>
+    <div class="pagination">
+      여기에 페이지네이션 배치
+    </div>
   </section>
   <aside aria-label="사이드 메뉴">
     여기에 사이드 항목들 배치
@@ -56,23 +59,45 @@
     justify-content: space-between;
     align-items: center;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 0 0 8px 8px;
     margin-bottom: 24px;
   }
   .logo {
     height: 56px;
+    margin-left: 16px;
+  }
+  .contents {
+    display: flex;
+    justify-content: space-between; /* 항목들 사이에 공간을 분배 */
+    margin: 0 16px;
+    width: calc(100% - 32px); /* 좌우 마진 16px을 고려하여 너비를 설정 */
+    box-sizing: border-box;
+  }
+  .main-part {
+    flex-grow: 1; /* 남은 공간을 채움 */
+    margin-right: 16px; /* aside와의 간격을 유지 */
   }
   nav {
     margin-bottom: 24px;
   }
-  .contents {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 16px;
+  main{
+    margin-bottom: 16px;
   }
-  .search-box {
+  .search-box{
+    height: 64px;
+    width: 100%;
     margin-bottom: 24px;
   }
+  .select-category {
+    height: 32px;
+    margin-bottom: 24px;
+    background-color: white;
+  }
+  .list{
+    height: 512px;
+    background-color: white;
+  }
+  /* 요소를 숨기면서 스크린리더를 통해(aria 등의 대체텍스트) 읽어올 수 있도록 한다 */
   .visually-hidden {
     position: absolute;
     width: 1px;
@@ -83,5 +108,16 @@
     clip: rect(0,0,0,0);
     white-space: nowrap;
     border: 0;
+  }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    background-color: white;
+  }
+  aside {
+    width: 306px; /* aside에 고정 너비 부여 */
+    height: 704px;
+    background-color: white;
+    border: 1px solid #E5E5E5;
   }
 </style>
