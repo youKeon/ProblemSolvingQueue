@@ -33,7 +33,7 @@
   <section class="main-part">
     <nav aria-label="주요 메뉴 검색">
       <label for="search-box" class="visually-hidden">제목 입력</label>
-      <input class="search-box" id="search-box" placeholder="제목 입력">
+      <input class="search-box" id="search-box" placeholder="&nbsp;&nbsp;제목 입력">
       <div class="select-category">
         여기에 selectbox들 배치
       </div>
@@ -87,14 +87,19 @@
     height: 64px;
     width: 100%;
     margin-bottom: 24px;
+    padding: 0; /* 패딩 리셋 */
+    border: none; /* 보더 리셋 */
+    box-sizing: border-box; /* box-sizing 속성 설정 */
   }
   .select-category {
     height: 32px;
+    width: 100%;
     margin-bottom: 24px;
     background-color: white;
   }
   .list{
     height: 512px;
+    width: 100%;
     background-color: white;
   }
   /* 요소를 숨기면서 스크린리더를 통해(aria 등의 대체텍스트) 읽어올 수 있도록 한다 */
