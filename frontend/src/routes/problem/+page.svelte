@@ -27,6 +27,11 @@
 
 <header>
   <img class="logo" src="/images/ProblemSolvingQueue_long.png" alt="로고">
+  <menu>
+    <a href="/problem">문제 리스트</a>
+    <a href="/bookmark">북마크</a>
+    <a href="/setting">설정</a>
+  </menu>
 </header>
 
 <div class="contents">
