@@ -20,6 +20,11 @@
   // fetchProblems();
 </script>
 
+<!-- 
+  시멘틱 태그에 ARIA (Accessible Rich Internet Applications) 속성을 이용해 
+  설명을 추가하여 접근성 향상
+-->
+
 <header>
   <img class="logo" src="/images/ProblemSolvingQueue_long.png" alt="로고">
 </header>
