@@ -1,6 +1,7 @@
 <!-- 여기는 문제 리스트 페이지입니다. -->
 <script lang="ts">
   import SelectBox from "$lib/components/elements/SelectBox.svelte";
+  import ProblemTable from "$lib/components/problem/ProblemTable.svelte";
   // import { getProblemsList } from "../../api/api";
 
   // async function fetchProblems(){
@@ -37,6 +38,21 @@
     { value: 'medium', text: '중간' },
     { value: 'hard', text: '어려움' },
   ];
+
+  const problems = [
+    {
+      bookmark: "⭐",
+      status: "해결",
+      title: "문제 1",
+      level: "쉬움"
+    },
+    {
+      bookmark: "⭐",
+      status: "미해결",
+      title: "문제 2",
+      level: "중간"
+    }
+  ];
 </script>
 
 <!-- 
@@ -56,7 +72,7 @@
       </div>
     </nav>
     <main aria-label="주 콘텐츠">
-      <div class="list">이것은 리스트이다</div>
+      <ProblemTable {problems} />
     </main>
     <div class="pagination">
       여기에 페이지네이션 배치
@@ -83,6 +99,7 @@
     margin-bottom: 24px;
   }
   main{
+    height: 512px;
     margin-bottom: 16px;
   }
   .search-box{
@@ -102,11 +119,6 @@
     height: 32px;
     width: 100%;
     margin-bottom: 24px;
-    background-color: white;
-  }
-  .list{
-    height: 512px;
-    width: 100%;
     background-color: white;
   }
   /* 요소를 숨기면서 스크린리더를 통해(aria 등의 대체텍스트) 읽어올 수 있도록 한다 */
