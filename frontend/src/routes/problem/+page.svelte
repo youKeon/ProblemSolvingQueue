@@ -1,5 +1,6 @@
 <!-- 여기는 문제 리스트 페이지입니다. -->
 <script lang="ts">
+  import SelectBox from "$lib/components/elements/SelectBox.svelte";
   // import { getProblemsList } from "../../api/api";
 
   // async function fetchProblems(){
@@ -18,6 +19,24 @@
   // }
 
   // fetchProblems();
+  const bookmarkOptions: {value: string; text: string}[] = [
+    {value: "all", text: "전체"},
+    {value: "bookmark", text: "북마크"},
+    {value: "not-bookmark", text: "북마크 아님"}
+  ];
+
+  const statusOptions: { value: string; text: string; }[] = [
+    { value: 'all', text: '전체' },
+    { value: 'solved', text: '해결' },
+    { value: 'unsolved', text: '미해결' },
+  ];
+
+  const levelOptions: { value: string; text: string; }[] = [
+    { value: 'all', text: '전체' },
+    { value: 'easy', text: '쉬움' },
+    { value: 'medium', text: '중간' },
+    { value: 'hard', text: '어려움' },
+  ];
 </script>
 
 <!-- 
@@ -25,22 +44,15 @@
   설명을 추가하여 접근성 향상
 -->
 
-<header>
-  <img class="logo" src="/images/ProblemSolvingQueue_long.png" alt="로고">
-  <menu>
-    <a href="/problem">문제 리스트</a>
-    <a href="/bookmark">북마크</a>
-    <a href="/setting">설정</a>
-  </menu>
-</header>
-
 <div class="contents">
   <section class="main-part">
     <nav aria-label="주요 메뉴 검색">
       <label for="search-box" class="visually-hidden">제목 입력</label>
-      <input class="search-box" id="search-box" placeholder="&nbsp;&nbsp;제목 입력">
+      <input class="search-box" id="search-box" placeholder="제목 입력">
       <div class="select-category">
-        여기에 selectbox들 배치
+        <SelectBox id="bookmark" label="북마크" options={bookmarkOptions} />
+        <SelectBox id="status" label="상태" options={statusOptions} />
+        <SelectBox id="level" label="난이도" options={levelOptions} />
       </div>
     </nav>
     <main aria-label="주 콘텐츠">
@@ -56,21 +68,6 @@
 </div>
 
 <style>
-  header {
-    top: 0;
-    width: 100%;
-    height: 88px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    border-radius: 0 0 8px 8px;
-    margin-bottom: 24px;
-  }
-  .logo {
-    height: 56px;
-    margin-left: 16px;
-  }
   .contents {
     display: flex;
     justify-content: space-between; /* 항목들 사이에 공간을 분배 */
@@ -92,11 +89,16 @@
     height: 64px;
     width: 100%;
     margin-bottom: 24px;
+    font-size: x-large;
     padding: 0; /* 패딩 리셋 */
+    padding-left: 16px;
     border: none; /* 보더 리셋 */
     box-sizing: border-box; /* box-sizing 속성 설정 */
   }
   .select-category {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     height: 32px;
     width: 100%;
     margin-bottom: 24px;
