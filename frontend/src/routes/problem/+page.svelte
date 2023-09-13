@@ -2,6 +2,7 @@
 <script lang="ts">
   import SelectBox from "$lib/components/elements/SelectBox.svelte";
   import ProblemTable from "$lib/components/problem/ProblemTable.svelte";
+  import Pagination from "$lib/components/elements/Pagination.svelte";
   // import { getProblemsList } from "../../api/api";
 
   // async function fetchProblems(){
@@ -66,16 +67,26 @@
       <label for="search-box" class="visually-hidden">제목 입력</label>
       <input class="search-box" id="search-box" placeholder="제목 입력">
       <div class="select-category">
-        <SelectBox id="bookmark" label="북마크" options={bookmarkOptions} />
-        <SelectBox id="status" label="상태" options={statusOptions} />
-        <SelectBox id="level" label="난이도" options={levelOptions} />
+        <div class="select-box">
+          filter
+        </div>
+        <div class="select-box">
+          <SelectBox id="bookmark" label="북마크" options={bookmarkOptions} />
+        </div>
+        <div class="select-box">
+          <SelectBox id="status" label="상태" options={statusOptions} />
+        </div>
+        <div class="select-box">
+          <SelectBox id="level" label="난이도" options={levelOptions} />
+        </div>
       </div>
     </nav>
-    <main aria-label="주 콘텐츠">
+    <main aria-label="문제 리스트 모아보기">
       <ProblemTable {problems} />
     </main>
-    <div class="pagination">
-      여기에 페이지네이션 배치
+    <!-- 페이지네이션 위치 -->
+    <div class="pagination-aria">
+      <Pagination currentPage={1} totalPage={5} />
     </div>
   </section>
   <aside aria-label="사이드 메뉴">
@@ -114,12 +125,14 @@
   }
   .select-category {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     height: 32px;
     width: 100%;
     margin-bottom: 24px;
-    background-color: white;
+  }
+  .select-box {
+    margin-right: 16px;
   }
   /* 요소를 숨기면서 스크린리더를 통해(aria 등의 대체텍스트) 읽어올 수 있도록 한다 */
   .visually-hidden {
@@ -133,10 +146,9 @@
     white-space: nowrap;
     border: 0;
   }
-  .pagination {
+  .pagination-aria {
     display: flex;
     justify-content: center;
-    background-color: white;
   }
   aside {
     width: 306px; /* aside에 고정 너비 부여 */
