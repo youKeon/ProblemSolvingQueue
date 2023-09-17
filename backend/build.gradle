@@ -111,6 +111,7 @@ jacocoTestReport {
                     '**/exception/**',
                     '**/BaseEntity*',
                     "**/*Application*",
+                    "**/*Scheduler*",
                     "**/global/**"
             ])
         }))
@@ -143,6 +144,7 @@ jacocoTestCoverageVerification {
                     '*.*Application',
                     '*.Q*',
                     '*.*Exception',
+                    '*.*Scheduler',
                     '*.dto.*',
                     '**.*BaseEntity*',
                     '*.global.*',

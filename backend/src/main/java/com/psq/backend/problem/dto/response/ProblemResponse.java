@@ -2,10 +2,10 @@ package com.psq.backend.problem.dto.response;
 
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public class ProblemResponse {
     private String title;
@@ -14,13 +14,12 @@ public class ProblemResponse {
     private Category category;
     private boolean isSolved;
 
-    public static ProblemResponse from(Problem problem) {
-        return new ProblemResponse(
-                problem.getTitle(),
-                problem.getUrl(),
-                problem.getLevel(),
-                problem.getCategory(),
-                problem.isSolved()
-        );
+    @QueryProjection
+    public ProblemResponse(String title, String url, int level, Category category, boolean isSolved) {
+        this.title = title;
+        this.url = url;
+        this.level = level;
+        this.category = category;
+        this.isSolved = isSolved;
     }
 }
