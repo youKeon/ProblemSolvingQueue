@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let problems:any = [];
+  export let problems: any = [];
 </script>
 
 <table class="list-table">
@@ -12,7 +12,7 @@
     </tr>
   </thead>
   <tbody>
-    {#each problems as {bookmark, status, title, level} (title)}
+    {#each problems as { bookmark, status, title, level } (title)}
       <tr>
         <td>{bookmark}</td>
         <td>{status}</td>

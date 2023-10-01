@@ -1,14 +1,13 @@
 <!-- 웹 페이지 공통 레이아웃에 대한 설정 파일 -->
 <!-- 설정 시 상위 레이아웃부터 하단에 코드가 들어가는 형태로 적용됩니다 -->
 <!-- 전체 페이지에 대한 헤더를 만들 예정 -->
-<slot>
-  
-</slot>
+<slot />
+
 <!-- Q. +layout.svelte 페이지가 존재하면 안에 slot이 비어있더라도 있어야만 렌더링이 되는 이유는 무엇일까? -->
 <!-- slot 내용 지웠더니 렌더링이 안됨 -->
 
 <style>
-  slot{
-    background-color: #AAAAAA;
+  slot {
+    background-color: #aaaaaa;
   }
 </style>

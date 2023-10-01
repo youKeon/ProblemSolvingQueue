@@ -3,56 +3,26 @@
   import SelectBox from "$lib/components/elements/SelectBox.svelte";
   import ProblemTable from "$lib/components/problem/ProblemTable.svelte";
   import Pagination from "$lib/components/elements/Pagination.svelte";
-  // import { getProblemsList } from "../../api/api";
+  import { problems } from "$lib/data/mock/problemsData";
+  import Aside from "$lib/components/problem/Aside.svelte";
 
-  // async function fetchProblems(){
-  //   const pageableData = {
-  //     page: 0,
-  //     size: 10,
-  //     sort: ["level,"]
-  //   };
-
-  //   try{
-  //     const problems = await getProblemsList(pageableData);
-  //     console.log('Fetched problems: ', problems);
-  //   } catch (error){
-  //     console.log("문제 목록 조회 중 오류 발생:", error);
-  //   }
-  // }
-
-  // fetchProblems();
-  const bookmarkOptions: {value: string; text: string}[] = [
-    {value: "all", text: "전체"},
-    {value: "bookmark", text: "북마크"},
-    {value: "not-bookmark", text: "북마크 아님"}
+  const bookmarkOptions: { value: string; text: string }[] = [
+    { value: "all", text: "전체" },
+    { value: "bookmark", text: "북마크" },
+    { value: "not-bookmark", text: "북마크 아님" },
   ];
 
-  const statusOptions: { value: string; text: string; }[] = [
-    { value: 'all', text: '전체' },
-    { value: 'solved', text: '해결' },
-    { value: 'unsolved', text: '미해결' },
+  const statusOptions: { value: string; text: string }[] = [
+    { value: "all", text: "전체" },
+    { value: "solved", text: "해결" },
+    { value: "unsolved", text: "미해결" },
   ];
 
-  const levelOptions: { value: string; text: string; }[] = [
-    { value: 'all', text: '전체' },
-    { value: 'easy', text: '쉬움' },
-    { value: 'medium', text: '중간' },
-    { value: 'hard', text: '어려움' },
-  ];
-
-  const problems = [
-    {
-      bookmark: "⭐",
-      status: "해결",
-      title: "문제 1",
-      level: "쉬움"
-    },
-    {
-      bookmark: "⭐",
-      status: "미해결",
-      title: "문제 2",
-      level: "중간"
-    }
+  const levelOptions: { value: string; text: string }[] = [
+    { value: "all", text: "전체" },
+    { value: "easy", text: "쉬움" },
+    { value: "medium", text: "중간" },
+    { value: "hard", text: "어려움" },
   ];
 </script>
 
@@ -65,11 +35,9 @@
   <section class="main-part">
     <nav aria-label="주요 메뉴 검색">
       <label for="search-box" class="visually-hidden">제목 입력</label>
-      <input class="search-box" id="search-box" placeholder="제목 입력">
+      <input class="search-box" id="search-box" placeholder="제목 입력" />
       <div class="select-category">
-        <div class="select-box">
-          filter
-        </div>
+        <div class="select-box">filter</div>
         <div class="select-box">
           <SelectBox id="bookmark" label="북마크" options={bookmarkOptions} />
         </div>
@@ -90,7 +58,7 @@
     </div>
   </section>
   <aside aria-label="사이드 메뉴">
-    여기에 사이드 항목들 배치
+    <Aside />
   </aside>
 </div>
 
@@ -109,11 +77,14 @@
   nav {
     margin-bottom: 24px;
   }
-  main{
+  main {
     height: 512px;
-    margin-bottom: 16px;
   }
-  .search-box{
+  aside {
+    display: flex;
+    justify-content: center;
+  }
+  .search-box {
     height: 64px;
     width: 100%;
     margin-bottom: 24px;
@@ -142,18 +113,19 @@
     margin: -1px;
     padding: 0;
     overflow: hidden;
-    clip: rect(0,0,0,0);
+    clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
   }
   .pagination-aria {
     display: flex;
     justify-content: center;
+    margin-top: -16px;
   }
   aside {
     width: 306px; /* aside에 고정 너비 부여 */
     height: 704px;
     background-color: white;
-    border: 1px solid #E5E5E5;
+    border: 1px solid #e5e5e5;
   }
 </style>

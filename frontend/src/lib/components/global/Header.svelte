@@ -1,7 +1,3 @@
-<script lang="ts">
-  export let title: string;
-</script>
-
 <header>
   <a href="/problem">
     <img class="logo" src="/images/ProblemSolvingQueue_long.png" alt="로고" />
@@ -29,7 +25,7 @@
     height: 56px;
     margin-left: 16px;
   }
-  menu{
+  menu {
     margin-right: 16px;
   }
 </style>

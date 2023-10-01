@@ -27,7 +27,7 @@ const instance: AxiosInstance = axios.create({
 export const getProblemById = async (id: number) => {
   try {
     const response: AxiosResponse<ProblemType> = await instance.get(
-      `/api/v1/problems/${id}`
+      `/api/v1/problems/${id}`,
     );
     return response.data;
   } catch (error) {
@@ -38,7 +38,7 @@ export const getProblemById = async (id: number) => {
 // 문제 수정
 export const updateProblemById = async (
   id: number,
-  updateData: ProblemUpdateType
+  updateData: ProblemUpdateType,
 ): Promise<void> => {
   try {
     await instance.put(`/api/v1/problems/${id}`, updateData);
@@ -73,7 +73,7 @@ export const recoveryProblemById = async (id: number): Promise<void> => {
 
 // 문제 등록
 export const registerProblem = async (
-  problemData: ProblemRegistrationType
+  problemData: ProblemRegistrationType,
 ): Promise<void> => {
   try {
     await instance.post("/api/v1/problems", problemData);
@@ -84,7 +84,7 @@ export const registerProblem = async (
 
 // 문제 목록 조회
 export const getProblemsList = async (
-  pageable: PageableRequestType
+  pageable: PageableRequestType,
 ): Promise<ProblemType[]> => {
   try {
     const response = await instance.get("/api/v1/problems/problems", {
@@ -131,7 +131,7 @@ export const signin = async (signinData: SigninRequestType): Promise<any> => {
 
 // 북마크 등록
 export const addBookmark = async (
-  bookmarkData: BookMarkRequestType
+  bookmarkData: BookMarkRequestType,
 ): Promise<void> => {
   try {
     await instance.post("/api/v1/bookmark", bookmarkData);
@@ -142,7 +142,7 @@ export const addBookmark = async (
 
 // 북마크 리스트 조회
 export const getBookmarkList = async (
-  userId: number
+  userId: number,
 ): Promise<BookmarkDetailType> => {
   try {
     const response = await instance.get(`/api/v1/bookmark/${userId}`);
