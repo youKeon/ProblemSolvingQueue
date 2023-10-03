@@ -57,7 +57,9 @@ public class ProblemRepositoryImpl implements ProblemCustomRepository {
                                 problem.url,
                                 problem.level,
                                 problem.category,
-                                problem.isSolved
+                                problem.isSolved,
+                                problem.updatedAt
+
                         ))
                         .from(problem)
                         .where(problem.member.id.eq(memberId))
@@ -75,7 +77,8 @@ public class ProblemRepositoryImpl implements ProblemCustomRepository {
                                 problem.url,
                                 problem.level,
                                 problem.category,
-                                problem.isSolved
+                                problem.isSolved,
+                                problem.updatedAt
                         ))
                         .from(problem)
                         .where(problem.id.eq(problemId))
@@ -91,6 +94,15 @@ public class ProblemRepositoryImpl implements ProblemCustomRepository {
                         problem.isDeleted.isTrue(),
                         problem.updatedAt.before(LocalDateTime.now().minusDays(3))
                 )
+                .execute();
+    }
+
+    @Override
+    public long increaseSovledCount(Long problemId) {
+        return jpaQueryFactory
+                .update(problem)
+                .set(problem.solvedCount, problem.solvedCount.add(1))
+                .where(problem.id.eq(problemId))
                 .execute();
     }
 

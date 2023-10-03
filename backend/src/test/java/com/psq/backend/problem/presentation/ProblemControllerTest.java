@@ -17,6 +17,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -323,7 +324,7 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("Id로 문제를 단건 조회한다")
     public void getProblemById() throws Exception {
         //given
-        ProblemResponse response = new ProblemResponse("title", "test1", 1, Category.DFS, false);
+        ProblemResponse response = new ProblemResponse("title", "test1", 1, Category.DFS, false, LocalDateTime.now());
 
         // when
         when(problemService.getProblemInfo(problemId)).thenReturn(response);
@@ -349,7 +350,8 @@ public class ProblemControllerTest extends ControllerTest {
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("level").description("문제 레벨"),
                                 fieldWithPath("category").description("문제 유형"),
-                                fieldWithPath("solved").description("문제 풀이 여부")
+                                fieldWithPath("solved").description("문제 풀이 여부"),
+                                fieldWithPath("updatedAt").description("마지막 풀이 시간")
                         )
                 ));
     }
@@ -358,7 +360,7 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("가장 먼저 저장한 문제를 조회한다")
     public void pollProblem() throws Exception {
         // given
-        ProblemResponse response = new ProblemResponse("title", "test1", 1, Category.DFS, false);
+        ProblemResponse response = new ProblemResponse("title", "test1", 1, Category.DFS, false, LocalDateTime.now());
 
         // when
         when(problemService.pollProblem(any())).thenReturn(response);
@@ -381,7 +383,8 @@ public class ProblemControllerTest extends ControllerTest {
                                 fieldWithPath("url").description("문제 URL"),
                                 fieldWithPath("level").description("문제 레벨"),
                                 fieldWithPath("category").description("문제 유형"),
-                                fieldWithPath("solved").description("문제 풀이 여부")
+                                fieldWithPath("solved").description("문제 풀이 여부"),
+                                fieldWithPath("updatedAt").description("마지막 풀이 시간")
                         )
                 ));
     }
@@ -682,6 +685,22 @@ public class ProblemControllerTest extends ControllerTest {
 
                 .andDo(print())
                 .andDo(document("problem/recovery/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("문제 ID")
+                        )));
+    }
+
+    @Test
+    @DisplayName("문제 풀이 횟수를 1 증가시킨다")
+    public void increaseSolvedCountTest() throws Exception {
+        // when, then
+        mockMvc.perform(patch(baseURL + "/{id}", problemId))
+                .andExpect(status().isNoContent())
+
+                .andDo(print())
+                .andDo(document("problem/increaseSolvedCount/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(

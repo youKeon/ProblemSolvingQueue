@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -80,5 +79,10 @@ public class ProblemService {
 
     public Problem getProblem(Long id) {
         return problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
+    }
+
+    public void increaseSolvedCount(Long id) {
+        long increasedCount = problemRepository.increaseSovledCount(id);
+        if (increasedCount == 0) throw new NoSuchProblemException();
     }
 }

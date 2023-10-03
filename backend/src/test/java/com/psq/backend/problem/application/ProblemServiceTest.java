@@ -26,11 +26,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentRequest;
+import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 public class ProblemServiceTest extends ServiceTest {
@@ -182,7 +190,7 @@ public class ProblemServiceTest extends ServiceTest {
         LocalDateTime dateTime3 = LocalDateTime.parse("2023-08-14 20:44:17.423552", formatter);
         ReflectionTestUtils.setField(problem3, "createdAt", dateTime3);
 
-        ProblemResponse response = new ProblemResponse(problem1.getTitle(), problem1.getUrl(), problem1.getLevel(), problem1.getCategory(), problem1.isSolved());
+        ProblemResponse response = new ProblemResponse(problem1.getTitle(), problem1.getUrl(), problem1.getLevel(), problem1.getCategory(), problem1.isSolved(), problem1.getUpdatedAt());
 
         // when
         when(problemRepository.pollProblem(member.getId())).thenReturn(Optional.of(response));
@@ -228,7 +236,7 @@ public class ProblemServiceTest extends ServiceTest {
     @DisplayName("Id로 문제를 단건 조회한다")
     public void getProblemById() throws Exception {
         // given
-        ProblemResponse response = new ProblemResponse(problem1.getTitle(), problem1.getUrl(), problem1.getLevel(), problem1.getCategory(), problem1.isSolved());
+        ProblemResponse response = new ProblemResponse(problem1.getTitle(), problem1.getUrl(), problem1.getLevel(), problem1.getCategory(), problem1.isSolved(), problem1.getUpdatedAt());
 
         // when
         when(problemRepository.findProblem(problem1.getId())).thenReturn(Optional.ofNullable(response));
@@ -349,6 +357,29 @@ public class ProblemServiceTest extends ServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> problemService.getProblem(problem1.getId()))
+                .isInstanceOf(NoSuchProblemException.class)
+                .hasMessageContaining("존재하지 않는 문제입니다.");
+    }
+
+    @Test
+    @DisplayName("문제 풀이 횟수를 1 증가시킨다")
+    public void increaseSolvedCountTest() throws Exception {
+        // when
+        when(problemRepository.increaseSovledCount(problem1.getId())).thenReturn(1L);
+
+        // then
+        assertDoesNotThrow(() -> problemService.increaseSolvedCount(problem1.getId()));
+    }
+
+    @Test
+    @DisplayName("문제 풀이 횟수 증가 시 존재하지 않는 문제 ID를 입력하면 예외가 발생한다")
+    public void increaseSolvedCountNoSuchProblemExceptionTest() throws Exception {
+        // when
+        when(problemRepository.increaseSovledCount(problem1.getId())).thenReturn(0L);
+
+        // then
+        assertThatThrownBy(
+                () -> problemService.increaseSolvedCount(problem1.getId()))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
     }
