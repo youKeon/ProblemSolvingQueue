@@ -84,26 +84,36 @@
     display: flex;
     justify-content: center;
   }
+
   .search-box {
-    height: 64px;
-    width: 100%;
-    margin-bottom: 24px;
-    font-size: x-large;
-    padding: 0; /* 패딩 리셋 */
-    padding-left: 16px;
-    border: none; /* 보더 리셋 */
-    box-sizing: border-box; /* box-sizing 속성 설정 */
+    height: 48px;
+    width: 95%;
+    margin-bottom: 16px;
+    font-size: 1rem;
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+
+    &:focus {
+      border-color: #aaa;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    }
   }
+
   .select-category {
     display: flex;
-    justify-content: flex-start;
+    gap: 16px; /* 아이템 간 간격을 주기 위해 gap 속성 사용 */
     align-items: center;
-    height: 32px;
     width: 100%;
     margin-bottom: 24px;
   }
+
   .select-box {
-    margin-right: 16px;
+    flex-grow: 1;
+    position: relative;
   }
   /* 요소를 숨기면서 스크린리더를 통해(aria 등의 대체텍스트) 읽어올 수 있도록 한다 */
   .visually-hidden {

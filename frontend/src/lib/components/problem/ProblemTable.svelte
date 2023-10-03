@@ -27,30 +27,27 @@
   .list-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
+    background-color: #333; /* 어두운 배경색 */
+    color: white; /* 글자색 */
   }
 
   .list-table th,
   .list-table td {
-    border: 1px solid #ddd;
+    border: 1px solid #555; /* 어두운 테두리 */
     padding: 8px;
     text-align: center;
   }
 
-  .list-table td {
-    height: 24px;
-  }
-
   .list-table th {
-    background-color: #f4f4f4;
+    background-color: #444; /* 조금 더 어두운 헤더 배경색 */
     font-weight: bold;
   }
 
-  .list-table td {
-    background-color: #fff;
+  .list-table tr:nth-child(even) {
+    background-color: #3a3a3a; /* 어두운 행 배경색 */
   }
 
-  .list-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+  .list-table tr:hover {
+    background-color: #555; /* 호버 시 색상 */
   }
 </style>

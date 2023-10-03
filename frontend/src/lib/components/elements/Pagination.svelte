@@ -42,30 +42,32 @@
   .pagination-button {
     margin: 0 4px;
     padding: 8px 16px;
-    border: 1px solid #ccc;
-    background-color: #fff;
+    border: 1px solid #555; /* 어두운 테두리 */
+    background-color: #333; /* 어두운 배경색 */
+    color: white; /* 텍스트 색상 흰색 */
     cursor: pointer;
     transition:
       background-color 0.3s,
-      border-color 0.3s; /* 트랜지션 효과 추가 */
+      border-color 0.3s;
   }
 
   .pagination-button:hover {
-    background-color: #f0f0f0;
-    border-color: #aaa; /* 호버 시 테두리 색 변경 */
+    background-color: #444; /* 호버 시 배경색 */
+    border-color: #666; /* 호버 시 테두리 색 */
   }
 
   .pagination-button:disabled {
-    color: #ccc;
+    color: #999; /* 비활성화 텍스트 색 */
     cursor: not-allowed;
   }
 
   .pagination-button:disabled:hover {
-    background-color: #fff; /* 비활성화 상태에서는 배경색 변경 안함 */
-    border-color: #ccc; /* 비활성화 상태에서는 테두리 색 변경 안함 */
+    background-color: #333; /* 비활성화 상태에서의 배경색 */
+    border-color: #555; /* 비활성화 상태에서의 테두리 색 */
   }
 
   .pagination-button.active {
-    background-color: #e0e0e0;
+    background-color: #555; /* 활성화된 버튼 배경색 */
+    border-color: #777; /* 활성화된 버튼 테두리 색 */
   }
 </style>
