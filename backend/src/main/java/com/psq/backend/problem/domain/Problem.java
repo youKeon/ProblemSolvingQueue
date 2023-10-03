@@ -6,6 +6,7 @@ import com.psq.backend.problem.dto.request.ProblemUpdateRequest;
 import com.psq.backend.problem.exception.InvalidProblemException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -22,15 +23,22 @@ public class Problem extends BaseEntity {
 
     @Column(nullable = false)
     private String title;
+
     @Column(nullable = false)
     private Integer level;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Category category;
+
     @Column(nullable = false)
     private boolean isSolved = false;
 
+    @Column(nullable = false)
     private boolean isDeleted = false;
+
+    @Column(nullable = false)
+    private Integer solvedCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -69,7 +77,7 @@ public class Problem extends BaseEntity {
     }
 
     private void validateProblemUrl(String url) {
-        if (url.length() == 0) {
+        if (url.isEmpty()) {
             throw new InvalidProblemException("URL은 공백일 수 없습니다.");
         }
     }

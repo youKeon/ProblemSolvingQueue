@@ -22,4 +22,6 @@ public interface ProblemCustomRepository {
     Optional<ProblemResponse> findProblem(Long problemId);
 
     long deleteSoftDeletedProblem();
+
+    long increaseSovledCount(Long problemId);
 }

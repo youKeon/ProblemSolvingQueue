@@ -77,4 +77,11 @@ public class ProblemController {
         problemService.update(id, request);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "문제 풀이 횟수 증가")
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> increaseSolvedCount(@PathVariable Long id) {
+        problemService.increaseSolvedCount(id);
+        return ResponseEntity.noContent().build();
+    }
 }

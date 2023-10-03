@@ -28,6 +28,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.when;
 
 public class ProblemRepositoryTest extends RepositoryTest {
 
@@ -114,7 +115,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
     @DisplayName("문제를 조회한다")
     public void findProblemTest() throws Exception {
         // given
-        ProblemResponse response = new ProblemResponse(problem1.getTitle(), problem1.getUrl(), problem1.getLevel(), problem1.getCategory(), problem1.isSolved());
+        ProblemResponse response = new ProblemResponse(problem1.getTitle(), problem1.getUrl(), problem1.getLevel(), problem1.getCategory(), problem1.isSolved(), problem1.getUpdatedAt());
 
         // when
         Optional<ProblemResponse> actual = problemRepository.findProblem(problem1.getId());
@@ -138,10 +139,20 @@ public class ProblemRepositoryTest extends RepositoryTest {
         entityManager.refresh(problem1);
 
         // when
-        long actual = problemRepository.deleteSoftDeletedProblem();
+        long 삭제된_문제_수 = problemRepository.deleteSoftDeletedProblem();
 
         // then
-        assertThat(actual).isEqualTo(1);
+        assertThat(삭제된_문제_수).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("문제 풀이 횟수를 1 증가시킨다")
+    public void increaseSolvedCountTest() throws Exception {
+        // when
+        long increasedCount = problemRepository.increaseSovledCount(problem1.getId());
+
+        // then
+        assertThat(increasedCount).isEqualTo(1);
     }
 
     private void clearProblem() {
