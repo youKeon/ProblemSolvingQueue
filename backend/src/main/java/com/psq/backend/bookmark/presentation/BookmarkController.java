@@ -2,6 +2,8 @@ package com.psq.backend.bookmark.presentation;
 
 import com.psq.backend.bookmark.application.BookmarkService;
 import com.psq.backend.bookmark.dto.request.BookmarkSaveRequest;
+import com.psq.backend.member.domain.CurrentUser;
+import com.psq.backend.member.domain.Member;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -21,9 +22,9 @@ public class BookmarkController {
 
     @Operation(summary = "북마크 등록")
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody @Valid BookmarkSaveRequest saveRequest,
-                                     HttpServletRequest request) {
-        bookmarkService.save(request, saveRequest);
+    public ResponseEntity<Void> save(@CurrentUser Member member,
+                                     @RequestBody @Valid BookmarkSaveRequest saveRequest) {
+        bookmarkService.save(member, saveRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     @Operation(summary = "북마크 삭제")
@@ -34,8 +35,8 @@ public class BookmarkController {
     }
     @Operation(summary = "북마크 리스트 조회")
     @GetMapping
-    public ResponseEntity<List<ProblemListResponse>> getBookmarkList(HttpServletRequest request) {
-        List<ProblemListResponse> response = bookmarkService.getBookmarkList(request);
+    public ResponseEntity<List<ProblemListResponse>> getBookmarkList(@CurrentUser Member member) {
+        List<ProblemListResponse> response = bookmarkService.getBookmarkList(member);
         return ResponseEntity.ok(response);
     }
 }

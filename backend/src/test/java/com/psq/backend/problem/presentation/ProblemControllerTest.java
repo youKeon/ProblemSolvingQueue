@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -21,14 +20,13 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentRequest;
 import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-
-
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -47,9 +45,11 @@ public class ProblemControllerTest extends ControllerTest {
         problemId = 1L;
         ReflectionTestUtils.setField(member, "id", 1L);
 
+        sessionInfo = new SessionInfo(member.getId(), member.getEmail());
         session = new MockHttpSession();
-        session.setAttribute("sessionInfo", new SessionInfo(member.getId(), member.getEmail()));
-        request = new MockHttpServletRequest();
+
+        session.setAttribute("sessionInfo", sessionInfo);
+        when(memberRepository.findById(member.getId())).thenReturn(Optional.ofNullable(member));
     }
 
     @Test
@@ -67,6 +67,7 @@ public class ProblemControllerTest extends ControllerTest {
 
         // then
         mockMvc.perform(get(baseURL)
+                        .session(session)
                         .param("level", "3")
                         .param("category", "DFS")
                         .param("isSolved", "false")
@@ -118,6 +119,7 @@ public class ProblemControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(post(baseURL)
+                        .session(session)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -144,6 +146,7 @@ public class ProblemControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(post(baseURL)
+                        .session(session)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -174,6 +177,7 @@ public class ProblemControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(post(baseURL)
+                        .session(session)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -204,6 +208,7 @@ public class ProblemControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(post(baseURL)
+                        .session(session)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -235,6 +240,7 @@ public class ProblemControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(post(baseURL)
+                        .session(session)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -266,6 +272,7 @@ public class ProblemControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(post(baseURL)
+                        .session(session)
                         .locale(new Locale("ko", "KR"))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -297,6 +304,7 @@ public class ProblemControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(post(baseURL)
+                        .session(session)
                         .locale(new Locale("ko", "KR"))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -366,7 +374,8 @@ public class ProblemControllerTest extends ControllerTest {
         when(problemService.pollProblem(any())).thenReturn(response);
 
         // then
-        mockMvc.perform(get(baseURL + "/poll"))
+        mockMvc.perform(get(baseURL + "/poll")
+                        .session(session))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(response.getTitle()))
                 .andExpect(jsonPath("$.url").value(response.getUrl()))

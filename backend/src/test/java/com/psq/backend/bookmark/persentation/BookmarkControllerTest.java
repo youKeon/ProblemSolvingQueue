@@ -2,30 +2,35 @@ package com.psq.backend.bookmark.persentation;
 
 import com.psq.backend.bookmark.dto.request.BookmarkSaveRequest;
 import com.psq.backend.common.annotation.ControllerTest;
+import com.psq.backend.member.domain.Member;
+import com.psq.backend.member.domain.SessionInfo;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentRequest;
 import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentResponse;
 import static com.psq.backend.problem.domain.Category.BFS;
 import static com.psq.backend.problem.domain.Category.DFS;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,13 +38,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BookmarkControllerTest extends ControllerTest {
     private static final String baseURL = "/api/v1/bookmark";
     private Long bookmarkId;
-    private Long memberId;
     private Long problemId;
     @BeforeEach
     void setup() {
-        memberId = 1L;
+        member = new Member("yukeon97@gmail.com", "123", "salt");
+        ReflectionTestUtils.setField(member, "id", 1L);
+
         problemId = 2L;
         bookmarkId = 3L;
+
+        sessionInfo = new SessionInfo(member.getId(), member.getEmail());
+        session = new MockHttpSession();
+
+        session.setAttribute("sessionInfo", sessionInfo);
+        when(memberRepository.findById(member.getId())).thenReturn(Optional.ofNullable(member));
     }
 
     @Test
@@ -50,6 +62,7 @@ public class BookmarkControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(post(baseURL)
+                        .session(session)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveRequest)))
@@ -72,6 +85,7 @@ public class BookmarkControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(post(baseURL)
+                        .session(session)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -94,13 +108,9 @@ public class BookmarkControllerTest extends ControllerTest {
     @Test
     @DisplayName("북마크 id를 받아 북마크를 삭제한다")
     public void deleteBookmark() throws Exception {
-        // given
-        willDoNothing()
-                .given(bookmarkService)
-                .delete(bookmarkId);
-
         // when, then
-        mockMvc.perform(delete(baseURL + "/{id}", bookmarkId))
+        mockMvc.perform(delete(baseURL + "/{id}", bookmarkId)
+                        .session(session))
                 .andExpect(status().isNoContent())
 
                 .andDo(print())
@@ -126,7 +136,8 @@ public class BookmarkControllerTest extends ControllerTest {
         when(bookmarkService.getBookmarkList(any())).thenReturn(responseList);
 
         // then
-        mockMvc.perform(get(baseURL))
+        mockMvc.perform(get(baseURL)
+                        .session(session))
                 .andExpect(status().isOk())
 
                 .andExpect(jsonPath("$[0].url").value(responseList.get(0).getUrl()))
