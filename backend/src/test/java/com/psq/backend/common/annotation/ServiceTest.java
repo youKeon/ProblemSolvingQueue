@@ -46,8 +46,6 @@ public abstract class ServiceTest {
     protected HttpServletRequest request;
 
     protected static Pageable pageable = PageRequest.of(0, 3);
-    protected SessionInfo sessionInfo;
-    protected MockHttpSession session;
 
     protected Member member;
     protected Problem problem1;

@@ -1,5 +1,7 @@
 package com.psq.backend.problem.presentation;
 
+import com.psq.backend.member.domain.CurrentUser;
+import com.psq.backend.member.domain.Member;
 import com.psq.backend.problem.application.ProblemService;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.dto.request.ProblemSaveRequest;
@@ -13,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -32,27 +33,27 @@ public class ProblemController {
 
     @Operation(summary = "문제 조회")
     @GetMapping
-    public ResponseEntity<List<ProblemListResponse>> getProblemList(HttpServletRequest request,
+    public ResponseEntity<List<ProblemListResponse>> getProblemList(@CurrentUser Member member,
                                                                     @RequestParam(required = false) Integer level,
                                                                     @RequestParam(required = false) Category category,
                                                                     @RequestParam(required = false) Boolean isSolved,
                                                                     Pageable pageable) {
-        List<ProblemListResponse> response = problemService.getProblemList(request, level, category, isSolved, pageable);
+        List<ProblemListResponse> response = problemService.getProblemList(member, level, category, isSolved, pageable);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "가장 먼저 등록한 문제 조회")
     @GetMapping("/poll")
-    public ResponseEntity<ProblemResponse> pollProblem(HttpServletRequest request) {
-        ProblemResponse response = problemService.pollProblem(request);
+    public ResponseEntity<ProblemResponse> pollProblem(@CurrentUser Member member) {
+        ProblemResponse response = problemService.pollProblem(member);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "문제 등록")
     @PostMapping
-    public ResponseEntity<Void> save(HttpServletRequest servletRequest,
+    public ResponseEntity<Void> save(@CurrentUser Member member,
                                      @RequestBody @Valid ProblemSaveRequest request) {
-        problemService.save(servletRequest, request);
+        problemService.save(member, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

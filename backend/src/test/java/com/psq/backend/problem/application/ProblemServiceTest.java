@@ -1,10 +1,7 @@
 package com.psq.backend.problem.application;
 
 import com.psq.backend.common.annotation.ServiceTest;
-import com.psq.backend.member.application.MemberService;
 import com.psq.backend.member.domain.Member;
-import com.psq.backend.member.domain.SessionInfo;
-import com.psq.backend.member.exception.NoSuchMemberException;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
 import com.psq.backend.problem.dto.request.ProblemSaveRequest;
@@ -16,7 +13,6 @@ import com.psq.backend.problem.exception.NoSuchProblemException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -26,24 +22,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentRequest;
-import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 public class ProblemServiceTest extends ServiceTest {
-    @Mock
-    private MemberService memberService;
 
     @BeforeEach
     void setup() {
@@ -57,8 +43,6 @@ public class ProblemServiceTest extends ServiceTest {
         ReflectionTestUtils.setField(problem1, "id", 1L);
         ReflectionTestUtils.setField(problem2, "id", 2L);
         ReflectionTestUtils.setField(problem3, "id", 3L);
-
-        sessionInfo = new SessionInfo(member.getId(), member.getEmail());
     }
 
 
@@ -74,9 +58,8 @@ public class ProblemServiceTest extends ServiceTest {
 
         // when
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable)).thenReturn(problemList);
-        when(memberService.getMember(request)).thenReturn(member);
 
-        List<ProblemListResponse> actual = problemService.getProblemList(request, 3, Category.DFS, false, pageable);
+        List<ProblemListResponse> actual = problemService.getProblemList(member, 3, Category.DFS, false, pageable);
 
         // then
         assertAll(
@@ -93,31 +76,16 @@ public class ProblemServiceTest extends ServiceTest {
                 () -> assertThat(actual.get(2).getLevel()).isEqualTo(problem3.getLevel())
         );
     }
-
-    @Test
-    @DisplayName("문제 리스트 조회 시 사용자의 세션 정보가 존재하지 않는 경우 예외가 발생한다")
-    public void getProblemListNoSuchMemberExceptionTest() throws Exception {
-        // when
-        when(memberService.getMember(request)).thenThrow(new NoSuchMemberException());
-
-        // then
-        assertThatThrownBy(
-                () -> problemService.getProblemList(request, 3, Category.DFS, false, pageable))
-                .isInstanceOf(NoSuchMemberException.class)
-                .hasMessageContaining("존재하지 않는 사용자입니다.");
-    }
-
     @Test
     @DisplayName("문제 리스트 조회 시 문제 리스트가 없는 경우 예외가 발생한다")
     public void getProblemsEmptyException() throws Exception {
         // when
-        when(memberService.getMember(request)).thenReturn(member);
         when(problemRepository.findAllProblem(member.getId(), 3, Category.DFS, false, pageable))
                 .thenReturn(Collections.emptyList());
 
         // then
         assertThatThrownBy(
-                () -> problemService.getProblemList(request, 3, Category.DFS, false, pageable))
+                () -> problemService.getProblemList(member, 3, Category.DFS, false, pageable))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("문제가 존재하지 않습니다.");
     }
@@ -128,27 +96,8 @@ public class ProblemServiceTest extends ServiceTest {
         // given
         ProblemSaveRequest saveRequest = new ProblemSaveRequest("url", "title", Category.DFS, 3);
 
-        // when
-        when(memberService.getMember(request)).thenReturn(member);
-
-        // then
-        assertDoesNotThrow(() -> problemService.save(request, saveRequest));
-    }
-
-    @Test
-    @DisplayName("문제 저장 시 존재하지 않는 유저 정보로 문제를 저장하면 예외가 발생한다")
-    public void registerProblemEmptyMemberException() throws Exception {
-        // given
-        ProblemSaveRequest saveRequest = new ProblemSaveRequest("title","problem", Category.DFS, 3);
-
-        // when
-        when(memberService.getMember(request)).thenThrow(new NoSuchMemberException());
-
-        // then
-        assertThatThrownBy(
-                 () -> problemService.save(request, saveRequest))
-                .isInstanceOf(NoSuchMemberException.class)
-                .hasMessageContaining("존재하지 않는 사용자입니다.");
+        // when, then
+        assertDoesNotThrow(() -> problemService.save(member, saveRequest));
     }
 
     @Test
@@ -194,9 +143,8 @@ public class ProblemServiceTest extends ServiceTest {
 
         // when
         when(problemRepository.pollProblem(member.getId())).thenReturn(Optional.of(response));
-        when(memberService.getMember(request)).thenReturn(member);
 
-        ProblemResponse actual = problemService.pollProblem(request);
+        ProblemResponse actual = problemService.pollProblem(member);
 
         // then
         assertAll(
@@ -209,28 +157,14 @@ public class ProblemServiceTest extends ServiceTest {
     @Test
     @DisplayName("문제를 poll할 때 poll할 수 있는 문제가 없는 경우 예외가 발생한다")
     public void pollProblemEmptyProblemException() throws Exception {
-        // when
-        when(memberService.getMember(request)).thenReturn(member);
-
-        // then
+        // when, then
         assertThatThrownBy(
-                () -> problemService.pollProblem(request))
+                () -> problemService.pollProblem(member))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
     }
 
-    @Test
-    @DisplayName("문제를 poll할 때 존재하지 않는 사용자 id로 문제를 poll하면 예외가 발생한다")
-    void pollProblemEmptyMemberException() {
-        // when
-        when(memberService.getMember(request)).thenThrow(new NoSuchMemberException());
 
-        // then
-        assertThatThrownBy(
-                () ->problemService.pollProblem(request))
-                .isInstanceOf(NoSuchMemberException.class)
-                .hasMessageContaining("존재하지 않는 사용자입니다.");
-    }
 
     @Test
     @DisplayName("Id로 문제를 단건 조회한다")
@@ -273,7 +207,6 @@ public class ProblemServiceTest extends ServiceTest {
                 Category.DFS,
                 3,
                 true);
-
 
         // when
         when(problemRepository.findById(problem1.getId())).thenReturn(Optional.of(problem1));

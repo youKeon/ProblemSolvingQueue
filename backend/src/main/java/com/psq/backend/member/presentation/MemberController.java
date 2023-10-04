@@ -30,8 +30,8 @@ public class MemberController {
 
     @Operation(summary = "로그인")
     @PostMapping("/signin")
-    public ResponseEntity<String> signin(@RequestBody @Valid MemberSignInRequest request, HttpSession session) {
-        String key = memberService.signin(request, session);
-        return ResponseEntity.ok(key);
+    public ResponseEntity<Void> signin(@RequestBody @Valid MemberSignInRequest request, HttpSession session) {
+        memberService.signin(request, session);
+        return ResponseEntity.ok().build();
     }
 }

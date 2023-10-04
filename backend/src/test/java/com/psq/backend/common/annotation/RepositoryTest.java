@@ -10,8 +10,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
-@Import({JpaConfig.class,
-        QueryDslConfig.class})
+@Import({
+        JpaConfig.class,
+        QueryDslConfig.class
+})
 @ActiveProfiles("test")
 public abstract class RepositoryTest {
     @Autowired

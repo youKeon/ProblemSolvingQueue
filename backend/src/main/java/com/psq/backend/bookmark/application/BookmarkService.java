@@ -10,13 +10,10 @@ import com.psq.backend.member.domain.Member;
 import com.psq.backend.problem.application.ProblemService;
 import com.psq.backend.problem.domain.Problem;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
-import com.psq.backend.problem.exception.NoSuchProblemException;
-import com.psq.backend.problem.persistence.ProblemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,11 +22,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookmarkService {
     private final BookmarkRepository bookmarkRepository;
-    private final MemberService memberService;
     private final ProblemService problemService;
 
-    public void save(HttpServletRequest request, BookmarkSaveRequest saveRequest) {
-        Member member = memberService.getMember(request);
+    public void save(Member member, BookmarkSaveRequest saveRequest) {
         Problem problem = problemService.getProblem(saveRequest.getProblemId());
 
         if (bookmarkRepository.isExistedBookmark(member.getId(), problem.getId()))
@@ -40,15 +35,13 @@ public class BookmarkService {
 
     public void delete(Long id) {
         Bookmark bookmark = bookmarkRepository.findById(id).orElseThrow(
-                () -> new NoSuchBookmarkException()
+                NoSuchBookmarkException::new
         );
         bookmarkRepository.delete(bookmark);
     }
 
-    public List<ProblemListResponse> getBookmarkList(HttpServletRequest request) {
-        Long memberId = memberService.getMember(request).getId();
-
-        List<Bookmark> bookmarkList = bookmarkRepository.findBookmarkByFetchJoin(memberId);
+    public List<ProblemListResponse> getBookmarkList(Member member) {
+        List<Bookmark> bookmarkList = bookmarkRepository.findBookmarkByFetchJoin(member.getId());
 
         if (bookmarkList.isEmpty()) throw new NoSuchBookmarkException();
 

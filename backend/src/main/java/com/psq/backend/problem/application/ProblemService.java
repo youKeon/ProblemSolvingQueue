@@ -26,24 +26,21 @@ public class ProblemService {
     private final ProblemRepository problemRepository;
     private final MemberService memberService;
 
-    public void save(HttpServletRequest servletRequest,
+    public void save(Member member,
                      ProblemSaveRequest request) {
 
-        Member member = memberService.getMember(servletRequest);
         Problem problem = request.toEntity(member);
         problemRepository.save(problem);
     }
 
-    public List<ProblemListResponse> getProblemList(HttpServletRequest request,
+    public List<ProblemListResponse> getProblemList(Member member,
                                                     Integer level,
                                                     Category category,
                                                     Boolean isSolved,
                                                     Pageable pageable) {
 
 
-        Long memberId = memberService.getMember(request).getId();
-
-        List<ProblemListResponse> problemList = problemRepository.findAllProblem(memberId, level, category, isSolved, pageable);
+        List<ProblemListResponse> problemList = problemRepository.findAllProblem(member.getId(), level, category, isSolved, pageable);
 
         if (problemList.isEmpty()) throw new NoSuchProblemException("문제가 존재하지 않습니다.");
         return problemList;
@@ -59,9 +56,8 @@ public class ProblemService {
         return problemRepository.findProblem(id).orElseThrow(NoSuchProblemException::new);
     }
 
-    public ProblemResponse pollProblem(HttpServletRequest request) {
-        Long memberId = memberService.getMember(request).getId();
-        return problemRepository.pollProblem(memberId).orElseThrow(NoSuchProblemException::new);
+    public ProblemResponse pollProblem(Member member) {
+        return problemRepository.pollProblem(member.getId()).orElseThrow(NoSuchProblemException::new);
     }
 
     public void update(Long id,

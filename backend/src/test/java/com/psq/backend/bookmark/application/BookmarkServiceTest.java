@@ -5,9 +5,7 @@ import com.psq.backend.bookmark.dto.request.BookmarkSaveRequest;
 import com.psq.backend.bookmark.exception.DuplicatedBookmarkException;
 import com.psq.backend.bookmark.exception.NoSuchBookmarkException;
 import com.psq.backend.common.annotation.ServiceTest;
-import com.psq.backend.member.application.MemberService;
 import com.psq.backend.member.domain.Member;
-import com.psq.backend.member.domain.SessionInfo;
 import com.psq.backend.member.exception.NoSuchMemberException;
 import com.psq.backend.problem.application.ProblemService;
 import com.psq.backend.problem.domain.Category;
@@ -31,8 +29,6 @@ import static org.mockito.Mockito.when;
 
 public class BookmarkServiceTest extends ServiceTest {
     @Mock
-    private MemberService memberService;
-    @Mock
     private ProblemService problemService;
     @BeforeEach
     void setup() {
@@ -48,8 +44,6 @@ public class BookmarkServiceTest extends ServiceTest {
 
         bookmark = new Bookmark(member, problem1);
         ReflectionTestUtils.setField(bookmark, "id", 1L);
-
-        sessionInfo = new SessionInfo(member.getId(), member.getEmail());
     }
 
     @Test
@@ -59,12 +53,11 @@ public class BookmarkServiceTest extends ServiceTest {
         BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(problem1.getId());
 
         // when
-        when(memberService.getMember(request)).thenReturn(member);
         when(problemService.getProblem(saveRequest.getProblemId())).thenReturn(problem1);
         when(bookmarkRepository.isExistedBookmark(anyLong(), anyLong())).thenReturn(false);
 
         // then
-        assertDoesNotThrow(() -> bookmarkService.save(request, saveRequest));
+        assertDoesNotThrow(() -> bookmarkService.save(member, saveRequest));
     }
 
     @Test
@@ -74,14 +67,13 @@ public class BookmarkServiceTest extends ServiceTest {
         BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(problem1.getId());
 
         // when
-        when(memberService.getMember(request)).thenReturn(member);
         when(problemService.getProblem(saveRequest.getProblemId())).thenReturn(problem1);
         when(bookmarkRepository.isExistedBookmark(member.getId(), problem1.getId()))
                 .thenReturn(true);
 
         // then
         assertThatThrownBy(
-                () -> bookmarkService.save(request, saveRequest))
+                () -> bookmarkService.save(member, saveRequest))
                 .isInstanceOf(DuplicatedBookmarkException.class)
                 .hasMessageContaining("이미 존재하는 북마크입니다.");
     }
@@ -110,22 +102,6 @@ public class BookmarkServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자 id로 북마크를 등록하면 예외가 발생한다")
-    void saveNoSuchMemberIdBookmarkExceptionTest() {
-        // given
-        BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(problem1.getId());
-
-        // when
-        when(memberService.getMember(request)).thenThrow(new NoSuchMemberException());
-
-        // then
-        assertThatThrownBy(
-                () -> bookmarkService.save(request, saveRequest))
-                .isInstanceOf(NoSuchMemberException.class)
-                .hasMessageContaining("존재하지 않는 사용자입니다.");
-    }
-
-    @Test
     @DisplayName("존재하지 않는 문제 id로 북마크를 등록하면 예외가 발생한다")
     void saveNoSuchProblemIdExceptionTest() {
         // given
@@ -133,12 +109,11 @@ public class BookmarkServiceTest extends ServiceTest {
         BookmarkSaveRequest saveRequest = new BookmarkSaveRequest(존재하지_않는_문제_ID);
 
         // when
-        when(memberService.getMember(request)).thenReturn(member);
         when(problemService.getProblem(saveRequest.getProblemId())).thenThrow(new NoSuchProblemException());
 
         // then
         assertThatThrownBy(
-                () -> bookmarkService.save(request, saveRequest))
+                () -> bookmarkService.save(member, saveRequest))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
     }
@@ -155,9 +130,8 @@ public class BookmarkServiceTest extends ServiceTest {
 
         // when
         when(bookmarkRepository.findBookmarkByFetchJoin(member.getId())).thenReturn(bookmarkList);
-        when(memberService.getMember(request)).thenReturn(member);
 
-        List<ProblemListResponse> actual = bookmarkService.getBookmarkList(request);
+        List<ProblemListResponse> actual = bookmarkService.getBookmarkList(member);
 
         // then
         assertAll(
@@ -179,12 +153,11 @@ public class BookmarkServiceTest extends ServiceTest {
     @DisplayName("입력 받은 사용자 id에 해당되는 북마크가 없으면 예외가 발생한다")
     void getBookmarkEmptyExceptionTest() {
         // when
-        when(memberService.getMember(request)).thenReturn(member);
         when(bookmarkRepository.findBookmarkByFetchJoin(member.getId())).thenReturn(Collections.emptyList());
 
         // then
         assertThatThrownBy(
-                () -> bookmarkService.getBookmarkList(request))
+                () -> bookmarkService.getBookmarkList(member))
                 .isInstanceOf(NoSuchBookmarkException.class)
                 .hasMessageContaining("존재하지 않는 북마크입니다.");
     }
