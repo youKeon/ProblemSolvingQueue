@@ -7,6 +7,7 @@ import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.dto.request.ProblemSaveRequest;
 import com.psq.backend.problem.dto.request.ProblemUpdateRequest;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
+import com.psq.backend.problem.dto.response.ProblemRecommendResponse;
 import com.psq.backend.problem.dto.response.ProblemResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,13 @@ public class ProblemController {
     @GetMapping("/{id}")
     public ResponseEntity<ProblemResponse> getProblem(@PathVariable Long id) {
         ProblemResponse response = problemService.getProblemInfo(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "문제 추천")
+    @GetMapping("/recommendation")
+    public ResponseEntity<List<ProblemRecommendResponse>> recommendProblem(@CurrentUser Member member) {
+        List<ProblemRecommendResponse> response = problemService.recommendProblem(member.getId());
         return ResponseEntity.ok(response);
     }
 

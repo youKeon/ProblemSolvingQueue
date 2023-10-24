@@ -38,9 +38,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // Batch
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
-
     // DB
     runtimeOnly 'com.mysql:mysql-connector-j'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
@@ -111,7 +108,6 @@ jacocoTestReport {
                     '**/exception/**',
                     '**/BaseEntity*',
                     "**/*Application*",
-                    "**/*Scheduler*",
                     "**/global/**"
             ])
         }))
@@ -144,7 +140,6 @@ jacocoTestCoverageVerification {
                     '*.*Application',
                     '*.Q*',
                     '*.*Exception',
-                    '*.*Scheduler',
                     '*.dto.*',
                     '**.*BaseEntity*',
                     '*.global.*',

@@ -4,31 +4,22 @@ import com.psq.backend.common.annotation.RepositoryTest;
 import com.psq.backend.member.domain.Member;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
-import com.psq.backend.problem.domain.QProblem;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
+import com.psq.backend.problem.dto.response.ProblemRecommendResponse;
 import com.psq.backend.problem.dto.response.ProblemResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.Mockito.when;
 
 public class ProblemRepositoryTest extends RepositoryTest {
 
@@ -153,6 +144,110 @@ public class ProblemRepositoryTest extends RepositoryTest {
 
         // then
         assertThat(increasedCount).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("추천 문제를 반환한다")
+    public void recommendProblemTest() {
+        // given
+        clearProblem();
+        Problem problem1 = new Problem(member, "title1", "url1", 1, Category.DFS, false);
+        Problem problem2 = new Problem(member, "title2", "url2", 2, Category.DFS, false);
+        Problem problem3 = new Problem(member, "title3", "url3", 3, Category.DFS, false);
+        Problem problem4 = new Problem(member, "title4", "url4", 4, Category.DFS, false);
+        Problem problem5 = new Problem(member, "title5", "url5", 5, Category.DFS, false);
+
+        problemRepository.save(problem1);
+        problemRepository.save(problem2);
+        problemRepository.save(problem3);
+        problemRepository.save(problem4);
+        problemRepository.save(problem5);
+
+        // when
+        List<ProblemRecommendResponse> actual = problemRepository.recommendProblem(member.getId());
+
+        // then
+        assertThat(actual.size()).isEqualTo(2);
+
+        assertThat(actual.get(0).getLevel()).isEqualTo(2);
+        assertThat(actual.get(0)).usingRecursiveComparison().isEqualTo(problem2);
+
+        assertThat(actual.get(1).getLevel()).isEqualTo(4);
+        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(problem4);
+    }
+
+    @Test
+    @DisplayName("추천 문제의 평균 난이도가 최대값(1)이면 난이도 4, 5 문제를 반환한다")
+    public void recommendProblemLowLevelExceptionTest() {
+        // given
+        clearProblem();
+        for (int i = 0; i < 20; i++) {
+            problemRepository.save(new Problem(member, "title" + i, "url" + i, 1, Category.DFS, false));
+        }
+        Problem problem5 = new Problem(member, "title5", "url5", 4, Category.DFS, false);
+        Problem problem6 = new Problem(member, "title6", "url6", 5, Category.DFS, false);
+
+        problemRepository.save(problem5);
+        problemRepository.save(problem6);
+
+        // when
+        List<ProblemRecommendResponse> actual = problemRepository.recommendProblem(member.getId());
+
+        // then
+        assertThat(actual.size()).isEqualTo(2);
+
+        assertThat(actual.get(0).getLevel()).isEqualTo(4);
+        assertThat(actual.get(0)).usingRecursiveComparison().isEqualTo(problem5);
+
+        assertThat(actual.get(1).getLevel()).isEqualTo(5);
+        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(problem6);
+    }
+
+    @Test
+    @DisplayName("추천 문제의 평균 난이도가 최대값(5)이면 난이도 1, 2 문제를 반환한다")
+    public void recommendProblemLowHighExceptionTest() {
+        // given
+        clearProblem();
+        for (int i = 0; i < 20; i++) {
+            problemRepository.save(new Problem(member, "title" + i, "url" + i, 5, Category.DFS, false));
+        }
+        Problem problem5 = new Problem(member, "title5", "url5", 1, Category.DFS, false);
+        Problem problem6 = new Problem(member, "title6", "url6", 2, Category.DFS, false);
+
+        problemRepository.save(problem5);
+        problemRepository.save(problem6);
+
+        // when
+        List<ProblemRecommendResponse> actual = problemRepository.recommendProblem(member.getId());
+
+        // then
+        assertThat(actual.size()).isEqualTo(2);
+
+        assertThat(actual.get(0).getLevel()).isEqualTo(1);
+        assertThat(actual.get(0)).usingRecursiveComparison().isEqualTo(problem5);
+
+        assertThat(actual.get(1).getLevel()).isEqualTo(2);
+        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(problem6);
+    }
+
+    @Test
+    @DisplayName("3일 전에 추천된 문제 초기화 테스트")
+    public void initializeRecommendedProblemTest() {
+        // given
+        problem1.recommended();
+        entityManager
+                .createQuery("UPDATE Problem p SET p.updatedAt = :date WHERE p.id = :id")
+                .setParameter("date", LocalDateTime.now().minusDays(4))
+                .setParameter("id", problem1.getId())
+                .executeUpdate();
+        entityManager.refresh(problem1);
+
+        // when
+        problemRepository.initializeRecommendedProblem();
+        entityManager.refresh(problem1);
+
+        // then
+        assertThat(problem1.isRecommended()).isFalse();
     }
 
     private void clearProblem() {

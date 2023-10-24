@@ -6,7 +6,6 @@ import com.psq.backend.problem.dto.request.ProblemUpdateRequest;
 import com.psq.backend.problem.exception.InvalidProblemException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -38,6 +37,9 @@ public class Problem extends BaseEntity {
     private boolean isDeleted = false;
 
     @Column(nullable = false)
+    private boolean isRecommended = false;
+
+    @Column(nullable = false)
     private Integer solvedCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -63,6 +65,9 @@ public class Problem extends BaseEntity {
 
     public void softDelete() {
         isDeleted = true;
+    }
+    public void recommended() {
+        isRecommended = true;
     }
 
     public void update(ProblemUpdateRequest request) {

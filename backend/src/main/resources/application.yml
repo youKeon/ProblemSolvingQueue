@@ -1,14 +1,3 @@
 spring:
   profiles:
     active: local
-
-  batch:
-    job:
-      enabled: false
-    jdbc:
-      initialize-schema: always
-
-server:
-  servlet:
-    session:
-      timeout: 315349997

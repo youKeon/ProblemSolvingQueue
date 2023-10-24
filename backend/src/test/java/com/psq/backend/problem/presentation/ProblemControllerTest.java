@@ -7,6 +7,7 @@ import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.dto.request.ProblemSaveRequest;
 import com.psq.backend.problem.dto.request.ProblemUpdateRequest;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
+import com.psq.backend.problem.dto.response.ProblemRecommendResponse;
 import com.psq.backend.problem.dto.response.ProblemResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -715,5 +716,44 @@ public class ProblemControllerTest extends ControllerTest {
                         pathParameters(
                                 parameterWithName("id").description("문제 ID")
                         )));
+    }
+
+    @Test
+    @DisplayName("추천 문제를 반환한다")
+    public void recommendProblemTest() throws Exception {
+        // given
+        List<ProblemRecommendResponse> responseList = Arrays.asList(
+                new ProblemRecommendResponse("title1", "url1", 1, Category.DFS),
+                new ProblemRecommendResponse("title2", "url2", 2, Category.DFS)
+        );
+
+        // when
+        when(problemService.recommendProblem(member.getId())).thenReturn(responseList);
+
+        // then
+        mockMvc.perform(get(baseURL + "/recommendation")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value(responseList.get(0).getTitle()))
+                .andExpect(jsonPath("$[0].url").value(responseList.get(0).getUrl()))
+                .andExpect(jsonPath("$[0].level").value(responseList.get(0).getLevel()))
+                .andExpect(jsonPath("$[0].category").value("DFS"))
+
+                .andExpect(jsonPath("$[1].title").value(responseList.get(1).getTitle()))
+                .andExpect(jsonPath("$[1].url").value(responseList.get(1).getUrl()))
+                .andExpect(jsonPath("$[1].level").value(responseList.get(1).getLevel()))
+                .andExpect(jsonPath("$[1].category").value("DFS"))
+
+                .andDo(print())
+                .andDo(document("problem/recommendation/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("[].title").description("문제 제목"),
+                                fieldWithPath("[].url").description("문제 URL"),
+                                fieldWithPath("[].level").description("문제 레벨"),
+                                fieldWithPath("[].category").description("문제 유형")
+                        )
+                ));
     }
 }
