@@ -13,6 +13,8 @@ import com.psq.backend.problem.exception.NoSuchProblemException;
 import com.psq.backend.problem.persistence.ProblemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,9 @@ public class ProblemService {
         problemRepository.save(problem);
     }
 
+    @Cacheable(value = "getProblemList",
+            key = "#member.id + '_' + #level + '_' + #category + '_' + #isSolved + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
+    @Transactional(readOnly = true)
     public List<ProblemListResponse> getProblemList(Member member,
                                                     Integer level,
                                                     Category category,
@@ -53,14 +58,17 @@ public class ProblemService {
         problem.softDelete();
     }
 
+    @Transactional(readOnly = true)
     public ProblemResponse getProblemInfo(Long id) {
         return problemRepository.findProblem(id).orElseThrow(NoSuchProblemException::new);
     }
 
+    @Transactional(readOnly = true)
     public ProblemResponse pollProblem(Member member) {
         return problemRepository.pollProblem(member.getId()).orElseThrow(NoSuchProblemException::new);
     }
 
+    @CachePut
     public void update(Long id,
                        ProblemUpdateRequest request) {
 
@@ -74,6 +82,7 @@ public class ProblemService {
         problem.recovery();
     }
 
+    @Transactional(readOnly = true)
     public Problem getProblem(Long id) {
         return problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
     }
