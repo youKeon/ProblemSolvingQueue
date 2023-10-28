@@ -140,7 +140,7 @@ public class ProblemRepositoryTest extends RepositoryTest {
     @DisplayName("문제 풀이 횟수를 1 증가시킨다")
     public void increaseSolvedCountTest() throws Exception {
         // when
-        long increasedCount = problemRepository.increaseSovledCount(problem1.getId());
+        long increasedCount = problemRepository.increaseSolvedCount(problem1.getId());
 
         // then
         assertThat(increasedCount).isEqualTo(1);

@@ -299,7 +299,7 @@ public class ProblemServiceTest extends ServiceTest {
     @DisplayName("문제 풀이 횟수를 1 증가시킨다")
     public void increaseSolvedCountTest() throws Exception {
         // when
-        when(problemRepository.increaseSovledCount(problem1.getId())).thenReturn(1L);
+        when(problemRepository.increaseSolvedCount(problem1.getId())).thenReturn(1L);
 
         // then
         assertDoesNotThrow(() -> problemService.increaseSolvedCount(problem1.getId()));
@@ -309,7 +309,7 @@ public class ProblemServiceTest extends ServiceTest {
     @DisplayName("문제 풀이 횟수 증가 시 존재하지 않는 문제 ID를 입력하면 예외가 발생한다")
     public void increaseSolvedCountNoSuchProblemExceptionTest() throws Exception {
         // when
-        when(problemRepository.increaseSovledCount(problem1.getId())).thenReturn(0L);
+        when(problemRepository.increaseSolvedCount(problem1.getId())).thenReturn(0L);
 
         // then
         assertThatThrownBy(

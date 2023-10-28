@@ -107,7 +107,7 @@ public class ProblemRepositoryImpl implements ProblemCustomRepository {
     }
 
     @Override
-    public long increaseSovledCount(Long problemId) {
+    public long increaseSolvedCount(Long problemId) {
         return jpaQueryFactory
                 .update(problem)
                 .set(problem.solvedCount, problem.solvedCount.add(1))

@@ -22,7 +22,7 @@ public interface ProblemCustomRepository {
 
     long deleteSoftDeletedProblem();
 
-    long increaseSovledCount(Long problemId);
+    long increaseSolvedCount(Long problemId);
 
     List<ProblemRecommendResponse> recommendProblem(Long id);
 

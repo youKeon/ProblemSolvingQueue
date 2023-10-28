@@ -88,7 +88,7 @@ public class ProblemService {
     }
 
     public void increaseSolvedCount(Long id) {
-        long increasedCount = problemRepository.increaseSovledCount(id);
+        long increasedCount = problemRepository.increaseSolvedCount(id);
         if (increasedCount == 0) throw new NoSuchProblemException();
     }
 
