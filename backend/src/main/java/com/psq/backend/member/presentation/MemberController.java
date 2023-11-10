@@ -34,4 +34,11 @@ public class MemberController {
         memberService.signin(request, session);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "로그아웃")
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpSession session) {
+        memberService.logout(session);
+        return ResponseEntity.ok().build();
+    }
 }

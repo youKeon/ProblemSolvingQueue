@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import static com.psq.backend.member.util.PasswordUtil.encodePassword;
@@ -48,13 +47,7 @@ public class MemberService {
         session.setAttribute("sessionInfo", sessionInfo);
     }
 
-    public Member getMember(HttpServletRequest request) {
-        SessionInfo sessionInfo = (SessionInfo) request.getSession().getAttribute("sessionInfo");
-        if (sessionInfo == null) throw new NoSuchMemberException("잘못된 세션 정보입니다.");
-
-        Long memberId = sessionInfo.getId();
-        return memberRepository.findById(memberId).orElseThrow(
-                NoSuchMemberException::new
-        );
+    public void logout(HttpSession session) {
+        session.invalidate();
     }
 }

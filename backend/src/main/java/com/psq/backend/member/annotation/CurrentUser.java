@@ -1,4 +1,4 @@
-package com.psq.backend.member.domain;
+package com.psq.backend.member.annotation;
 
 import java.lang.annotation.*;
 

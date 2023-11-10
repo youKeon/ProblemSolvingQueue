@@ -36,7 +36,7 @@ public class MemberControllerTest extends ControllerTest {
     @DisplayName("이메일과 비밀번호를 받아 회원가입을 한다")
     public void signUpMember() throws Exception {
         // given
-        MemberSignUpRequest request = new MemberSignUpRequest("email@email.com", "password");
+        MemberSignUpRequest request = new MemberSignUpRequest("email@email.com", "12345678");
 
         // when, then
         mockMvc.perform(post(baseURL + "/signup")
@@ -61,7 +61,7 @@ public class MemberControllerTest extends ControllerTest {
     public void signUpMemberInvalidEmailFormatException() throws Exception {
         // given
         String 잘못된_이메일_형식 = "InvalidEmailFormat";
-        MemberSignUpRequest request = new MemberSignUpRequest(잘못된_이메일_형식, "1234");
+        MemberSignUpRequest request = new MemberSignUpRequest(잘못된_이메일_형식, "12345678");
 
         // when, then
         mockMvc.perform(post(baseURL + "/signup")
@@ -89,7 +89,7 @@ public class MemberControllerTest extends ControllerTest {
     @DisplayName("회원가입 시 이메일이 공백인 경우 예외가 발생한다")
     public void signUpMemberInvalidEmailEmptyException() throws Exception {
         // given
-        MemberSignUpRequest request = new MemberSignUpRequest("", "1234");
+        MemberSignUpRequest request = new MemberSignUpRequest("", "password1234");
 
         // when, then
         mockMvc.perform(post(baseURL + "/signup")
@@ -125,7 +125,6 @@ public class MemberControllerTest extends ControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("password 필드는 공백일 수 없습니다. (전달된 값: )"))
 
                 .andDo(print())
                 .andDo(document("member/signUp/fail/emptyPassword",

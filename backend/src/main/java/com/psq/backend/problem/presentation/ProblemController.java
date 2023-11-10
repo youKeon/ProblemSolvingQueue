@@ -1,6 +1,6 @@
 package com.psq.backend.problem.presentation;
 
-import com.psq.backend.member.domain.CurrentUser;
+import com.psq.backend.member.annotation.CurrentUser;
 import com.psq.backend.member.domain.Member;
 import com.psq.backend.problem.application.ProblemService;
 import com.psq.backend.problem.domain.Category;

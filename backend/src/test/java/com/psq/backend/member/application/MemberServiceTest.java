@@ -18,7 +18,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
@@ -116,43 +115,5 @@ public class MemberServiceTest extends ServiceTest {
                 () -> memberService.signin(request, session))
                 .isInstanceOf(NoSuchMemberException.class)
                 .hasMessageContaining("로그인에 실패했습니다.");
-    }
-
-    @Test
-    @DisplayName("사용자 정보를 가져온다")
-    public void getMemberInfoTest() throws Exception {
-        // given
-        request.getSession().setAttribute("sessionInfo", sessionInfo);
-
-        // when
-        when(memberRepository.findById(sessionInfo.getId())).thenReturn(Optional.ofNullable(member));
-        Member actual = memberService.getMember(request);
-
-        // then
-        assertThat(actual).usingRecursiveComparison().isEqualTo(member);
-    }
-
-    @Test
-    @DisplayName("세션 정보가 없으면 예외가 발생한다")
-    public void getMemberInfoInvalidSessionExceptionTest() throws Exception {
-        // when, then
-        assertThatThrownBy(
-                () -> memberService.getMember(request))
-                .isInstanceOf(NoSuchMemberException.class)
-                .hasMessageContaining("잘못된 세션 정보입니다.");
-    }
-
-    @Test
-    @DisplayName("세션 정보에 존재하지 않는 사용자 정보가 있으면 예외가 발생한다")
-    public void getMemberInfoNoSuchMemberExceptionTest() throws Exception {
-        // given
-        SessionInfo 존재하지_않는_사용자의_세션_정보 = new SessionInfo(0L, "noSuch@member.com");
-        request.getSession().setAttribute("sessionInfo", 존재하지_않는_사용자의_세션_정보);
-
-        // when, then
-        assertThatThrownBy(
-                () -> memberService.getMember(request))
-                .isInstanceOf(NoSuchMemberException.class)
-                .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
 }

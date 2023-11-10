@@ -1,11 +1,11 @@
-package com.psq.backend.global.auth;
-import com.psq.backend.member.domain.CurrentUser;
+package com.psq.backend.global.aspect;
+
+import com.psq.backend.member.annotation.CurrentUser;
 import com.psq.backend.member.domain.Member;
 import com.psq.backend.member.domain.SessionInfo;
 import com.psq.backend.member.exception.NoSuchMemberException;
 import com.psq.backend.member.persistence.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -14,7 +14,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpSession;
-@Slf4j
+
 @Component
 @RequiredArgsConstructor
 public class CurrentUserResolver implements HandlerMethodArgumentResolver {

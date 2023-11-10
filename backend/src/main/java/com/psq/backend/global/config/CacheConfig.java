@@ -16,13 +16,14 @@ import java.time.Duration;
 @Configuration
 @EnableCaching
 public class CacheConfig {
+    private final long EXPIRATION_TIME = 3L;
 
     @Bean
     public CacheManager contentCacheManager(RedisConnectionFactory cf) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer 변경
-                .entryTtl(Duration.ofMinutes(3L)); // TTL 30분으로 설정
+                .entryTtl(Duration.ofMinutes(EXPIRATION_TIME));
 
         return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(cf).cacheDefaults(redisCacheConfiguration).build();
     }
