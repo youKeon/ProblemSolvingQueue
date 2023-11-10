@@ -1,6 +1,6 @@
 package com.psq.backend.member.util;
 
-import org.assertj.core.api.Assertions;
+import com.psq.backend.util.PasswordUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

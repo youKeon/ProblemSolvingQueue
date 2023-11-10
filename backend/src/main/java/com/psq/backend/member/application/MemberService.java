@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 
-import static com.psq.backend.member.util.PasswordUtil.encodePassword;
-import static com.psq.backend.member.util.PasswordUtil.generateSalt;
+import static com.psq.backend.util.PasswordUtil.encodePassword;
+import static com.psq.backend.util.PasswordUtil.generateSalt;
 
 
 @Service

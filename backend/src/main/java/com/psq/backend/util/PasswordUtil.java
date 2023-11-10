@@ -1,4 +1,4 @@
-package com.psq.backend.member.util;
+package com.psq.backend.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

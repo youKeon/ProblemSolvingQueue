@@ -1,4 +1,4 @@
-package com.psq.backend.global.aspect;
+package com.psq.backend.util;
 
 import com.psq.backend.member.annotation.CurrentUser;
 import com.psq.backend.member.domain.Member;

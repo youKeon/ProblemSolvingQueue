@@ -1,7 +1,7 @@
 package com.psq.backend.global.config;
 
 
-import com.psq.backend.global.aspect.CurrentUserResolver;
+import com.psq.backend.util.CurrentUserResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

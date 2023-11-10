@@ -5,9 +5,7 @@ import com.psq.backend.bookmark.domain.Bookmark;
 import com.psq.backend.bookmark.persistence.BookmarkRepository;
 import com.psq.backend.member.application.MemberService;
 import com.psq.backend.member.domain.Member;
-import com.psq.backend.member.domain.SessionInfo;
 import com.psq.backend.member.persistence.MemberRepository;
-import com.psq.backend.member.util.PasswordUtil;
 import com.psq.backend.problem.application.ProblemService;
 import com.psq.backend.problem.domain.Problem;
 import com.psq.backend.problem.persistence.ProblemRepository;
@@ -17,13 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.psq.backend.member.util.PasswordUtil.*;
-import static com.psq.backend.member.util.PasswordUtil.generateSalt;
+import static com.psq.backend.util.PasswordUtil.*;
+import static com.psq.backend.util.PasswordUtil.generateSalt;
 
 
 @ExtendWith(MockitoExtension.class)
