@@ -404,9 +404,9 @@ public class ProblemControllerTest extends ControllerTest {
     @DisplayName("문제를 삭제한다")
     public void deleteProblem() throws Exception {
         // when, then
-        mockMvc.perform(delete(baseURL + "/{id}", problemId))
+        mockMvc.perform(delete(baseURL + "/{id}", problemId)
+                        .session(session))
                 .andExpect(status().isNoContent())
-
                 .andDo(print())
                 .andDo(document("problem/delete/success",
                         getDocumentRequest(),
@@ -425,6 +425,7 @@ public class ProblemControllerTest extends ControllerTest {
 
         // when, then
         mockMvc.perform(put(baseURL + "/{id}", problemId)
+                        .session(session)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))

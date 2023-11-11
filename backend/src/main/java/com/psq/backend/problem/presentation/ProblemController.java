@@ -67,8 +67,9 @@ public class ProblemController {
 
     @Operation(summary = "문제 삭제(isDeleted -> true)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        problemService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id,
+                                       @CurrentUser Member member) {
+        problemService.delete(id, member);
         return ResponseEntity.noContent().build();
     }
 
@@ -82,8 +83,9 @@ public class ProblemController {
     @Operation(summary = "문제 수정")
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id,
-                                       @RequestBody @Valid ProblemUpdateRequest request) {
-        problemService.update(id, request);
+                                       @RequestBody @Valid ProblemUpdateRequest request,
+                                       @CurrentUser Member member) {
+        problemService.update(id, request, member);
         return ResponseEntity.noContent().build();
     }
 

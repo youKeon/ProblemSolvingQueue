@@ -1,6 +1,7 @@
 package com.psq.backend.problem.application;
 
 import com.psq.backend.member.domain.Member;
+import com.psq.backend.member.exception.UnauthorizedMemberException;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
 import com.psq.backend.problem.dto.request.ProblemSaveRequest;
@@ -13,8 +14,6 @@ import com.psq.backend.problem.exception.NoSuchProblemException;
 import com.psq.backend.problem.persistence.ProblemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -36,8 +35,6 @@ public class ProblemService {
         problemRepository.save(problem);
     }
 
-    @Cacheable(value = "getProblemList",
-            key = "#member.id + '_' + #level + '_' + #category + '_' + #isSolved + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
     @Transactional(readOnly = true)
     public List<ProblemListResponse> getProblemList(Member member,
                                                     Integer level,
@@ -53,8 +50,9 @@ public class ProblemService {
     }
 
 
-    public void delete(Long id) {
+    public void delete(Long id, Member requester) {
         Problem problem = problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
+        if (!isAuthenticatedEditor(requester, problem)) throw new UnauthorizedMemberException();
         problem.softDelete();
     }
 
@@ -68,12 +66,17 @@ public class ProblemService {
         return problemRepository.pollProblem(member.getId()).orElseThrow(NoSuchProblemException::new);
     }
 
-    @CachePut
     public void update(Long id,
-                       ProblemUpdateRequest request) {
+                       ProblemUpdateRequest request,
+                       Member requester) {
 
         Problem problem = problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
+        if (!isAuthenticatedEditor(requester, problem)) throw new UnauthorizedMemberException();
         problem.update(request);
+    }
+
+    private boolean isAuthenticatedEditor(Member member, Problem problem) {
+        return problem.getMember().getId() == member.getId();
     }
 
     public void recovery(Long id) {

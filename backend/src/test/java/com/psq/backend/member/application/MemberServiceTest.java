@@ -9,6 +9,7 @@ import com.psq.backend.member.exception.DuplicatedEmailException;
 import com.psq.backend.member.exception.NoSuchMemberException;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,5 +116,15 @@ public class MemberServiceTest extends ServiceTest {
                 () -> memberService.signin(request, session))
                 .isInstanceOf(NoSuchMemberException.class)
                 .hasMessageContaining("로그인에 실패했습니다.");
+    }
+
+    @Test
+    @DisplayName("로그아웃 시 세션이 무효화된다")
+    void logoutTest() {
+        // when
+        memberService.logout(session);
+
+        // then
+        Assertions.assertThat(session.isInvalid()).isTrue();
     }
 }

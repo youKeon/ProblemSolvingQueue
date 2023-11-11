@@ -2,6 +2,7 @@ package com.psq.backend.member.presentation;
 
 import com.psq.backend.common.annotation.ControllerTest;
 import com.psq.backend.member.domain.Member;
+import com.psq.backend.member.domain.SessionInfo;
 import com.psq.backend.member.dto.request.MemberSignInRequest;
 import com.psq.backend.member.dto.request.MemberSignUpRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,8 @@ public class MemberControllerTest extends ControllerTest {
         ReflectionTestUtils.setField(member, "id", 1L);
 
         session = new MockHttpSession();
+        sessionInfo = new SessionInfo(member.getId(), member.getEmail());
+        session.setAttribute("sessionInfo", sessionInfo);
     }
 
     @Test
@@ -246,6 +249,20 @@ public class MemberControllerTest extends ControllerTest {
                         responseFields(
                                 fieldWithPath("message").description("응답 메세지")
                         )
+                ));
+    }
+
+    @Test
+    @DisplayName("로그아웃을 한다")
+    public void logoutTest() throws Exception {
+        // when, then
+        mockMvc.perform(post(baseURL +"/logout")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("member/logout/success",
+                        getDocumentRequest(),
+                        getDocumentResponse()
                 ));
     }
 }

@@ -1,12 +1,11 @@
 package com.psq.backend.global.error;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.psq.backend.bookmark.exception.DuplicatedBookmarkException;
 import com.psq.backend.bookmark.exception.NoSuchBookmarkException;
 import com.psq.backend.member.exception.DuplicatedEmailException;
-import com.psq.backend.member.exception.InvalidMemberException;
+import com.psq.backend.member.exception.InvalidEmailFormatException;
 import com.psq.backend.member.exception.NoSuchMemberException;
+import com.psq.backend.member.exception.UnauthorizedMemberException;
 import com.psq.backend.problem.exception.InvalidProblemException;
 import com.psq.backend.problem.exception.NoSuchProblemException;
 import org.slf4j.Logger;
@@ -21,6 +20,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -49,7 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({
             NoSuchProblemException.class,
             NoSuchBookmarkException.class,
-            NoSuchMemberException.class
+            NoSuchMemberException.class,
     })
     public ResponseEntity<ErrorResponse> handleNoSuchData(final RuntimeException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
@@ -58,13 +59,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
             InvalidProblemException.class,
-            InvalidMemberException.class,
+            InvalidEmailFormatException.class,
             DuplicatedBookmarkException.class,
             DuplicatedEmailException.class
     })
     public ResponseEntity<ErrorResponse> handleInvalidData(final RuntimeException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(UnauthorizedMemberException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedAccess(final RuntimeException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)

@@ -2,6 +2,7 @@ package com.psq.backend.problem.application;
 
 import com.psq.backend.common.annotation.ServiceTest;
 import com.psq.backend.member.domain.Member;
+import com.psq.backend.member.exception.UnauthorizedMemberException;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
 import com.psq.backend.problem.dto.request.ProblemSaveRequest;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -106,7 +108,7 @@ public class ProblemServiceTest extends ServiceTest {
     public void deleteProblem() throws Exception {
         // when
         when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
-        problemService.delete(problem1.getId());
+        problemService.delete(problem1.getId(), member);
 
         // then
         assertThat(problem1.isDeleted()).isTrue();
@@ -120,10 +122,27 @@ public class ProblemServiceTest extends ServiceTest {
 
         // when, then
         assertThatThrownBy(
-                () -> problemService.delete(존재하지_않는_문제_ID))
+                () -> problemService.delete(존재하지_않는_문제_ID, member))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
     }
+
+    @Test
+    @DisplayName("문제 삭제 시 작성자와 수정자가 일치하지 않으면 예외가 발생한다")
+    public void deleteProblemUnauthorizedMemberException() throws Exception {
+        // given
+        Member 작성자와_다른_수정자 = new Member();
+
+        // when
+        when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
+
+        // then
+        assertThatThrownBy(
+                () -> problemService.delete(problem1.getId(), 작성자와_다른_수정자))
+                .isInstanceOf(UnauthorizedMemberException.class)
+                .hasMessageContaining("권한이 없는 사용자입니다.");
+    }
+
 
     @Test
     @DisplayName("가장 먼저 저장한 문제를 poll한다")
@@ -211,7 +230,7 @@ public class ProblemServiceTest extends ServiceTest {
 
         // when
         when(problemRepository.findById(problem1.getId())).thenReturn(Optional.of(problem1));
-        problemService.update(problem1.getId(), request);
+        problemService.update(problem1.getId(), request, member);
 
         // then
         assertAll(
@@ -230,9 +249,25 @@ public class ProblemServiceTest extends ServiceTest {
 
         // when, then
         assertThatThrownBy(
-                () -> problemService.update(존재하지_않는_문제_ID, any(ProblemUpdateRequest.class)))
+                () -> problemService.update(존재하지_않는_문제_ID, any(ProblemUpdateRequest.class), member))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
+    }
+
+    @Test
+    @DisplayName("문제 수정 시 작성자와 수정자가 일치하지 않으면 예외가 발생한다")
+    public void updateProblemUnauthorizedMemberException() throws Exception {
+        // given
+        Member 작성자와_다른_수정자 = new Member();
+
+        // when
+        when(problemRepository.findById(problem1.getId())).thenReturn(Optional.ofNullable(problem1));
+
+        // then
+        assertThatThrownBy(
+                () -> problemService.update(problem1.getId(), any(ProblemUpdateRequest.class), 작성자와_다른_수정자))
+                .isInstanceOf(UnauthorizedMemberException.class)
+                .hasMessageContaining("권한이 없는 사용자입니다.");
     }
 
     @Test
@@ -344,5 +379,27 @@ public class ProblemServiceTest extends ServiceTest {
                 () -> problemService.recommendProblem(member.getId()))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
+    }
+
+    @Test
+    @DisplayName("3일 전에 논리적 삭제된 문제들은 물리적 삭제된다")
+    public void removeSoftDeletedProblemTest() throws NoSuchMethodException {
+        // given
+        Method deleteSoftProblemMethod = ProblemService.class.getDeclaredMethod("deleteSoftProblem");
+        deleteSoftProblemMethod.setAccessible(true);
+
+        // when, then
+        assertDoesNotThrow(() -> deleteSoftProblemMethod.invoke(problemService));
+    }
+
+    @Test
+    @DisplayName("3일 전에 추천된 문제들은 추천 여부를 false로 변경된다")
+    public void initializeRecommendedProblemTest() throws NoSuchMethodException {
+        // given
+        Method initializeRecommendedProblemMethod = ProblemService.class.getDeclaredMethod("initializeRecommendedProblem");
+        initializeRecommendedProblemMethod.setAccessible(true);
+
+        // when, then
+        assertDoesNotThrow(() -> initializeRecommendedProblemMethod.invoke(problemService));
     }
 }

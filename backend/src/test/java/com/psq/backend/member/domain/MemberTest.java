@@ -1,6 +1,6 @@
 package com.psq.backend.member.domain;
 
-import com.psq.backend.member.exception.InvalidMemberException;
+import com.psq.backend.member.exception.InvalidEmailFormatException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ public class MemberTest {
     public void createMemberEmptyEmailExceptionTest() throws Exception {
         // given, when, then
         assertThatThrownBy(() -> new Member("", "123", "salt"))
-                .isInstanceOf(InvalidMemberException.class)
+                .isInstanceOf(InvalidEmailFormatException.class)
                 .hasMessageContaining("Email은 공백일 수 없습니다.");
     }
 
@@ -31,7 +31,7 @@ public class MemberTest {
     public void createMemberEmptyPasswordExceptionTest() throws Exception {
         // given, when, then
         assertThatThrownBy(() -> new Member("yukeon97@gmail.com", "", "salt"))
-                .isInstanceOf(InvalidMemberException.class)
+                .isInstanceOf(InvalidEmailFormatException.class)
                 .hasMessageContaining("Password는 공백일 수 없습니다.");
     }
 }
