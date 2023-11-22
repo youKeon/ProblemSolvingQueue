@@ -378,7 +378,7 @@ public class ProblemServiceTest extends ServiceTest {
         assertThatThrownBy(
                 () -> problemService.recommendProblem(member.getId()))
                 .isInstanceOf(NoSuchProblemException.class)
-                .hasMessageContaining("존재하지 않는 문제입니다.");
+                .hasMessageContaining("추천을 위한 문제가 충분하지 않습니다.");
     }
 
     @Test

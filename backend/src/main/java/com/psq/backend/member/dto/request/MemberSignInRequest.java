@@ -1,11 +1,12 @@
 package com.psq.backend.member.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-//@AllArgsConstructor
+@AllArgsConstructor
 @Getter
 public class MemberSignInRequest {
     @NotBlank(message = "공백일 수 없습니다.")
