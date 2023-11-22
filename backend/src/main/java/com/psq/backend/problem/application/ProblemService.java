@@ -97,7 +97,7 @@ public class ProblemService {
 
     public List<ProblemRecommendResponse> recommendProblem(Long memberId) {
         List<ProblemRecommendResponse> recommendProblemList = problemRepository.recommendProblem(memberId);
-        if (recommendProblemList.isEmpty()) throw new NoSuchProblemException();
+        if (recommendProblemList.isEmpty()) throw new NoSuchProblemException("추천을 위한 문제가 충분하지 않습니다.");
         return recommendProblemList;
     }
 

@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
-@AllArgsConstructor
 @Getter
-@NoArgsConstructor
 public class BookmarkSaveRequest {
     @NotNull(message = "공백일 수 없습니다.")
     private Long problemId;

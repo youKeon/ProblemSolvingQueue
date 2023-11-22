@@ -3,7 +3,6 @@ package com.psq.backend.problem.dto.request;
 import com.psq.backend.member.domain.Member;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import javax.validation.constraints.Max;
@@ -11,7 +10,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@AllArgsConstructor
 @Getter
 public class ProblemSaveRequest {
     @NotBlank(message = "공백일 수 없습니다.")

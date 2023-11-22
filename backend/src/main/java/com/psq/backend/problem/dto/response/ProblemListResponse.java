@@ -5,10 +5,8 @@ import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class ProblemListResponse {
     private String url;
 
