@@ -9,6 +9,8 @@ import com.psq.backend.member.exception.InValidLoginRequestException;
 import com.psq.backend.member.exception.NoSuchMemberException;
 import com.psq.backend.member.persistence.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +19,7 @@ import javax.servlet.http.HttpSession;
 import static com.psq.backend.util.PasswordUtil.encodePassword;
 import static com.psq.backend.util.PasswordUtil.generateSalt;
 
-
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -55,4 +57,12 @@ public class MemberService {
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(NoSuchMemberException::new);
     }
+
+    @Scheduled(cron = "0 0 21 * * ?")
+    protected void initializeRecommendation() {
+        log.info("[추천 여부 초기화 메서드 실행]");
+        Long initializedCount = memberRepository.initializeRecommendation();
+        log.info("초기화된 사용자 계정 개수 : {}", initializedCount);
+    }
 }
+
