@@ -24,7 +24,7 @@ public interface ProblemCustomRepository {
 
     long increaseSolvedCount(Long problemId);
 
-    List<ProblemRecommendResponse> recommendProblem(Long id);
+    ProblemRecommendResponse recommendProblem(Long id);
 
     void initializeRecommendedProblem();
 

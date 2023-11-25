@@ -146,88 +146,43 @@ public class ProblemRepositoryTest extends RepositoryTest {
         assertThat(increasedCount).isEqualTo(1);
     }
 
-    @Test
-    @DisplayName("추천 문제를 반환한다")
-    public void recommendProblemTest() {
-        // given
-        clearProblem();
-        Problem problem1 = new Problem(member, "title1", "url1", 1, Category.DFS, false);
-        Problem problem2 = new Problem(member, "title2", "url2", 2, Category.DFS, false);
-        Problem problem3 = new Problem(member, "title3", "url3", 3, Category.DFS, false);
-        Problem problem4 = new Problem(member, "title4", "url4", 4, Category.DFS, false);
-        Problem problem5 = new Problem(member, "title5", "url5", 5, Category.DFS, false);
-
-        problemRepository.save(problem1);
-        problemRepository.save(problem2);
-        problemRepository.save(problem3);
-        problemRepository.save(problem4);
-        problemRepository.save(problem5);
-
-        // when
-        List<ProblemRecommendResponse> actual = problemRepository.recommendProblem(member.getId());
-
-        // then
-        assertThat(actual.size()).isEqualTo(2);
-
-        assertThat(actual.get(0).getLevel()).isEqualTo(2);
-        assertThat(actual.get(0)).usingRecursiveComparison().isEqualTo(problem2);
-
-        assertThat(actual.get(1).getLevel()).isEqualTo(4);
-        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(problem4);
-    }
 
     @Test
-    @DisplayName("추천 문제의 평균 난이도가 최대값(1)이면 난이도 4, 5 문제를 반환한다")
+    @DisplayName("추천 문제의 평균 난이도가 최소값(1)이면 난이도 5 문제를 반환한다")
     public void recommendProblemLowLevelExceptionTest() {
         // given
         clearProblem();
         for (int i = 0; i < 20; i++) {
             problemRepository.save(new Problem(member, "title" + i, "url" + i, 1, Category.DFS, false));
         }
-        Problem problem5 = new Problem(member, "title5", "url5", 4, Category.DFS, false);
-        Problem problem6 = new Problem(member, "title6", "url6", 5, Category.DFS, false);
+        Problem level5Problem = new Problem(member, "title6", "url6", 5, Category.DFS, false);
 
-        problemRepository.save(problem5);
-        problemRepository.save(problem6);
+        problemRepository.save(level5Problem);
 
         // when
-        List<ProblemRecommendResponse> actual = problemRepository.recommendProblem(member.getId());
+        ProblemRecommendResponse actual = problemRepository.recommendProblem(member.getId());
 
         // then
-        assertThat(actual.size()).isEqualTo(2);
-
-        assertThat(actual.get(0).getLevel()).isEqualTo(4);
-        assertThat(actual.get(0)).usingRecursiveComparison().isEqualTo(problem5);
-
-        assertThat(actual.get(1).getLevel()).isEqualTo(5);
-        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(problem6);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(level5Problem);
     }
 
     @Test
-    @DisplayName("추천 문제의 평균 난이도가 최대값(5)이면 난이도 1, 2 문제를 반환한다")
+    @DisplayName("추천 문제의 평균 난이도가 최대값(5)이면 난이도 1 문제를 반환한다")
     public void recommendProblemLowHighExceptionTest() {
         // given
         clearProblem();
         for (int i = 0; i < 20; i++) {
             problemRepository.save(new Problem(member, "title" + i, "url" + i, 5, Category.DFS, false));
         }
-        Problem problem5 = new Problem(member, "title5", "url5", 1, Category.DFS, false);
-        Problem problem6 = new Problem(member, "title6", "url6", 2, Category.DFS, false);
+        Problem level1Problem = new Problem(member, "title5", "url5", 1, Category.DFS, false);
 
-        problemRepository.save(problem5);
-        problemRepository.save(problem6);
+        problemRepository.save(level1Problem);
 
         // when
-        List<ProblemRecommendResponse> actual = problemRepository.recommendProblem(member.getId());
+        ProblemRecommendResponse actual = problemRepository.recommendProblem(member.getId());
 
         // then
-        assertThat(actual.size()).isEqualTo(2);
-
-        assertThat(actual.get(0).getLevel()).isEqualTo(1);
-        assertThat(actual.get(0)).usingRecursiveComparison().isEqualTo(problem5);
-
-        assertThat(actual.get(1).getLevel()).isEqualTo(2);
-        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(problem6);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(level1Problem);
     }
 
     @Test

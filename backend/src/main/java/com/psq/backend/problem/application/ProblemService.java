@@ -12,6 +12,7 @@ import com.psq.backend.problem.dto.response.ProblemResponse;
 import com.psq.backend.problem.exception.InvalidProblemException;
 import com.psq.backend.problem.exception.NoSuchProblemException;
 import com.psq.backend.problem.persistence.ProblemRepository;
+import com.psq.backend.slack.SlackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProblemService {
     private final ProblemRepository problemRepository;
+    private final SlackService slackService;
 
     public void save(Member member,
                      ProblemSaveRequest request) {
@@ -42,7 +44,6 @@ public class ProblemService {
                                                     Boolean isSolved,
                                                     Pageable pageable) {
 
-
         List<ProblemListResponse> problemList = problemRepository.findAllProblem(member.getId(), level, category, isSolved, pageable);
 
         if (problemList.isEmpty()) throw new NoSuchProblemException("문제가 존재하지 않습니다.");
@@ -50,9 +51,9 @@ public class ProblemService {
     }
 
 
-    public void delete(Long id, Member requester) {
+    public void delete(Long id, Member member) {
         Problem problem = problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
-        if (!isAuthenticatedEditor(requester, problem)) throw new UnauthorizedMemberException();
+        if (!problem.isAuthor(member)) throw new UnauthorizedMemberException();
         problem.softDelete();
     }
 
@@ -68,15 +69,11 @@ public class ProblemService {
 
     public void update(Long id,
                        ProblemUpdateRequest request,
-                       Member requester) {
+                       Member member) {
 
         Problem problem = problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
-        if (!isAuthenticatedEditor(requester, problem)) throw new UnauthorizedMemberException();
+        if (!problem.isAuthor(member)) throw new UnauthorizedMemberException();
         problem.update(request);
-    }
-
-    private boolean isAuthenticatedEditor(Member member, Problem problem) {
-        return problem.getMember().getId() == member.getId();
     }
 
     public void recovery(Long id) {
@@ -95,10 +92,13 @@ public class ProblemService {
         if (increasedCount == 0) throw new NoSuchProblemException();
     }
 
-    public List<ProblemRecommendResponse> recommendProblem(Long memberId) {
-        List<ProblemRecommendResponse> recommendProblemList = problemRepository.recommendProblem(memberId);
-        if (recommendProblemList.isEmpty()) throw new NoSuchProblemException("추천을 위한 문제가 충분하지 않습니다.");
-        return recommendProblemList;
+
+    public void recommendProblem(Member member) {
+        ProblemRecommendResponse problem = problemRepository.recommendProblem(member.getId());
+        if (problem != null) {
+            slackService.sendMessage(problem);
+            member.hadRecommendation();
+        }
     }
 
     @Scheduled(cron = "0 0 0 * * ?")

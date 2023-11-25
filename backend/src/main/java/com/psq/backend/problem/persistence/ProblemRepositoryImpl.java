@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -116,16 +115,14 @@ public class ProblemRepositoryImpl implements ProblemCustomRepository {
     }
 
     @Override
-    public List<ProblemRecommendResponse> recommendProblem(Long memberId) {
-        ProblemWeakCategoryAvgLevelResponse weakCategoryAvgLevel = findWeakestCategory();
-        Category weakestCategory = weakCategoryAvgLevel.getCategory();
-        int avgLevel = weakCategoryAvgLevel.getLevel();
+    public ProblemRecommendResponse recommendProblem(Long memberId) {
+        ProblemWeakCategoryAvgLevelResponse categoryWithAvgLevel = findWeakestCategory();
+        if (categoryWithAvgLevel == null) return null;
 
-        int[] levelRange = levelBound(avgLevel);
-        int lowLevel = levelRange[0];
-        int highLevel = levelRange[1];
+        Category weakestCategory = categoryWithAvgLevel.getCategory();
+        Integer avgLevel = levelExceptionCheck(categoryWithAvgLevel.getLevel());
 
-        List<ProblemRecommendResponse> problems = jpaQueryFactory
+        return jpaQueryFactory
                 .select(new QProblemRecommendResponse(
                         problem.title,
                         problem.url,
@@ -138,18 +135,12 @@ public class ProblemRepositoryImpl implements ProblemCustomRepository {
                         problem.isDeleted.isFalse(),
                         problem.category.eq(weakestCategory),
                         problem.isRecommended.isFalse(), // 3일 안에 추천된 기록이 있으면 제외
-                        problem.level.in(lowLevel, highLevel)
+                        problem.level.eq(avgLevel)
                 )
                 .orderBy(
-                        problem.level.asc(),
-                        problem.solvedCount.asc()
+                        problem.solvedCount.asc() // 풀이 횟수가 적은 문제가 우선
                 )
-                .fetch();
-
-        int firstIndex = 0;
-        int lastIndex = problems.size() - 1;
-
-        return Arrays.asList(problems.get(firstIndex), problems.get(lastIndex));
+                .fetchFirst();
     }
 
     @Override
@@ -177,17 +168,14 @@ public class ProblemRepositoryImpl implements ProblemCustomRepository {
                 .fetchFirst();
     }
 
-    // 평균 Level의 +- 1 범위 반환
-    private int[] levelBound(int avgLevel) {
-        if (avgLevel == MAX_LEVEL || avgLevel == MIN_LEVEL) return levelExceptionHandler(avgLevel);
-        return new int[]{avgLevel - 1, avgLevel + 1};
-    }
-
-    // 평균 난이도가 최소(1) -> 난이도 4,5 반환
-    // 평균 난이도가 최대(5) -> 난이도 1,2 반환
-    private int[] levelExceptionHandler(int avgLevel) {
-        if (avgLevel == MAX_LEVEL) return new int[]{1, 2};
-        return new int[]{4, 5};
+    /**
+     * 평균 난이도가 최소(1) -> 난이도 최대(5) 반환
+     * 평균 난이도가 최대(5) -> 난이도 최소(1) 반환
+     */
+    private int levelExceptionCheck(int avgLevel) {
+        if (avgLevel == MAX_LEVEL) return MIN_LEVEL;
+        if (avgLevel == MIN_LEVEL) return MAX_LEVEL;
+        return avgLevel;
     }
 
 

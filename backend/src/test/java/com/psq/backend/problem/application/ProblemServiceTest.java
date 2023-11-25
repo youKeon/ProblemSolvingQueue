@@ -8,7 +8,6 @@ import com.psq.backend.problem.domain.Problem;
 import com.psq.backend.problem.dto.request.ProblemSaveRequest;
 import com.psq.backend.problem.dto.request.ProblemUpdateRequest;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
-import com.psq.backend.problem.dto.response.ProblemRecommendResponse;
 import com.psq.backend.problem.dto.response.ProblemResponse;
 import com.psq.backend.problem.exception.InvalidProblemException;
 import com.psq.backend.problem.exception.NoSuchProblemException;
@@ -351,34 +350,6 @@ public class ProblemServiceTest extends ServiceTest {
                 () -> problemService.increaseSolvedCount(problem1.getId()))
                 .isInstanceOf(NoSuchProblemException.class)
                 .hasMessageContaining("존재하지 않는 문제입니다.");
-    }
-
-    @Test
-    @DisplayName("추천 문제를 반환한다")
-    public void recommendProblemTest() {
-        // given
-        List<ProblemRecommendResponse> responseList = Arrays.asList(
-                new ProblemRecommendResponse(problem1.getTitle(), problem1.getUrl(), problem1.getLevel(), problem1.getCategory()),
-                new ProblemRecommendResponse(problem2.getTitle(), problem2.getUrl(), problem2.getLevel(), problem2.getCategory())
-        );
-
-        // when
-        when(problemRepository.recommendProblem(member.getId())).thenReturn(responseList);
-        List<ProblemRecommendResponse> actual = problemService.recommendProblem(member.getId());
-
-        // then
-        assertThat(actual.get(0)).usingRecursiveComparison().isEqualTo(responseList.get(0));
-        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(responseList.get(1));
-    }
-
-    @Test
-    @DisplayName("추천 문제 반환 시 문제가 없으면 예외가 발생한다")
-    public void recommendProblemEmptyProblemExceptionTest() {
-        // when, then
-        assertThatThrownBy(
-                () -> problemService.recommendProblem(member.getId()))
-                .isInstanceOf(NoSuchProblemException.class)
-                .hasMessageContaining("추천을 위한 문제가 충분하지 않습니다.");
     }
 
     @Test

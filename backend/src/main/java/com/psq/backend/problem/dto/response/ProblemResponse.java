@@ -1,9 +1,7 @@
 package com.psq.backend.problem.dto.response;
 
 import com.psq.backend.problem.domain.Category;
-import com.psq.backend.problem.domain.Problem;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

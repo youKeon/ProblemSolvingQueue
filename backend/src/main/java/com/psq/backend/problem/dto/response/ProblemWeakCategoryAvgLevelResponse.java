@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class ProblemWeakCategoryAvgLevelResponse {
     private Category category;
-    private int level;
+    private Integer level;
 
     @QueryProjection
     public ProblemWeakCategoryAvgLevelResponse(Category category, int level) {

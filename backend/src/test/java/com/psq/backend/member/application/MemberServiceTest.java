@@ -6,6 +6,7 @@ import com.psq.backend.member.domain.SessionInfo;
 import com.psq.backend.member.dto.request.MemberSignInRequest;
 import com.psq.backend.member.dto.request.MemberSignUpRequest;
 import com.psq.backend.member.exception.DuplicatedEmailException;
+import com.psq.backend.member.exception.InValidLoginRequestException;
 import com.psq.backend.member.exception.NoSuchMemberException;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
@@ -98,7 +99,7 @@ public class MemberServiceTest extends ServiceTest {
         assertThatThrownBy(
                 () -> memberService.signin(request, session))
                 .isInstanceOf(NoSuchMemberException.class)
-                .hasMessageContaining("로그인에 실패했습니다.");
+                .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
 
     @Test
@@ -114,7 +115,7 @@ public class MemberServiceTest extends ServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> memberService.signin(request, session))
-                .isInstanceOf(NoSuchMemberException.class)
+                .isInstanceOf(InValidLoginRequestException.class)
                 .hasMessageContaining("로그인에 실패했습니다.");
     }
 

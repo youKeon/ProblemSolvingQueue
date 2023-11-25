@@ -2,7 +2,7 @@ package com.psq.backend.bookmark.presentation;
 
 import com.psq.backend.bookmark.application.BookmarkService;
 import com.psq.backend.bookmark.dto.request.BookmarkSaveRequest;
-import com.psq.backend.member.annotation.CurrentUser;
+import com.psq.backend.util.annotation.CurrentUser;
 import com.psq.backend.member.domain.Member;
 import com.psq.backend.problem.dto.response.ProblemListResponse;
 import io.swagger.v3.oas.annotations.Operation;

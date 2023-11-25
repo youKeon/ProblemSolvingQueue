@@ -10,6 +10,7 @@ import com.psq.backend.member.persistence.MemberRepository;
 import com.psq.backend.member.presentation.MemberController;
 import com.psq.backend.problem.application.ProblemService;
 import com.psq.backend.problem.presentation.ProblemController;
+import com.psq.backend.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -41,6 +42,8 @@ public abstract class ControllerTest {
     protected MemberRepository memberRepository;
     @MockBean
     protected BookmarkService bookmarkService;
+    @MockBean
+    protected SessionUtil sessionUtil;
 
     protected static Pageable pageable = PageRequest.of(0, 3);
     protected Member member;

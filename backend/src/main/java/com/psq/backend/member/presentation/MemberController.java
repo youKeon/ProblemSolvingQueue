@@ -3,6 +3,7 @@ package com.psq.backend.member.presentation;
 import com.psq.backend.member.application.MemberService;
 import com.psq.backend.member.dto.request.MemberSignInRequest;
 import com.psq.backend.member.dto.request.MemberSignUpRequest;
+import com.psq.backend.util.annotation.RecommendationCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class MemberController {
 
     @Operation(summary = "로그인")
     @PostMapping("/signin")
+    @RecommendationCheck
     public ResponseEntity<Void> signin(@RequestBody @Valid MemberSignInRequest request, HttpSession session) {
         memberService.signin(request, session);
         return ResponseEntity.ok().build();

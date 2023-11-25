@@ -16,7 +16,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentRequest;
 import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentResponse;
@@ -51,7 +50,7 @@ public class BookmarkControllerTest extends ControllerTest {
         session = new MockHttpSession();
 
         session.setAttribute("sessionInfo", sessionInfo);
-        when(memberRepository.findById(member.getId())).thenReturn(Optional.ofNullable(member));
+        when(sessionUtil.getSessionInfo()).thenReturn(sessionInfo);
     }
 
     @Test
