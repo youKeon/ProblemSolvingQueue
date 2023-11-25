@@ -67,6 +67,9 @@ dependencies {
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     runtimeOnly 'com.h2database:h2'
+
+    // Slack
+    implementation 'com.slack.api:slack-api-client:1.30.0'
 }
 
 tasks.named('test') {
@@ -109,6 +112,7 @@ jacocoTestReport {
                     "**/Q*",
                     '*.*Resolver',
                     '**/dto/**',
+                    '**/slack/**',
                     '**/exception/**',
                     '**/BaseEntity*',
                     "**/*Application*",
@@ -148,6 +152,7 @@ jacocoTestCoverageVerification {
                     '*.dto.*',
                     '**.*BaseEntity*',
                     '*.global.*',
+                    '*.slack.*',
                     '*.BaseEntity',
             ]
         }
