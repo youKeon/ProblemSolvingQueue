@@ -1,4 +1,4 @@
-package com.psq.backend.member.annotation;
+package com.psq.backend.util.annotation;
 
 import java.lang.annotation.*;
 

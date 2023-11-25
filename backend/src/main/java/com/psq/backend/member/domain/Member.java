@@ -22,6 +22,9 @@ public class Member extends BaseEntity {
     private String password;
 
     @Column(nullable = false)
+    private boolean isRecommended;
+
+    @Column(nullable = false)
     private String salt;
 
     public Member(String email,
@@ -33,6 +36,7 @@ public class Member extends BaseEntity {
         this.email = email;
         this.password = password;
         this.salt = salt;
+        this.isRecommended = false;
     }
 
     private void validateEmail(String email) {
@@ -42,4 +46,9 @@ public class Member extends BaseEntity {
     private void validatePassword(String password) {
         if (password.isEmpty()) throw new InvalidEmailFormatException("Password는 공백일 수 없습니다.");
     }
+
+    public void hadRecommendation() {
+        this.isRecommended = true;
+    }
 }
+

@@ -2,10 +2,7 @@ package com.psq.backend.global.error;
 
 import com.psq.backend.bookmark.exception.DuplicatedBookmarkException;
 import com.psq.backend.bookmark.exception.NoSuchBookmarkException;
-import com.psq.backend.member.exception.DuplicatedEmailException;
-import com.psq.backend.member.exception.InvalidEmailFormatException;
-import com.psq.backend.member.exception.NoSuchMemberException;
-import com.psq.backend.member.exception.UnauthorizedMemberException;
+import com.psq.backend.member.exception.*;
 import com.psq.backend.problem.exception.InvalidProblemException;
 import com.psq.backend.problem.exception.NoSuchProblemException;
 import org.slf4j.Logger;
@@ -60,6 +57,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({
             InvalidProblemException.class,
             InvalidEmailFormatException.class,
+            InValidLoginRequestException.class,
             DuplicatedBookmarkException.class,
             DuplicatedEmailException.class
     })
