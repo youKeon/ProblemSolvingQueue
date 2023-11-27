@@ -52,7 +52,7 @@ public class ProblemService {
 
 
     public void delete(Long id, Member member) {
-        Problem problem = problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
+        Problem problem = getProblem(id);
         if (!problem.isAuthor(member)) throw new UnauthorizedMemberException();
         problem.softDelete();
     }
@@ -71,13 +71,13 @@ public class ProblemService {
                        ProblemUpdateRequest request,
                        Member member) {
 
-        Problem problem = problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
+        Problem problem = getProblem(id);
         if (!problem.isAuthor(member)) throw new UnauthorizedMemberException();
         problem.update(request);
     }
 
     public void recovery(Long id) {
-        Problem problem = problemRepository.findById(id).orElseThrow(NoSuchProblemException::new);
+        Problem problem = getProblem(id);
         if (!problem.isDeleted()) throw new InvalidProblemException("삭제되지 않은 문제입니다.");
         problem.recovery();
     }

@@ -7,3 +7,5 @@ backend/src/main/resources/application-local.yml
 
 .idea/
 
+
+*.p12
