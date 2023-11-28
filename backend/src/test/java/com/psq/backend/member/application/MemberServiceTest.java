@@ -10,7 +10,6 @@ import com.psq.backend.member.exception.InValidLoginRequestException;
 import com.psq.backend.member.exception.NoSuchMemberException;
 import com.psq.backend.problem.domain.Category;
 import com.psq.backend.problem.domain.Problem;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,13 +19,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
 
 public class MemberServiceTest extends ServiceTest {
     private MockHttpSession session;
-    private SessionInfo sessionInfo;
     @BeforeEach
     void setup() {
         member = new Member("yukeon97@gmail.com", encodePassword, salt);
@@ -42,7 +41,6 @@ public class MemberServiceTest extends ServiceTest {
 
         request = new MockHttpServletRequest();
         session = new MockHttpSession();
-        sessionInfo = new SessionInfo(member.getId(), member.getEmail());
     }
 
     @Test
@@ -126,6 +124,13 @@ public class MemberServiceTest extends ServiceTest {
         memberService.logout(session);
 
         // then
-        Assertions.assertThat(session.isInvalid()).isTrue();
+        assertThat(session.isInvalid()).isTrue();
+    }
+
+    @Test
+    @DisplayName("계정을 삭제된다")
+    public void deleteMemberTest() throws NoSuchMethodException {
+        // given, when, then
+        assertDoesNotThrow(() -> memberService.delete(member));
     }
 }

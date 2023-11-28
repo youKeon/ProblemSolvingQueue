@@ -1,17 +1,16 @@
 package com.psq.backend.member.presentation;
 
 import com.psq.backend.member.application.MemberService;
+import com.psq.backend.member.domain.Member;
 import com.psq.backend.member.dto.request.MemberSignInRequest;
 import com.psq.backend.member.dto.request.MemberSignUpRequest;
+import com.psq.backend.util.annotation.CurrentUser;
 import com.psq.backend.util.annotation.RecommendationCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -42,5 +41,12 @@ public class MemberController {
     public ResponseEntity<Void> logout(HttpSession session) {
         memberService.logout(session);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "회원 삭제")
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@CurrentUser Member member) {
+        memberService.delete(member);
+        return ResponseEntity.noContent().build();
     }
 }

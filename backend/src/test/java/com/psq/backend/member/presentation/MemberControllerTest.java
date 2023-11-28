@@ -15,8 +15,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentRequest;
 import static com.psq.backend.common.docs.ApiDocumentUtil.getDocumentResponse;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,9 +32,11 @@ public class MemberControllerTest extends ControllerTest {
         member = new Member("yukeon97@gmail.com", "123", "salt");
         ReflectionTestUtils.setField(member, "id", 1L);
 
-        session = new MockHttpSession();
         sessionInfo = new SessionInfo(member.getId(), member.getEmail());
+        session = new MockHttpSession();
+
         session.setAttribute("sessionInfo", sessionInfo);
+        when(sessionUtil.getSessionInfo()).thenReturn(sessionInfo);
     }
 
     @Test
@@ -261,6 +265,21 @@ public class MemberControllerTest extends ControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("member/logout/success",
+                        getDocumentRequest(),
+                        getDocumentResponse()
+                ));
+    }
+
+    @Test
+    @DisplayName("계정을 삭제한다")
+    public void deleteTest() throws Exception {
+        // when, then
+        mockMvc.perform(delete(baseURL)
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(document("member/delete/success",
                         getDocumentRequest(),
                         getDocumentResponse()
                 ));

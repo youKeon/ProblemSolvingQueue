@@ -64,5 +64,9 @@ public class MemberService {
         Long initializedCount = memberRepository.initializeRecommendation();
         log.info("초기화된 사용자 계정 개수 : {}", initializedCount);
     }
+
+    public void delete(Member member) {
+        memberRepository.delete(member);
+    }
 }
 

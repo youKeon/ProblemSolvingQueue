@@ -1,11 +1,15 @@
 package com.psq.backend.member.domain;
 
+import com.psq.backend.bookmark.domain.Bookmark;
 import com.psq.backend.common.BaseEntity;
 import com.psq.backend.member.exception.InvalidEmailFormatException;
+import com.psq.backend.problem.domain.Problem;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -26,6 +30,12 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false)
     private String salt;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "member")
+    private List<Problem> problems = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "member")
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     public Member(String email,
                   String password,
